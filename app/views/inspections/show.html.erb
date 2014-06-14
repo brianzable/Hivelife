@@ -1,0 +1,296 @@
+<!-- When -->
+<div class="row">
+  <div class="medium-12 columns">
+    <%= field_set_tag 'When' do %>
+      <div class="row">
+        <!-- Time -->
+        <div class="medium-6 columns">
+          <div class="row">
+            <div class="medium-12 columns">
+              <h6><strong>Time</strong></h6>
+              <%= @inspection.inspected_at.strftime("%I:%M%p") %>
+            </div>
+          </div>
+        </div>
+        <!-- Date -->
+        <div class="medium-6 columns">
+          <div class="row">
+            <div class="medium-12 columns">
+              <h6><strong>Date</strong></h6>
+              <%= @inspection.inspected_at.strftime("%m/%d/%y")  %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+<!-- Weather -->
+<div class="row">
+  <div class="medium-12 columns">
+    <%= field_set_tag 'Weather' do %>
+      <div class="row">
+        <!-- Temperature -->
+        <div class="medium-2 columns">
+          <div class="row">
+            <div class="medium-12 columns">
+              <h6><strong>Temperature</strong></h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="medium-12 columns">
+              <%= @inspection.temperature %>
+            </div>
+          </div>
+        </div>
+        <!-- Conditions -->
+        <div class="medium-2 columns">
+          <div class="row">
+            <div class="medium-12 columns">
+              <h6><strong>Conditions</strong></h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="medium-12 columns">
+              <%= @inspection.weather_conditions %>
+            </div>
+          </div>
+
+
+
+        </div>
+        <!-- Notes -->
+        <div class="medium-8 columns">
+          <div class="row">
+            <div class="medium-12 columns">
+              <h6><strong>Notes</strong></h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="medium-12 columns">
+              <%= @inspection.weather_notes %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+<!-- Brood Chamber & Honey Storage -->
+<div class="row">
+  <div class="medium-12 columns">
+    <%= field_set_tag 'Brood Chamber & Honey Storage' do %>
+      <% supers = @inspection.honey_supers %>
+      <% supers.each do | s |%>
+        <div class="row">
+          <div class="medium-6 small-6 columns">
+            <label><span class="capped percentage-label"><%= "#{s.capped}%" %></span> Capped</label>
+            <div class="radius progress success medium-12">
+              <span class="meter" style="width: <%= s.capped %>%"></span>
+            </div>
+          </div>
+          <div class="medium-6 small-6 columns">
+            <label><span class="capped percentage-label"><%= "#{s.full}%" %></span> Full</label>
+            <div class="radius progress success medium-12">
+              <span class="meter" style="width: <%= "#{s.full}%" %>"></span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <% brood = @inspection.brood_boxes %>
+      <% brood.each do | b |%>
+        <div class="row">
+          <div class="medium-12 columns">
+            <div class="row">
+              <div class="medium-12 columns">
+                <div class="row">
+                  <div class="medium-12 columns">
+                    <h6><strong>Pattern</strong></h6>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="medium-12 columns">
+                    <%= b.pattern %>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="medium-12 columns">
+                <div class="row">
+                  <div class="medium-12 columns">
+                    <h6><strong>Saw</strong></h6>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="medium-12 columns">
+                    <%= b.sightings %>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+<!-- Diseases-->
+<div class="row">
+  <div class="medium-12 columns">
+    <%= field_set_tag 'Diseases & Treatments' do %>
+      <div class="medium-6 columns">
+        <table>
+          <thead>
+            <tr>
+              <th width="100">Disease</th>
+              <th width="150">Treatment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% diseases = @inspection.diseases %>
+            <% diseases.each do | d |%>
+              <tr>
+                <td><%= d.disease_type %></td>
+                <td><%= d.treatment %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+  </div>
+</div>
+<!-- Hive Information -->
+<div class="row">
+  <div class="medium-12 columns">
+    <%= field_set_tag 'Hive Information' do %>
+      <div class="row">
+        <div class="medium-12 columns">
+          <div class="row">
+            <div class="medium-12 columns">
+              <h6><strong>Ventilated?</strong></h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="medium-12 columns">
+              <% if @inspection.ventilated %>
+                Yes
+              <% else %>
+                No
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="medium-12 columns">
+          <div class="row">
+            <div class="medium-12 columns">
+              <h6><strong>Entrance Reducer</strong></h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="medium-12 columns">
+              <% if @inspection.entrance_reducer %>
+                <%= "Yes, #{@inspection.entrance_reducer_size}" %>
+              <% else %>
+                No
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="medium-12 columns">
+          <div class="row">
+            <div class="medium-12 columns">
+              <h6><strong>Queen Excluder</strong></h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="medium-12 columns">
+              <% if @inspection.queen_excluder %>
+                Yes
+              <% else %>
+                No
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="medium-12 columns">
+          <div class="row">
+            <div class="medium-12 columns">
+              <h6><strong>Hive Orientation</strong></h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="medium-12 columns">
+              <%= Hive::PRINT_ORIENTATIONS[@inspection.hive_orientation] %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+<!-- Additional Information -->
+<div class="row">
+  <div class="medium-12 columns">
+    <%= field_set_tag 'Additional Information' do %>
+      <div class="row">
+        <div class="medium-12 columns">
+          <div class="row">
+            <div class="medium-12 columns">
+              <h6><strong>Flight Pattern</strong></h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="medium-12 columns">
+              <%= @inspection.flight_pattern %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="medium-12 columns">
+          <div class="row">
+            <div class="medium-12 columns">
+              <h6><strong>Healthy Hive?</strong></h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="medium-12 columns">
+              <% if @inspection.health == 1 %>
+                Yes
+              <% else %>
+                No
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="medium-12 columns">
+          <div class="row">
+            <div class="medium-12 columns">
+              <h6><strong>Notes</strong></h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="medium-12 columns">
+              <%= @inspection.notes %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

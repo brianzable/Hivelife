@@ -1,0 +1,73 @@
+<% content_for :title, "Hivelife | #{@hive.name}" %>
+<div class="medium-12 columns">
+	<div class="row">
+		<!-- Side Bar -->
+		<div class="medium-3 columns show-for-medium-up">
+			<div class="row">
+				<%= render partial: 'shared/photo',
+									 locals: {
+															object: @hive,
+															edit_path: edit_apiary_hive_path(@hive.apiary, @hive),
+															upload_field_name: 'hive[photo_url]',
+															upload_url: apiary_hive_url(@hive.apiary, @hive)
+														} %>
+			</div>
+			<div class="row">
+				<div class="medium-12 columns text-center">
+					<h4><%= @hive.name %></h4>
+				</div>
+			</div>
+			<div class="row">
+				<div class="medium-12 columns text-center">
+					<h6><%= @hive.apiary.name %></h6>
+				</div>
+				<div class="medium-12 columns text-center">
+					<h6><%= @hive.get_location_string %></h6>
+				</div>
+			</div>
+		</div>
+		<div class="medium-9 small-12 columns">
+			<!-- Tabs -->
+			<div class="row" id="tabs">
+				<div class="medium-4 columns text-left" id="inspections-tab">
+					<h6><a href="#" data-show="inspections">Inspections</a></h6>
+				</div>
+				<div class="medium-4 columns text-center">
+					<h6><a href="#" data-show="harvests">Harvests</a></h6>
+				</div>
+				<div class="medium-4 columns text-right">
+					<h6><a href="#" data-show="nectar-sources">Nectar Sources</a></h6>
+				</div>
+			</div>
+			<div class="row content hide" id="inspections">
+				<div class="medium-12 columns">
+					<% @inspections.each do |inspection| %>
+						<%= render 'inspection', inspection: inspection, hive: @hive %>
+	    		<% end %>
+					<div class="row">
+						<div class="medium-1 medium-centered columns text-centered">
+							<%= link_to '+', new_hive_inspection_path(@hive), class: 'add-button' %>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row content hide" id="harvests">
+				<div class="medium-12 columns">
+					<% @harvests.each do |harvest| %>
+						<%= render 'harvest', harvest: harvest, hive: @hive %>
+    			<% end %>
+					<div class="row">
+						<div class="medium-1 medium-centered columns text-centered">
+							<%= link_to '+', new_hive_harvest_path(@hive), class: 'add-button' %>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row content" id="nectar-sources">
+				<div class="medium-12 columns">
+					<iframe src="<%= @hive.get_falling_fruit_url %>" width="725" height="710" scrolling="no" style="border: none;"></iframe>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,41 @@
+<div class="hive-box dynamic">
+	<div class="medium-12 columns">
+		<div class="row">
+			<div class="medium-12 columns">
+				<div>
+					<%= f.label :pattern %>
+					<%= f.radio_button :pattern, 'Good' %><%= f.label :pattern, 'Good' %>
+					<%= f.radio_button :pattern, 'Fair' %><%= f.label :pattern, 'Fair' %>
+					<%= f.radio_button :pattern, 'Poor' %><%= f.label :pattern, 'Poor' %>
+					<%= f.radio_button :pattern, 'N/A' %><%= f.label :pattern, 'N/A' %>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="medium-12 columns">
+				<label>Saw:</label>
+				<%= f.check_box :eggs_sighted %><%= f.label :eggs_sighted, 'Eggs' %>
+				<%= f.check_box :queen_sighted%><%= f.label :queen_sighted, 'Queen' %>
+				<%= f.check_box :queen_cells_sighted %><%= f.label :queen_cells_sighted, 'Queen Cells' %>
+				<%= f.check_box :honey_sighted %><%= f.label :honey_sighted, 'Honey' %>
+				<%= f.check_box :pollen_sighted %><%= f.label :pollen_sighted, 'Pollen' %>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="medium-6 columns">
+				<label>Queen Cell Type</label>
+				<%= f.check_box :swarm_cell_sighted %><%= f.label :swarm_cell_sighted, 'Swarm Cells' %>
+				<%= f.check_box :supercedure_cell_sighted %><%= f.label :supercedure_cell_sighted, 'Supercedure Cells' %>
+			</div>
+			<div>
+				<%= f.label :swarm_cells_capped, 'Swarm Cells Capped?' %>
+				<%= f.radio_button :swarm_cells_capped, 'true' %><%= f.label :swarm_cells_capped, 'Yes' %>
+				<%= f.radio_button :swarm_cells_capped, 'false' %><%= f.label :swarm_cells_capped, 'No' %>
+				<%= f.hidden_field :_destroy %>
+				<%= link_to "Remove Brood Box", '#', class: "remove-fields" %>
+			</div>
+		</div>
+	</div>
+</div>

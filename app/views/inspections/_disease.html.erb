@@ -1,0 +1,14 @@
+<div class="row dynamic" data-equalizer>
+	<div class="medium-3 small-5 columns" data-equalizer-watch>
+	 <%= f.label :disease_type, 'Disease' %>
+	 <%= f.select :disease_type, options_for_select(Disease::DISEASES) %>
+	</div>
+	<div class="medium-3 small-5 columns" data-equalizer-watch>
+	 <%= f.label :treatment %>
+	 <%= f.select :treatment, options_for_select(Disease::TREATMENTS) %>
+	</div>
+	<div class="medium-6 small-2 columns remove-disease" data-equalizer-watch>
+		<%= f.hidden_field :_destroy %>
+		<%= link_to 'Remove Disease', '#', class: 'remove-fields remove-disease-link' %>
+	</div>
+</div>

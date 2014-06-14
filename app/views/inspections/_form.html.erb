@@ -1,0 +1,197 @@
+
+<%= form_for [@hive, @inspection], url: @action, method: @method do |f| %>
+  <%= render partial: "shared/errors", locals: {object: @inspection} %>
+  <!-- Time and Date -->
+  <div class="row">
+    <div class="medium-12 columns">
+      <%= field_set_tag 'When' do %>
+        <div class="row">
+          <div class="medium-6 columns">
+            <%= f.label :report_date, 'Report Date' %>
+            <% t = @inspection.inspected_at.nil? ? Time.zone.now : @inspection.inspected_at %>
+            <div class="row">
+              <div class="medium-4 small-4 columns">
+                <%= f.select :month, options_for_select((1..12).map {|m| [Date::MONTHNAMES[m], m]}, selected: t.month) %>
+              </div>
+              <div class="medium-3 small-4 columns">
+                <%= f.select :day, options_for_select((1..31).map { |m| [m]}, selected: t.day) %>
+              </div>
+              <div class="medium-3 small-4 columns">
+                <%= f.select :year,  options_for_select(((t.year - 5)..t.year).map { |m| [m]}, selected: t.year) %>
+              </div>
+              <div class="medium-2 columns"></div>
+            </div>
+          </div>
+          <div class="medium-6 columns">
+            <%= f.label :report_time, 'Report Time' %>
+            <div class="row">
+              <div class="medium-3 small-4 columns">
+                <%= f.select :hour, options_for_select((1..12).map { |m| [m]}, selected: get_hour_for_field(t)) %>
+              </div>
+              <div class="medium-3 small-4 columns">
+                <%= f.select :minute, options_for_select((0..59).map { |m| ["%02d" % m]}, selected: get_minute_for_field(t)) %>
+              </div>
+              <div class="medium-3 small-4 columns">
+                <%= f.select :ampm, options_for_select(['AM', 'PM'], selected: get_ampm_for_field(t)) %>
+              </div>
+              <div class="medium-3 columns"></div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <!-- Weather -->
+  <div class="row">
+    <div class="medium-12 columns">
+      <%= field_set_tag 'Weather' do %>
+       <div class="row">
+         <div class="medium-6 columns">
+           <div class="row">
+             <div class="medium-4 small-6 columns">
+               <%= f.label :temperature, 'Temperature (F)' %>
+               <%= f.text_field :temperature %>
+             </div>
+             <div class="medium-5 small-6 columns">
+               <%= f.label :weather_conditions, 'Weather Conditions' %>
+               <%= f.select :weather_conditions, options_for_select(Inspection::WEATHER_CONDITIONS) %>
+             </div>
+             <div class="medium-3 columns"></div>
+           </div>
+         </div>
+         <div class="medium-6 columns">
+            <div class="row">
+              <div class="medium-9 columns">
+               <%= f.label :weather_notes, 'Weather Notes' %>
+               <%= f.text_field :weather_notes %>
+              </div>
+              <div class="medium-3 columns">
+
+              </div>
+            </div>
+         </div>
+       </div>
+      <% end %>
+    </div>
+  </div>
+  <!-- Brood and Honey Storage -->
+  <div class="row">
+    <div class="medium-12 columns">
+      <%= field_set_tag 'Brood Chamber & Honey Storage' do %>
+        <%= f.fields_for :honey_supers do |builder| %>
+          <%= render 'honey_super', f: builder %>
+        <% end %>
+        <div class="row">
+          <div class="medium-12 columns">
+            <%= link_to_add_fields raw('<strong>Add Honey Super</strong>'), f, :honey_supers %>
+          </div>
+        </div>
+
+        <%= f.fields_for :brood_boxes do |builder| %>
+          <%= render 'brood_box', f: builder %>
+        <% end %>
+        <div class="row">
+          <div class="medium-12 columns">
+            <%= link_to_add_fields raw('<strong>Add Brood Box</strong>'), f, :brood_boxes %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <!-- Diseases & Treatments -->
+  <div class="row">
+    <div class="medium-12 columns">
+    <%= field_set_tag 'Disease & Treatment' do %>
+      <%= f.fields_for :diseases do |builder| %>
+        <%= render 'disease', f: builder %>
+      <% end %>
+      <%= link_to_add_fields 'Add Disease', f, :diseases %>
+    <% end %>
+    </div>
+  </div>
+  <!-- Hive Information -->
+  <div class="row">
+    <div class="medium-12 columns">
+      <%= field_set_tag 'Hive Information' do %>
+        <% ventilated = (@inspection.ventilated.nil?) ? @hive.ventilated : @inspection.ventilated %>
+        <div class="row">
+          <%= f.check_box :ventilated, checked: ventilated %>
+          <%= f.label :ventilated %>
+        </div>
+        <div class="row">
+          <% entrance_reducer =
+              (@inspection.entrance_reducer.nil?) ?
+                @hive.entrance_reducer : @inspection.entrance_reducer %>
+          <%= f.check_box :entrance_reducer,
+                          checked: entrance_reducer %>
+          <%= f.label :entrance_reducer %>
+
+          <% entrance_reducer_size =
+              (@inspection.entrance_reducer_size.nil?) ?
+                @hive.entrance_reducer_size : @inspection.entrance_reducer_size %>
+          <%= f.radio_button :entrance_reducer_size,
+                              Hive::ENTRANCE_REDUCER_LARGE,
+                              checked: entrance_reducer_size == Hive::ENTRANCE_REDUCER_LARGE %>
+          <%= f.label :entrance_reducer_size, Hive::ENTRANCE_REDUCER_LARGE %>
+
+          <%= f.radio_button :entrance_reducer_size,
+                              Hive::ENTRANCE_REDUCER_SMALL,
+                              checked: entrance_reducer_size == Hive::ENTRANCE_REDUCER_SMALL %>
+          <%= f.label :entrance_reducer_size, Hive::ENTRANCE_REDUCER_SMALL %>
+        </div>
+        <div class="row">
+          <% queen_excluder =
+              (@inspection.queen_excluder.nil?) ?
+                @hive.queen_excluder : @inspection.queen_excluder %>
+          <%= f.check_box :queen_excluder, checked: queen_excluder %>
+          <%= f.label :queen_excluder %>
+        </div>
+        <div class="row">
+          <div class="medium-2 columns">
+            <% hive_orientation =
+                (@inspection.hive_orientation.nil?) ?
+                  @hive.orientation : @inspection.hive_orientation %>
+            <%= f.label :hive_orientation %>
+            <%= f.select :hive_orientation,
+                          Hive::ORIENTATIONS,
+                          include_blank: '',
+                          selected: hive_orientation %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <!-- Additional information -->
+  <div class="row">
+    <div class="medium-12 columns">
+    <%= field_set_tag 'Additional Information' do %>
+      <div class="row">
+        <div class="medium-3 columns">
+          <%= f.label :flight_pattern %>
+          <%= f.text_field :flight_pattern %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="medium-3 columns">
+          <%= f.label 'Healthy Hive?' %>
+          <%= f.radio_button :health, '1' %><%= f.label :health, 'Yes' %>
+          <%= f.radio_button :health, '0' %><%= f.label :health, 'No' %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="medium-12 columns">
+          <%= f.label :notes %>
+          <%= f.text_area :notes %>
+        </div>
+      </div>
+    <% end %>
+    </div>
+  </div>
+<div class="actions">
+  <%= f.submit "Submit" %>
+</div>
+<% end %>
+<%= button_to('Delete',
+      hive_inspection_path(@hive, @inspection),
+      method: :delete,
+      :confirm => 'Are you sure you want to delete this inspection?') if not @inspection.new_record? %>

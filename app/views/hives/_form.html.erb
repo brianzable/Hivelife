@@ -1,0 +1,158 @@
+<% content_for :head do %>
+	<%= render :partial => "location_picker_js" %>
+<% end %>
+<%= form_for [@apiary, @hive] do |f| %>
+<%= render :partial => "shared/errors", locals: {object: @hive} %>
+<div class="row">
+	<div class="medium-10 columns">
+		<!-- Name & Type -->
+		<div class="row">
+			<div class="medium-6 columns">
+				<%= f.label :name %>
+				<%= f.text_field :name %>
+			</div>
+			<div class="medium-6 columns">
+				<%= f.label :hive_type %>
+				<%= f.select :hive_type, Hive::TYPES %>
+			</div>
+		</div>
+		<!-- Locations Stuff -->
+		<div class="row">
+			<div id="hive-location" class="medium-6 columns">
+				<!-- Headers -->
+				<div class="row">
+					<div class="medium-6 columns">
+						<h6 id="select-hive-location" class="location-tab" data-div="hive-location-entry">Location</h6>
+					</div>
+					<div class="medium-6 columns">
+						<h6 id="select-hive-address" class="location-tab deselected" data-div="hive-address-entry" style="float: right;">Address Entry</h6>
+					</div>
+				</div>
+				<!-- Fields -->
+				<div id="hive-location-container" class="row" style="width: 100%;">
+          <div class="medium-12 columns" style="width: 100%; height: 100%;">
+						<div id="hive-address-entry" class="hive-location" style="display: none;">
+							<div class="row">
+								<div class="medium-12 columns">
+									<%= f.label :street_address %>
+									<%= f.text_field :street_address %>
+								</div>
+							</div>
+							<div class="row">
+								<div class="medium-5 columns">
+									<%= f.label :city %>
+									<%= f.text_field :city %>
+								</div>
+								<div class="medium-4 columns">
+									<%= f.label :state %>
+									<%= f.select :state, us_states, include_blank: true %>
+								</div>
+								<div class="medium-3 columns">
+									<%= f.label :zip_code %>
+									<%= f.text_field :zip_code %>
+								</div>
+							</div>
+						</div>
+						<div id="hive-location-entry" style="width: 100%; height: 100%">
+							<%= f.hidden_field :latitude, id: 'latitude-input' %>
+							<%= f.hidden_field :longitude, id: 'longitude-input' %>
+							<div id="hive-location-select" class="hive-location" style="width: 100%; height: 100%"></div>
+						</div>
+				  </div>
+        </div>
+			</div>
+		</div>
+		<!-- Hive Defaults -->
+		<div class="row">
+			<div class="medium-6 columns">
+				<div class="row">
+					<div class="medium-12 columns">
+						<h6>Hive Properties / Report Defaults</h6>
+					</div>
+				</div>
+				<div class="row">
+					<div class="medium-12 columns">
+						<%= f.check_box :ventilated %>
+						<%= f.label :ventilated %>
+					</div>
+				</div>
+				<div class="row">
+					<div class="medium-12 columns">
+						<%= f.check_box :entrance_reducer %>
+						<%= f.label :entrance_reducer %>
+						<%= f.radio_button :entrance_reducer_size, Hive::ENTRANCE_REDUCER_LARGE %>
+						<%= f.label :entrance_reducer_size, Hive::ENTRANCE_REDUCER_LARGE %>
+						<%= f.radio_button :entrance_reducer_size, Hive::ENTRANCE_REDUCER_SMALL %>
+						<%= f.label :entrance_reducer_size, Hive::ENTRANCE_REDUCER_SMALL %>
+					</div>
+				</div>
+				<div class="row">
+					<div class="medium-12 columns">
+						<%= f.check_box :queen_excluder %>
+						<%= f.label :queen_excluder %>
+					</div>
+				</div>
+				<div class="row">
+					<div class="medium-5 columns pull-left">
+						<%= f.label :orientation %>
+						<%= f.select :orientation, Hive::ORIENTATIONS, :include_blank => '' %>
+					</div>
+					<div class="medium-5 columns pull-left">
+						<%= f.label :breed %>
+						<%= f.select :breed, Hive::BREEDS, :include_blank => '' %>
+					</div>
+				</div>
+				<!-- Buttons were here -->
+			</div>
+			<div class="medium-6 columns">
+				<%= field_set_tag 'Data Donation' do %>
+						<div class="row">
+							<div class="medium-12 columns">
+								<%= f.label :donation_enabled, "Allow this hive's data to be anonymously shared with the public?
+									 See how data donation can help bees here." %>
+							</div>
+						</div>
+						<div class="row">
+							<div class="medium-12 columns">
+								<%= f.radio_button :donation_enabled,
+																		"1",
+																		checked: @hive.new_record? ? false : @hive.donation_enabled? == true %>
+                <%= f.label :donation_enabled, "Yes" %>
+								<%= f.radio_button :donation_enabled,
+																		"0",
+																		checked: @hive.new_record? ? true : @hive.donation_enabled? == false %>
+                <%= f.label :donation_enabled, "No" %>
+							</div>
+						</div>
+						<div class="row">
+							<div class="medium-12 columns">
+								<%= f.label :fine_location_sharing, "Location Sharing Preference" %>
+								<div class="row">
+									<%= f.radio_button :fine_location_sharing,
+																			"0",
+																			checked: @hive.new_record? ? true : @hive.fine_location_sharing? == false %>
+									<%= f.label :fine_location_sharing, "Share Apiary City" %>
+								</div>
+								<div class="row">
+									<%= f.radio_button :fine_location_sharing,
+																		"1",
+																		checked: @hive.new_record? ? false : @hive.fine_location_sharing? == true %>
+											<%= f.label :fine_location_sharing, "Share Exact Hive Location" %>
+								</div>
+							</div>
+						</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="medium-12 columns">
+		<div style="float: left; width: auto;"><%= f.submit %></div>
+		<% end %>
+		<%= button_to('Delete',
+						apiary_hive_path(@apiary, @hive),
+						method: :delete,
+						confirm: 'Are you sure you want to delete this hive?') if not @hive.new_record? %>
+	</div>
+</div>

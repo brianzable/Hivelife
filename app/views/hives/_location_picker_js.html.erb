@@ -1,0 +1,60 @@
+<script type="text/javascript">
+var marker = null;
+var map = null;
+
+window.onload = loadScript;
+
+function loadScript() {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = "https://maps.googleapis.com/maps/api/js?key=#{Rails.application.secrets.google_maps_api_key}&sensor=true&callback=initialize";
+  document.body.appendChild(script);
+}
+
+function initialize() {
+  var lat = $('#latitude-input').val(),
+      lon = $('#longitude-input').val();
+
+  if (lat && lon) {
+    var latLon = new google.maps.LatLng(lat, lon);
+    createMap(latLon, 12);
+    createMarker(latLon);
+  }
+  else {
+    var latLon = new google.maps.LatLng(41.850033, -87.6500523);
+    createMap(latLon, 2);
+  }
+
+}
+
+function createMarker(latLon) {
+  if (marker) {
+    marker.setMap(null);
+    marker = null;
+  }
+
+  marker = new google.maps.Marker({
+      position: latLon,
+      map: map
+  });
+
+  $('#latitude-input').val(latLon.lat());
+  $('#longitude-input').val(latLon.lng());
+
+  return marker;
+}
+
+function createMap(latLon, zoom) {
+  var mapOptions = {
+    center: latLon,
+    zoom: zoom
+  };
+
+  map = new google.maps.Map(document.getElementById("hive-location-select"), mapOptions);
+
+  google.maps.event.addListener(map, 'click', function(event) {
+    createMarker(event.latLng);
+  });
+}
+
+</script>

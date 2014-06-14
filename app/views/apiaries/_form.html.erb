@@ -1,0 +1,44 @@
+<%= form_for(@apiary, html: {id: 'apiary-form'}) do |f| %>
+	<div class="row">
+		<%= render partial: 'shared/errors', locals: {object: @apiary} %>
+	</div>
+	<div class="row">
+		<div class="medium-10 columns">
+			<%= f.label :name %>
+			<%= f.text_field :name %>
+		</div>
+	</div>
+	<div class="row">
+		<div class="medium-10 columns">
+			<%= f.label :street_address %>
+			<%= f.text_field :street_address %>
+		</div>
+	</div>
+	<div class="row">
+		<div class="medium-4 columns">
+			<%= f.label :city %>
+			<%= f.text_field :city %>
+		</div>
+
+		<div class="medium-3 columns">
+			<%= f.label :state %>
+			<%= f.select :state, us_states, include_blank: true %>
+		</div>
+		<div class="medium-3 columns">
+			<%= f.label :zip_code %>
+			<%= f.text_field :zip_code %>
+		</div>
+		<%= f.hidden_field :photo_url, id: 'photo_url' %>
+	</div>
+<% end %>
+<div class="row">
+	<div class="medium-12 columns">
+		<div style="float: left; width: auto;"><%= submit_tag 'Save', id: 'form-submit' %></div>
+		<% if @is_admin %>
+			<%= button_to('Delete',
+										apiary_path(@apiary),
+										method: :delete,
+										confirm: "Are you sure you want to delete this apiary?") if not @apiary.new_record? %>
+		<% end %>
+	</div>
+</div>

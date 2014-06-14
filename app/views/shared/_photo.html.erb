@@ -1,0 +1,20 @@
+<!-- object, edit_path, upload_url, upload_field_name  -->
+<div class="medium-12 columns text-center">
+  <span class="image" style="position: relative; display: inline-block">
+    <% url = (object.photo_url.blank?) ? 'defaults/beehive_placeholder.png' : object.photo_url %>
+    <img src="<%= "http://hivelife.s3.amazonaws.com/#{url}" %>" id="display-photo" />
+    <div id="settings-link" class="settings-icon-container">
+      <%= link_to(raw('<i class="fa fa-cog"></i>'),
+                  edit_path) %>
+      <%= link_to(raw('<i class="fa fa-picture-o"></i>'),
+                  '#',
+                  id: 'upload-photo') %>
+    </div>
+    <div class="progress" id="upload-progress" style="display: none">
+      <span class="meter" style="width: 0%"></span>
+    </div>
+    <%= s3_uploader_form post: upload_url, as: upload_field_name do %>
+      <%= file_field_tag :file, multiple: false, id: 'upload-field' %>
+    <% end %>
+  </span>
+</div>

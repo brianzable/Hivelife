@@ -1,0 +1,1 @@
+json.html render :partial => "shared/beekeeper", :object => @beekeeper

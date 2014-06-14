@@ -1,0 +1,67 @@
+@import "colors";
+
+.button {
+	background-color: $header-footer-background;
+}
+
+.navigation-bar {
+	box-shadow: 0px 1px 4px #cccccc;
+}
+
+#container {
+	background: $content-background;
+	margin: 0 5 0 5 px;
+}
+
+#footer {
+	background: $header-footer-background;
+	color: $white;
+	height: 85px;
+}
+
+#preview-image {
+	height: 200px;
+	width: auto;
+}
+
+.settings-icon-container {
+	position: absolute;
+	top: 0px;
+	left: 90%;
+}
+.add-button {
+	background: none;
+	font-size: 300%;
+}
+
+.add-button:hover {
+	background: none;
+	text-color: #000;
+}
+
+#display-photo {
+	width: 200px;
+	height: auto;
+}
+
+.pencil-button {
+	background: none;
+	font-size: 200%;
+}
+.pencil-button:hover {
+	background: none;
+	text-color: #000;
+}
+
+.inspection-button {
+	background: none;
+	font-size: 300%;
+}
+.inspection-button:hover {
+	background: none;
+	text-color: #000;
+}
+
+.deselected {
+	opacity: .5;
+}

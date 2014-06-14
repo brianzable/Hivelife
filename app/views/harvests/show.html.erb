@@ -1,0 +1,78 @@
+<% content_for :title, "Hivelife | View Harvest" %>
+<!-- When -->
+<div class="row">
+  <div class="medium-12 columns">
+    <%= field_set_tag 'When' do %>
+      <div class="row">
+        <!-- Time -->
+        <div class="medium-6 columns">
+          <div class="row">
+            <div class="medium-12 columns">
+              <h6><strong>Time</strong></h6>
+              <%= @harvest.harvested_at.strftime("%I:%M%p") %>
+            </div>
+          </div>
+        </div>
+        <!-- Date -->
+        <div class="medium-6 columns">
+          <div class="row">
+            <div class="medium-12 columns">
+              <h6><strong>Date</strong></h6>
+              <%= @harvest.harvested_at.strftime("%m/%d/%y") %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+<!-- Weights -->
+<div class="row">
+  <div class="medium-12 columns">
+    <%= field_set_tag 'Weight' do %>
+      <div class="row">
+        <!-- Temperature -->
+        <div class="medium-2 columns">
+          <div class="row">
+            <div class="medium-12 columns">
+              <h6><strong>Honey</strong></h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="medium-12 columns">
+              <%= "#{@harvest.honey_weight} lb" %>
+            </div>
+          </div>
+        </div>
+        <!-- Conditions -->
+        <div class="medium-2 columns">
+          <div class="row">
+            <div class="medium-12 columns">
+              <h6><strong>Wax</strong></h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="medium-12 columns">
+              <%= "#{@harvest.wax_weight} lb" %>
+            </div>
+          </div>
+        </div>
+        <div class="medium-10 columns">
+
+        </div>
+    <% end %>
+  </div>
+</div>
+
+<!-- Notes -->
+<div class="row">
+  <div class="medium-12 columns">
+    <%= field_set_tag 'Notes' do %>
+      <div class="row">
+        <div class="medium-12 columns">
+          <%= @harvest.notes %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

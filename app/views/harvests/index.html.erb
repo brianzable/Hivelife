@@ -1,0 +1,35 @@
+<h1>Listing harvests</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Honey weight</th>
+      <th>Wax weight</th>
+      <th>Harvested at</th>
+      <th>Weight units</th>
+      <th>Notes</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @harvests.each do |harvest| %>
+      <tr>
+        <td><%= harvest.honey_weight %></td>
+        <td><%= harvest.wax_weight %></td>
+        <td><%= harvest.harvested_at %></td>
+        <td><%= harvest.weight_units %></td>
+        <td><%= harvest.notes %></td>
+        <td><%= link_to 'Show', harvest %></td>
+        <td><%= link_to 'Edit', edit_harvest_path(harvest) %></td>
+        <td><%= link_to 'Destroy', harvest, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Harvest', new_harvest_path %>

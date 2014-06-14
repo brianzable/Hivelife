@@ -1,0 +1,2 @@
+module BeekeepersHelper
+end
