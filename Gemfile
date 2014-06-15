@@ -41,6 +41,9 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+# Use RSpec for testing
+gem 'rspec-rails'
+
 # Use devise for Authentication
 gem 'devise'
 
