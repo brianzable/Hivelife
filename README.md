@@ -7,7 +7,7 @@ You can visit the site at [hivelife.co](https://hivelife.co).
 Deployment
 --
 ```
-$ cd bees-web
+$ cd Hivelife
 $ bundle install
 $ cp config/database.yml.example config/database.yml
 $ cp config/secrets.yml.example config/secrets.yml
