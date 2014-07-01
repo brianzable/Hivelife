@@ -10,9 +10,9 @@ Bees::Application.routes.draw do
 
   namespace :api do
     namespace :data do
-      resources :harvests
-      resources :hives
-      resources :inspections
+      resources :harvests, only: [:index]
+      resources :hives, only: [:index]
+      resources :inspections, only: [:index]
     end
 
     namespace :mobile do
@@ -23,12 +23,12 @@ Bees::Application.routes.draw do
   resources :beekeepers, :except => [:index, :new, :edit]
 
   resources :apiaries do
-  	resources :hives
+  	resources :hives, except: [:index]
   end
 
   resources :hives do
-  	resources :inspections
-  	resources :harvests
+  	resources :inspections, except: [:index]
+  	resources :harvests, except: [:index]
   end
 
   devise_for :users

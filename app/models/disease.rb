@@ -9,7 +9,7 @@ class Disease < ActiveRecord::Base
 							["Small Hive Beetle", "Small Hive Beetle"],
 							["Varroa", "Varroa"],
 							["Wax Moth", "Wax Moth"]]
-							
+
 	TREATMENTS = ["Acetic Acid",
 								"Api-Life VAR",
 								"Apistan®",
@@ -31,5 +31,6 @@ class Disease < ActiveRecord::Base
 								"Terra-Pro",
 								"Terramycin™",
 								"Tylan®"]
+
 	belongs_to :inspection
 end

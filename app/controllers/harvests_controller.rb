@@ -3,34 +3,36 @@ class HarvestsController < ApplicationController
   before_action :set_harvest, only: [:edit, :update, :destroy]
   before_action :set_hive, only: [:edit, :update, :create]
   around_filter :user_time_zone
+
   before_action do |c|
     h = Hive.find(params[:hive_id])
     c.verify_beekeeper(h.apiary_id, get_permission_for_action)
   end
-  # GET /harvests
-  # GET /harvests.json
+
+  # GET /hives/{hive_id}/harvests
+  # GET /hives/{hive_id}/harvests.json
   def index
     @harvests = Harvest.all
   end
 
-  # GET /harvests/1
-  # GET /harvests/1.json
+  # GET /hives/{hive_id}/harvests/1
+  # GET /hives/{hive_id}/harvests/1.json
   def show
     @harvest = Harvest.find(params[:id])
   end
 
-  # GET /harvests/new
+  # GET /hives/{hive_id}/harvests/new
   def new
     @hive = Hive.find(params[:hive_id])
     @harvest = Harvest.new
   end
 
-  # GET /harvests/1/edit
+  # GET /hives/{hive_id}/harvests/1/edit
   def edit
   end
 
-  # POST /harvests
-  # POST /harvests.json
+  # POST /hives/{hive_id}/harvests
+  # POST /hives/{hive_id}/harvests.json
   def create
     @harvest = Harvest.new(harvest_params)
 
@@ -45,8 +47,8 @@ class HarvestsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /harvests/1
-  # PATCH/PUT /harvests/1.json
+  # PATCH/PUT /hives/{hive_id}/harvests/1
+  # PATCH/PUT /hives/{hive_id}/harvests/1.json
   def update
     respond_to do |format|
       if @harvest.update(harvest_params)
@@ -59,8 +61,8 @@ class HarvestsController < ApplicationController
     end
   end
 
-  # DELETE /harvests/1
-  # DELETE /harvests/1.json
+  # DELETE /hives/{hive_id}/harvests/1
+  # DELETE /hives/{hive_id}/harvests/1.json
   def destroy
     @harvest.destroy
     h = Hive.includes(:apiary).find(params[:hive_id])

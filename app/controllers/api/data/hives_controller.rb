@@ -1,4 +1,5 @@
 class Api::Data::HivesController < ApplicationController
+  respond_to :xml, :json
   def index
     results_city = Hive.select(:id, :name, :breed, :hive_type, :city, :state)
                   .where(donation_enabled: 1)

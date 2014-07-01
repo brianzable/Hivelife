@@ -8,7 +8,12 @@ class Apiary < ActiveRecord::Base
 
 	validates :zip_code,
 						presence: {message: 'Zip code cannot be blank'}
-
+						
+	# Returns a string representing the location based on which location information
+	# is available. A zip code is returned if the city and state aren't set.
+	# Examples:
+	# 60540
+	# Naperville, IL
 	def get_location_string
 		if city.blank? || state.blank?
 			return "#{self.zip_code}"

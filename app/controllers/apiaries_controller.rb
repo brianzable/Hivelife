@@ -7,6 +7,7 @@ class ApiariesController < ApplicationController
 		end
 	end
 
+	# GET /
 	# GET /apiaries
   # GET /apiaries.json
   def index

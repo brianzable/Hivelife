@@ -7,19 +7,14 @@ class InspectionsController < ApplicationController
     h = Hive.find(params[:hive_id])
     c.verify_beekeeper(h.apiary_id, get_permission_for_action)
   end
-  # GET /inspections
-  # GET /inspections.json
-  def index
-    @inspections = Inspection.all
-  end
 
-  # GET /inspections/1
-  # GET /inspections/1.json
+  # GET /hives/{hive_id}/inspections/1
+  # GET /hives/{hive_id}/inspections/1.json
   def show
     @inspection = Inspection.includes(:user).find(params[:id])
   end
 
-  # GET /inspections/new
+  # GET /hives/{hive_id}/inspections/new
   def new
     @action = hive_inspections_url
     @method = :post
@@ -33,14 +28,14 @@ class InspectionsController < ApplicationController
 
   end
 
-  # GET /inspections/1/edit
+  # GET /hives/{hive_id}/inspections/1/edit
   def edit
     @action = hive_inspection_url(@hive, @inspection)
     @method = :put
   end
 
-  # POST /inspections
-  # POST /inspections.json
+  # POST /hives/{hive_id}/inspections
+  # POST /hives/{hive_id}/inspections.json
   def create
     @inspection = Inspection.new(inspection_params)
     respond_to do |format|
@@ -54,8 +49,8 @@ class InspectionsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /inspections/1
-  # PATCH/PUT /inspections/1.json
+  # PATCH/PUT /hives/{hive_id}/inspections/1
+  # PATCH/PUT /hives/{hive_id}/inspections/1.json
   def update
     respond_to do |format|
       if @inspection.update(inspection_params)
@@ -68,8 +63,8 @@ class InspectionsController < ApplicationController
     end
   end
 
-  # DELETE /inspections/1
-  # DELETE /inspections/1.json
+  # DELETE /hives/{hive_id}/inspections/1
+  # DELETE /hives/{hive_id}/inspections/1.json
   def destroy
     @inspection.destroy
     respond_to do |format|

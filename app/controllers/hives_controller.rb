@@ -5,13 +5,8 @@ class HivesController < ApplicationController
     c.verify_beekeeper(params[:apiary_id], get_permission_for_action)
   end
 
-  # GET /hives
-  # GET /hives.json
-  def index
-  end
-
-  # GET /hives/1
-  # GET /hives/1.json
+  # GET /apiaries/{apiary_id}/hives/1
+  # GET /apiaries/{apiary_id}/hives/1.json
   def show
   	@hive = Hive.includes(:apiary).find(params[:id])
   	@inspections = Inspection.where(hive_id: params[:id]).order('inspected_at DESC').to_a
@@ -20,20 +15,20 @@ class HivesController < ApplicationController
     @can_write = can_perform_action?(permission, 'Write')
   end
 
-  # GET /hives/new
+  # GET /apiaries/{apiary_id}/hives/new
   def new
     @hive = Hive.new
     @apiary = Apiary.find(params[:apiary_id])
   end
 
-  # GET /hives/1/edit
+  # GET /apiaries/{apiary_id}/hives/1/edit
   def edit
   	@hive = Hive.find(params[:id])
   	@apiary = Apiary.find(params[:apiary_id])
   end
 
-  # POST /hives
-  # POST /hives.json
+  # POST /apiaries/{apiary_id}/hives
+  # POST /apiaries/{apiary_id}/hives.json
   def create
     params[:hive][:apiary_id] = params[:apiary_id]
     @hive = Hive.new(hive_params)
@@ -49,8 +44,8 @@ class HivesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /hives/1
-  # PATCH/PUT /hives/1.json
+  # PATCH/PUT /apiaries/{apiary_id}/hives/1
+  # PATCH/PUT /apiaries/{apiary_id}/hives/1.json
   def update
   	@hive = Hive.find(params[:id])
   	@apiary = Apiary.find(params[:apiary_id])
@@ -66,8 +61,8 @@ class HivesController < ApplicationController
     end
   end
 
-  # DELETE /hives/1
-  # DELETE /hives/1.json
+  # DELETE /apiaries/{apiary_id}/hives/1
+  # DELETE /apiaries/{apiary_id}/hives/1.json
   def destroy
     @hive.destroy
     respond_to do |format|

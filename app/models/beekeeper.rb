@@ -28,10 +28,12 @@ class Beekeeper < ActiveRecord::Base
 	# Apiary id is required
 	validates :apiary_id, presence: true
 
+	# Returns a list of beekeepers associated with the specified apiary id
 	def self.for_apiary(apiary_id)
 		self.where(apiary_id: apiary_id).includes(:user)
 	end
 
+	# Returns the permission specified for a user at an apiary
 	def self.permission_for(user_id, apiary_id)
 		beekeeper = self.where('user_id = ? AND apiary_id = ?', user_id, apiary_id).first
 		return beekeeper.permission unless beekeeper.nil?

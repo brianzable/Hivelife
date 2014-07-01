@@ -1,4 +1,5 @@
 class Api::Data::HarvestsController < ApplicationController
+  respond_to :xml, :json
   def index
     scope = Harvest
     scope = scope.select(:id,

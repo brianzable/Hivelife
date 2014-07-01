@@ -3,7 +3,6 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  # around_filter :user_time_zone, if: current_user
   # If a Devise controller is being called, additional arguments may
   # be being passed to models.
   before_filter :configure_devise_parameters, if: :devise_controller?
@@ -55,6 +54,9 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # Determines whether or not an action can be performed.
+  # Returns true if the permission satisified the required_permission,
+  # false otherwise
   def can_perform_action?(permission, required_permission)
     # Admin can do anything, just return true
     if permission == 'Admin'
@@ -69,11 +71,17 @@ class ApplicationController < ActionController::Base
     return false
   end
 
+  # Redirects to the root url and creates a flash message
+  # when a user does not have permission to do something
   def not_permitted
     redirect_to(root_url,
                 notice: 'You do not have permission to perform this action.')
   end
 
+  # Runs a block in a specific time zone. Mainly used in around_filters
+  # when times need to be displayed in a specified time zone. Doing this
+  # prevents the time zone from being changed on the thread used for a
+  # request.
   def user_time_zone(&block)
     Time.use_zone(current_user.time_zone, &block)
   end
