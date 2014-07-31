@@ -37,6 +37,9 @@ gem 'factory_girl_rails', group: [:development, :test]
 # Use devise for Authentication
 gem 'devise'
 
+# Use Pundit for Authorization
+gem 'pundit'
+
 # Use foundation for frontend
 gem 'foundation-rails', '~> 5.2.1.0'
 

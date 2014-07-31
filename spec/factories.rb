@@ -11,7 +11,6 @@ FactoryGirl.define do
     zip_code '60126'
     city 'My City'
     state 'IL'
-    zip_code '00000'
 
     factory :apiary_with_hives do
       ignore do

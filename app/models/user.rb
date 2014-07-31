@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
 
 	# Returns the user ID associated with the specified email address
   def self.email_to_user_id(email_address)
-  	user = self.find_by email: email_address
+  	user = self.find_by(email: email_address)
 		user.id unless user.nil?
   end
 end

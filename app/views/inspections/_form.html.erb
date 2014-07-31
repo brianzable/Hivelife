@@ -83,7 +83,7 @@
         <% end %>
         <div class="row">
           <div class="medium-12 columns">
-            <%= link_to_add_fields raw('<strong>Add Honey Super</strong>'), f, :honey_supers %>
+            <%= link_to_add_fields raw('<strong>Add Honey Super</strong>'), f, :honey_supers, 'add-fields' %>
           </div>
         </div>
 
@@ -92,7 +92,7 @@
         <% end %>
         <div class="row">
           <div class="medium-12 columns">
-            <%= link_to_add_fields raw('<strong>Add Brood Box</strong>'), f, :brood_boxes %>
+            <%= link_to_add_fields raw('<strong>Add Brood Box</strong>'), f, :brood_boxes, 'add-fields' %>
           </div>
         </div>
       <% end %>
@@ -105,7 +105,7 @@
       <%= f.fields_for :diseases do |builder| %>
         <%= render 'disease', f: builder %>
       <% end %>
-      <%= link_to_add_fields 'Add Disease', f, :diseases %>
+      <%= link_to_add_fields 'Add Disease', f, :diseases, 'add-fields' %>
     <% end %>
     </div>
   </div>

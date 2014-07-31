@@ -1,37 +1,76 @@
+<div class="row">
 <%= form_for(@apiary, html: {id: 'apiary-form'}) do |f| %>
-	<div class="row">
-		<%= render partial: 'shared/errors', locals: {object: @apiary} %>
-	</div>
-	<div class="row">
-		<div class="medium-10 columns">
-			<%= f.label :name %>
-			<%= f.text_field :name %>
+	<!-- Apiary information -->
+	<div class="medium-6 columns">
+		<!-- Errors for apiary information -->
+		<div class="row">
+			<%= render partial: 'shared/errors', locals: {object: @apiary} %>
 		</div>
-	</div>
-	<div class="row">
-		<div class="medium-10 columns">
-			<%= f.label :street_address %>
-			<%= f.text_field :street_address %>
+		<!-- Apiary Name field -->
+		<div class="row">
+			<div class="medium-10 columns">
+				<%= f.label :name %>
+				<%= f.text_field :name %>
+			</div>
 		</div>
-	</div>
-	<div class="row">
-		<div class="medium-4 columns">
-			<%= f.label :city %>
-			<%= f.text_field :city %>
+		<!-- Apiary Street Address field -->
+		<div class="row">
+			<div class="medium-10 columns">
+				<%= f.label :street_address %>
+				<%= f.text_field :street_address %>
+			</div>
 		</div>
+		<!-- Apiary City, State, Zip Code fields -->
+		<div class="row">
+			<div class="medium-4 columns">
+				<%= f.label :city %>
+				<%= f.text_field :city %>
+			</div>
 
-		<div class="medium-3 columns">
-			<%= f.label :state %>
-			<%= f.select :state, us_states, include_blank: true %>
+			<div class="medium-3 columns">
+				<%= f.label :state %>
+				<%= f.select :state, us_states, include_blank: true %>
+			</div>
+			<div class="medium-3 columns">
+				<%= f.label :zip_code %>
+				<%= f.text_field :zip_code %>
+			</div>
+			<%= f.hidden_field :photo_url, id: 'photo_url' %>
 		</div>
-		<div class="medium-3 columns">
-			<%= f.label :zip_code %>
-			<%= f.text_field :zip_code %>
+		<!-- Form management buttons -->
+		<div class="row">
+			<div class="medium-12 columns">
+				<%= submit_tag 'Save', id: 'form-submit' %>
+			</div>
 		</div>
-		<%= f.hidden_field :photo_url, id: 'photo_url' %>
+	</div>
+
+	<!-- Beekeeper Management -->
+	<div class="medium-6 columns">
+		<div class="row">
+			<div class="medium-12 columns">
+				<label>Add Beekeeper to Apiary</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="medium-9 columns">
+				<%= text_field_tag('beekeeper-email') %>
+			</div>
+			<div class="medium-3 columns">
+				<%= link_to_add_fields 'Add Beekeeper', f, :beekeepers, '', 'add-beekeeper' %>
+			</div>
+		</div>
+		<div class="row">
+			<div class="medium-12 columns" id="beekeeper-list">
+				<%= f.fields_for :beekeepers do |builder| %>
+					<%= render 'beekeeper', f: builder %>
+				<% end %>
+			</div>
+		</div>
 	</div>
 <% end %>
-<div class="row">
+</div>
+<!-- <div class="row">
 	<div class="medium-12 columns">
 		<div style="float: left; width: auto;"><%= submit_tag 'Save', id: 'form-submit' %></div>
 		<% if @is_admin %>
@@ -41,4 +80,4 @@
 										confirm: "Are you sure you want to delete this apiary?") if not @apiary.new_record? %>
 		<% end %>
 	</div>
-</div>
+</div> -->

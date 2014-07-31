@@ -20,3 +20,9 @@
 $(document).ready(function() {
   $(document).foundation();
 });
+
+$('form').on('click', '.remove-fields', function(event) {
+  $(this).prev('input[type=hidden]').val('1');
+  $(this).closest('.dynamic').hide();
+  event.preventDefault();
+});

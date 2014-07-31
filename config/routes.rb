@@ -1,7 +1,8 @@
 Bees::Application.routes.draw do
   use_doorkeeper
+
   authenticated :user do
-    root :to => 'apiaries#index', :as => 'authenticated_root'
+    root to: 'apiaries#index', as: 'authenticated_root'
   end
 
   root 'static_pages#index'
@@ -20,10 +21,11 @@ Bees::Application.routes.draw do
     end
   end
 
-  resources :beekeepers, :except => [:index, :new, :edit]
-
   resources :apiaries do
   	resources :hives, except: [:index]
+    resources :beekeepers, except: [:index, :new, :edit] do
+      post 'preview', on: :new
+    end
   end
 
   resources :hives do

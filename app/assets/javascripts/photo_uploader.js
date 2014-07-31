@@ -37,7 +37,6 @@ $('#fileupload').fileupload({
         console.log(result)
       }
     });
-    //$('#upload-modal').foundation('reveal', 'close');
   },
   fail: function(e, data) {
     alert(data.files[0].name + ' failed to upload.');

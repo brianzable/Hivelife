@@ -92,6 +92,29 @@ class ApiariesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def apiary_params
-      params.require(:apiary).permit(:name, :zip_code, :photo_url, :user_id, :city, :state, :street_address)
+			if params[:apiary][:beekeepers_attributes]
+				beekeeper_attributes = params[:apiary][:beekeepers_attributes]
+				beekeeper_attributes.each do |index, beekeeper_params|
+					beekeeper_params[:user_id] = User.email_to_user_id(beekeeper_params[:email])
+					beekeeper_params[:creator] = current_user.id
+					beekeeper_params[:apiary_id] = params[:id]
+				end
+			end
+
+      params.require(:apiary).permit(:name,
+																		 :zip_code,
+																		 :photo_url,
+																		 :user_id,
+																		 :city,
+																		 :state,
+																		 :street_address,
+																		 :beekeepers_attributes =>
+																		    [:id,
+																				 :creator,
+																				 :apiary_id,
+																				 :user_id,
+																				 :permission,
+																				 :_destroy]
+																		)
     end
 end

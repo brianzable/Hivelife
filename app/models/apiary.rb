@@ -8,7 +8,9 @@ class Apiary < ActiveRecord::Base
 
 	validates :zip_code,
 						presence: {message: 'Zip code cannot be blank'}
-						
+
+	accepts_nested_attributes_for :beekeepers, allow_destroy: true
+
 	# Returns a string representing the location based on which location information
 	# is available. A zip code is returned if the city and state aren't set.
 	# Examples:

@@ -22,11 +22,22 @@ class Beekeeper < ActiveRecord::Base
 	# A user must have a permission.
 	# The permission may is limited to read, write, or admin.
 	validates :permission,
-						presence: true,
 						inclusion: PERMISSIONS.map{ |key, value| value }
 
 	# Apiary id is required
 	validates :apiary_id, presence: true
+
+	def admin?
+		self.permission == 'Admin'
+	end
+
+	def read?
+		(self.permission == 'Read') || self.write?
+	end
+
+	def write?
+		(self.permission == 'Write') || self.admin?
+	end
 
 	# Returns a list of beekeepers associated with the specified apiary id
 	def self.for_apiary(apiary_id)

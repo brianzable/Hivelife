@@ -1,15 +1,13 @@
-<% content_for :title, "Hivelife | Edit Apiary" %>
-<h1>Edit Apiary</h1>
+<% content_for :title, "Hivelife | Edit #{@apiary.name}" %>
 <div class="medium-12 columns">
 	<div class="row">
-		<div class="medium-5 columns">
-			<%= render 'form' %>
+		<div class="medium-12 columns">
+			<h1>Edit Apiary</h1>
 		</div>
-			<% if @is_admin %>
-				<div class="medium-7 columns">
-					<%= render 'beekeeper_form' %>
-				</div>
-			<% end %>
+	</div>
+	<div class="row">
+		<div class="medium-12 columns">
+			<%= render 'form' %>
 		</div>
 	</div>
 </div>
