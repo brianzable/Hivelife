@@ -72,7 +72,6 @@ class ApiariesController < ApplicationController
   # DELETE /apiaries/1
   # DELETE /apiaries/1.json
   def destroy
-  	#@apiary = Apiary.find(params[:id])
 		authorize(@apiary)
 		@apiary.destroy
 		respond_to do |format|
