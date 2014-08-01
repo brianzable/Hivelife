@@ -1,11 +1,6 @@
 class ApiariesController < ApplicationController
 	before_action :authenticate_user!
-	before_action do |c|
-		action = action_name.to_sym
-		unless action == :new || action == :create
-			c.verify_beekeeper(params[:id], get_permission_for_action)
-		end
-	end
+	before_action :set_apiary, only: [:show, :edit, :update, :destroy]
 
 	# GET /
 	# GET /apiaries
@@ -21,7 +16,7 @@ class ApiariesController < ApplicationController
   # GET /apiaries/1
   # GET /apiaries/1.json
   def show
-  	@apiary = Apiary.find(params[:id])
+		authorize(@apiary)
   	@beekeepers = Beekeeper.for_apiary(params[:id])
   	@hives = Hive.where(apiary_id: params[:id])
   end
@@ -29,15 +24,12 @@ class ApiariesController < ApplicationController
   # GET /apiaries/new
   def new
     @apiary = Apiary.new
+		authorize(@apiary)
   end
 
   # GET /apiaries/1/edit
   def edit
-		permission = Beekeeper.permission_for(current_user.id, params[:id])
-		@beekeeper = Beekeeper.new
-		@beekeepers = Beekeeper.for_apiary(params[:id])
-		@apiary = Apiary.find(params[:id])
-		@is_admin = can_perform_action?(permission, 'Admin')
+		authorize(@apiary)
   end
 
   # POST /apiaries
@@ -51,7 +43,7 @@ class ApiariesController < ApplicationController
       if @apiary.save
       	Beekeeper.create(apiary_id: @apiary.id,
 												 user_id: user_id,
-												 permission: "Admin",
+												 permission: 'Admin',
 												 creator: user_id)
         format.html { redirect_to @apiary, notice: 'Apiary was successfully created.' }
         format.json { render action: 'show', status: :created, location: @apiary }
@@ -65,10 +57,10 @@ class ApiariesController < ApplicationController
   # PATCH/PUT /apiaries/1
   # PATCH/PUT /apiaries/1.json
   def update
-		@apiary = Apiary.find(params[:id])
+		authorize(@apiary)
 		respond_to do |format|
 			if @apiary.update(apiary_params)
-				format.html { redirect_to @apiary, notice: 'Report was successfully updated.' }
+				format.html { redirect_to @apiary, notice: 'Apiary was successfully updated.' }
 				format.json { head :no_content }
 			else
 				format.html { render action: 'edit' }
@@ -80,7 +72,8 @@ class ApiariesController < ApplicationController
   # DELETE /apiaries/1
   # DELETE /apiaries/1.json
   def destroy
-  	@apiary = Apiary.find(params[:id])
+  	#@apiary = Apiary.find(params[:id])
+		authorize(@apiary)
 		@apiary.destroy
 		respond_to do |format|
 			format.html { redirect_to apiaries_url }
@@ -89,6 +82,9 @@ class ApiariesController < ApplicationController
   end
 
   private
+		def set_apiary
+			@apiary = Apiary.find(params[:id])
+		end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def apiary_params
@@ -114,7 +110,11 @@ class ApiariesController < ApplicationController
 																				 :apiary_id,
 																				 :user_id,
 																				 :permission,
-																				 :_destroy]
-																		)
+																				 :_destroy])
     end
+
+		def pundit_user
+			Beekeeper.where(user_id: current_user.id,
+											apiary_id: params[:id]).first
+		end
 end

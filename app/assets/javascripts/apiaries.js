@@ -2,10 +2,6 @@ $(document).ready(function() {
 	$('#settings-link').hide();
 
 	var beekeepers = new Array();
-	// $('#form-submit').click(function() {
-	// 	console.log($('#apiary-form'));
-	// 	$('#apiary-form').submit();
-	// });
 
 	$(document).on('click', '.remove-beekeeper', function(event) {
 		event.preventDefault();
@@ -29,6 +25,7 @@ $(document).ready(function() {
 
 	$('#add-beekeeper').click(function(event) {
 		event.preventDefault();
+		$('#beekeeper-error').html('');
 
 		var emailAddress = $('#beekeeper-email').val(),
 				apiaryId 		 = $('#apiary-id').val();
@@ -63,29 +60,11 @@ $(document).ready(function() {
 				beekeepers.push(emailAddress);
 			},
 			error: function(xhr) {
-				console.log(xhr.responseText);
+				var errors = JSON.parse(xhr.responseText).errors;
+				$('#beekeeper-error').html(errors.join(', '));
 			}
 		});
 
 		return false;
-	});
-
-	$("#delete-apiary").click(function() {
-		event.preventDefault();
-		var target = event.target,
-				url = $(this).closest("form").attr("action");
-
-		if (confirm("Are you sure you want delete this apiary? \
-								All data associated with this apiary will be lost")) {
-			$.ajax({
-				url: url,
-				type: 'POST',
-				dataType: "JSON",
-				data: { "_method":"delete" },
-				success: function(data) {
-					window.location.replace(url);
-				}
-			});
-		}
 	});
 });
