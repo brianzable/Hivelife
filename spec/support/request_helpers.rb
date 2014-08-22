@@ -5,8 +5,9 @@ include Warden::Test::Helpers
 Warden.test_mode!
 
 module RequestHelpers
-  def create_logged_in_user
-    user = FactoryGirl.create(:user)
+  def create_logged_in_user(options = {})
+    options[:email] = 'user@example.com' unless options.has_key?(:email)
+    user = FactoryGirl.create(:user, email: options[:email])
     sign_in(user)
     user
   end
