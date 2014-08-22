@@ -14,87 +14,63 @@ RSpec.describe 'Beekeepers', type: :request do
       permission: @beekeeper.permission,
       apiary_id: @beekeeper.apiary_id,
       user: {
+        user_id: @user.id,
         first_name: @user.first_name,
         last_name: @user.last_name
       }
     }.to_json
+
+    @http_headers = {
+      'Content-Type' => 'application/json',
+      'Accept' => 'application/json'
+    }
   end
 
   describe '#show' do
-    it 'will return a JSON representation of a beekeeper' do
-      get beekeeper_path(@beekeeper), format: :json
+    it 'returns a JSON representation of a beekeeper' do
+      get apiary_beekeeper_path(@apiary, @beekeeper), format: :json
       expect(response).to be_success
       expect(response.body).to eq(@beekeeper_json)
     end
   end
 
   describe '#create' do
-    it 'will create a new Beekeeper object' do
+    it 'creates a new Beekeeper in the database' do
+      new_user = FactoryGirl.create(:user, email: "new_guy@example.com")
       data = {
-        apiary_id: @apiary.id,
-        email: @user.email,
-        permission: 'Read'
+        beekeeper: {
+          email: new_user.email,
+          permission: 'Read'
+        }
       }
-      puts data.to_json
-      post beekeepers_path, data.to_json
-      puts response.body
+      original_beek_count = Beekeeper.count
 
+      post(apiary_beekeepers_path(@apiary), data.to_json, @http_headers)
+
+      expect(response).to be_success
+      expect(Beekeeper.count).to be(original_beek_count + 1)
     end
 
-    it 'will return a JSON representation of the new beekeeper object' do
+    it 'returns a JSON representation of the new beekeeper object' do
+      new_user = FactoryGirl.create(:user, email: "new_guy@example.com")
+      data = {
+        beekeeper: {
+          email: new_user.email,
+          permission: 'Read'
+        }
+      }
 
+      post(apiary_beekeepers_path(@apiary), data.to_json, @http_headers)
+
+      expect(response).to be_success
+
+      parsed_response = JSON.parse(response.body)
+      expect(parsed_response["id"]).to_not be_nil
+      expect(parsed_response["apiary_id"]).to be(@apiary.id)
+      expect(parsed_response["permission"]).to eq("Read")
+      expect(parsed_response["user"]["user_id"]).to be(new_user.id)
+      expect(parsed_response["user"]["first_name"]).to eq(new_user.first_name)
+      expect(parsed_response["user"]["last_name"]).to eq(new_user.last_name)
     end
-  end
-
-end
-=begin
-  describe '#index' do
-    it "will have title 'Hivelife | Home'" do
-      visit '/'
-      expect(page).to have_title('Hivelife | Home')
-    end
-
-    it 'will link to apiaries#new' do
-      visit authenticated_root_path
-      expect(page).to have_link('+', href: new_apiary_path)
-    end
-
-    it 'will display hive count and apiary city/state' do
-      apiary = FactoryGirl.create(:apiary, user_id: @user.id)
-      beekeeper = FactoryGirl.create(:beekeeper,
-                                      user: @user,
-                                      apiary: apiary,
-                                      creator: @user.id)
-      visit authenticated_root_path
-      expect(page).to have_selector('h3', text: '0')
-      expect(page).to have_selector('h5', text: 'HIVES')
-      expect(page).to have_selector('h3', text: apiary.name)
-      expect(page).to have_selector('h5', text: "#{apiary.city}, #{apiary.state}")
-    end
-
-    it 'will display hive count (2)' do
-      apiary_with_hives = FactoryGirl.create(:apiary_with_hives, user_id: @user.id)
-      beekeeper = FactoryGirl.create(:beekeeper,
-                                      user: @user,
-                                      apiary: apiary_with_hives,
-                                      creator: @user.id)
-      visit authenticated_root_path
-      expect(page).to have_selector('h3', text: '2')
-      expect(page).to have_selector('h5', text: 'HIVES')
-    end
-  end
-
-  describe 'Apiaries#new' do
-    it 'will display errors if the name and zip code are blank' do
-      visit new_apiary_path
-      click_button('Save')
-      expect(page).to have_content('Apiary name cannot be blank')
-      expect(page).to have_content('Zip code cannot be blank')
-    end
-
-    # Check for successful submission
-
-    # Check redirect
   end
 end
-=end

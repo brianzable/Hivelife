@@ -62,8 +62,8 @@ private
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def create_beekeeper_params
-		params[:beekeeper][:user_id] = User.email_to_user_id(params[:beekeeper][:email])
-		params[:beekeeper][:creator] = current_user.id
+    params[:beekeeper][:user_id] = User.email_to_user_id(params[:beekeeper][:email])
+    params[:beekeeper][:creator] = current_user.id
 		params[:beekeeper][:apiary_id] = params[:apiary_id]
     params.require(:beekeeper).permit(:apiary_id, :user_id, :permission, :email, :creator)
   end
