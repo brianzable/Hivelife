@@ -103,11 +103,9 @@ RSpec.describe 'Beekeepers', type: :request do
       }
 
       post(apiary_beekeepers_path(an_apiary), data.to_json, @http_headers)
-
       expect(response.code).to eq("401")
 
       parsed_body = JSON.parse(response.body)
-
       expect(parsed_body['error']).to eq("You are not authorized to perform this action.")
     end
 
@@ -141,16 +139,40 @@ RSpec.describe 'Beekeepers', type: :request do
       }
 
       post(apiary_beekeepers_path(an_apiary), data.to_json, @http_headers)
-
       expect(response.code).to eq("401")
 
       parsed_body = JSON.parse(response.body)
-
       expect(parsed_body['error']).to eq("You are not authorized to perform this action.")
     end
 
     it 'will not allow random users to create beekeepers at random apiaries' do
+      # Create a user and and apiary and make that user an admin on that apiary
+      a_user = FactoryGirl.create(:user, email: 'a_user@example.com')
 
+      an_apiary = FactoryGirl.create(:apiary, user_id: a_user.id)
+      admin_beekeeper = FactoryGirl.create(:beekeeper,
+                                           user: a_user,
+                                           apiary: an_apiary,
+                                           creator: a_user.id)
+
+      # Create another user on that apiary, with write permissions
+      another_user = create_logged_in_user(email: 'another_user@example.com')
+
+      # Create a third user
+      yet_another_user = FactoryGirl.create(:user, email: 'yet_another_user@example.com')
+
+      data = {
+        beekeeper: {
+          email: yet_another_user.email,
+          permission: 'Read'
+        }
+      }
+
+      post(apiary_beekeepers_path(an_apiary), data.to_json, @http_headers)
+      expect(response.code).to eq("401")
+
+      parsed_body = JSON.parse(response.body)
+      expect(parsed_body['error']).to eq("You are not authorized to perform this action.")
     end
   end
 end

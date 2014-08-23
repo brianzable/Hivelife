@@ -6,18 +6,18 @@ class BeekeeperPolicy < ApplicationPolicy
   end # end scope
 
   def show?
-    beekeeper.read?
+    beekeeper.read? unless beekeeper.nil?
   end
 
   def create?
-    beekeeper.admin?
+    beekeeper.admin? unless beekeeper.nil?
   end
 
   def update?
-    beekeeper.admin?
+    beekeeper.admin? unless beekeeper.nil?
   end
 
   def destroy?
-    beekeeper.admin?
+    beekeeper.admin? unless beekeeper.nil?
   end
 end
