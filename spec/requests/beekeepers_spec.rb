@@ -314,5 +314,15 @@ RSpec.describe 'Beekeepers', type: :request do
       a_beekeeper.reload
       expect(a_beekeeper.permission).to eq('Read')
     end
+
+    it "does not allow admin to demote other admin"
+  end
+
+  describe "#destroy" do
+    it "only allows admins to remove users"
+    it "does not allow admins to remove other admins"
+    it "does not allow write users to remove beekeepers"
+    it "does not allow read users to remove beekeepers"
+    it "does not allow users to remove beekeepers from other apiaries"
   end
 end
