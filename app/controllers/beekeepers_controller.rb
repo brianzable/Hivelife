@@ -11,7 +11,6 @@ class BeekeepersController < ApplicationController
   # POST /apiaries/{apiary_id}/beekeepers.json
   def create
 		@beekeeper = Beekeeper.new(create_beekeeper_params)
-
 		authorize @beekeeper
 
     if @beekeeper.save
@@ -25,8 +24,6 @@ class BeekeepersController < ApplicationController
   # PATCH/PUT /apiaries/{apiary_id}/beekeepers/1
   # PATCH/PUT /apiaries/{apiary_id}/beekeepers/1.json
   def update
-		authorize @beekeeper
-
     if @beekeeper.update(update_beekeeper_params)
 			render action: 'show', status: :ok
 		else
@@ -55,7 +52,10 @@ class BeekeepersController < ApplicationController
 
 private
   def set_and_authorize_beekeeper
-    @beekeeper = Beekeeper.includes(:user).find(params[:id])
+    @beekeeper = Beekeeper.includes(:user).where(
+      id: params[:id],
+      apiary_id: params[:apiary_id]
+    ).take
 		authorize @beekeeper
   end
 

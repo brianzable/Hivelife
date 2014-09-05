@@ -34,6 +34,23 @@ RSpec.describe 'Beekeepers', type: :request do
       expect(response).to be_success
       expect(response.body).to eq(beekeeper_json)
     end
+
+    it 'does not allow users to view beekeepers at other apiaries' do
+      another_user = FactoryGirl.create(:user, email: 'another_user@example.com')
+      another_apiary = FactoryGirl.create(:apiary, user_id: another_user.id)
+      another_beekeeper = FactoryGirl.create(
+        :beekeeper,
+        user: another_user,
+        apiary: another_apiary,
+        creator: another_user.id
+      )
+
+      get apiary_beekeeper_path(another_apiary, another_beekeeper), format: :json
+      expect(response.code).to eq("401")
+
+      parsed_body = JSON.parse(response.body)
+      expect(parsed_body['error']).to eq("You are not authorized to perform this action.")
+    end
   end
 
   describe '#create' do
