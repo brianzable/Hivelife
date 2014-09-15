@@ -35,7 +35,7 @@ class BeekeepersController < ApplicationController
   # DELETE /apiaries/{apiary_id}/beekeepers/1
   # DELETE /apiaries/{apiary_id}/beekeepers/1.json
   def destroy
-		@beekeeper.destroy
+    @beekeeper.destroy
 		render json: { head: :no_content }
   end
 

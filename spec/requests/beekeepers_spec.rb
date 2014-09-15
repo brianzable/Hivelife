@@ -315,14 +315,146 @@ RSpec.describe 'Beekeepers', type: :request do
       expect(a_beekeeper.permission).to eq('Read')
     end
 
-    it "does not allow admin to demote other admin"
+    it "does not allow admin to demote other admin" do
+      another_user = FactoryGirl.create(:user, email: 'another_user@example.com')
+
+      another_admin = FactoryGirl.create(
+        :beekeeper,
+        user: another_user,
+        apiary: @apiary,
+        creator: @user.id,
+        permission: 'Admin'
+      )
+
+      expect(another_admin.permission).to eq('Admin')
+
+      payload = {
+        beekeeper: {
+          permission: 'Read'
+        }
+      }
+
+      put(apiary_beekeeper_path(@apiary, another_admin), payload.to_json, @http_headers)
+      expect(response.code).to eq('401')
+
+      parsed_body = JSON.parse(response.body)
+      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+
+      another_admin.reload
+      expect(another_admin.permission).to eq('Admin')
+    end
   end
 
   describe "#destroy" do
-    it "only allows admins to remove users"
-    it "does not allow admins to remove other admins"
-    it "does not allow write users to remove beekeepers"
-    it "does not allow read users to remove beekeepers"
-    it "does not allow users to remove beekeepers from other apiaries"
+    it "allows admins to remove beekeepers" do
+      a_user = FactoryGirl.create(:user, email: 'a_user@example.com')
+
+      a_beekeeper = FactoryGirl.create(
+        :beekeeper,
+        user: a_user,
+        apiary: @apiary,
+        creator: @user.id,
+        permission: 'Read'
+      )
+
+      delete(apiary_beekeeper_path(@apiary, a_beekeeper), nil, @http_headers)
+      expect(response.code).to eq('200')
+
+      parsed_body = JSON.parse(response.body)
+      expect(parsed_body["head"]).to eq("no_content")
+
+      expect { a_beekeeper.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "does not allow users to remove beekeepers from other apiaries" do
+      a_user = FactoryGirl.create(:user, email: 'a_user@example.com')
+
+      different_apiary = FactoryGirl.create(:apiary, user_id: a_user.id)
+
+      a_beekeeper = FactoryGirl.create(
+        :beekeeper,
+        user: a_user,
+        apiary: different_apiary,
+        creator: a_user.id,
+        permission: 'Read'
+      )
+
+      delete(apiary_beekeeper_path(different_apiary, a_beekeeper), nil, @http_headers)
+      expect(response.code).to eq('401')
+
+      parsed_body = JSON.parse(response.body)
+      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+
+      expect { a_beekeeper.reload }.not_to raise_error
+    end
+
+    it "does not allow write users to remove beekeepers" do
+      write_user = create_logged_in_user(email: 'write_user@example.com')
+      write_beekeeper = FactoryGirl.create(
+        :beekeeper,
+        user: write_user,
+        apiary: @apiary,
+        creator: @user.id,
+        permission: 'Write'
+      )
+
+      delete(apiary_beekeeper_path(@apiary, @beekeeper), nil, @http_headers)
+      expect(response.code).to eq('401')
+
+      parsed_body = JSON.parse(response.body)
+      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+
+      expect { @beekeeper.reload }.not_to raise_error
+    end
+
+    it "does not allow read users to remove beekeepers" do
+      read_user = create_logged_in_user(email: 'read_user@example.com')
+      read_beekeeper = FactoryGirl.create(
+        :beekeeper,
+        user: read_user,
+        apiary: @apiary,
+        creator: @user.id,
+        permission: 'Read'
+      )
+
+      delete(apiary_beekeeper_path(@apiary, @beekeeper), nil, @http_headers)
+      expect(response.code).to eq('401')
+
+      parsed_body = JSON.parse(response.body)
+      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+
+      expect { @beekeeper.reload }.not_to raise_error
+    end
+
+    it "allows admins to remove themselves" do
+      delete(apiary_beekeeper_path(@apiary, @beekeeper), nil, @http_headers)
+
+      expect(response.code).to eq('200')
+
+      parsed_body = JSON.parse(response.body)
+      expect(parsed_body["head"]).to eq("no_content")
+
+      expect { @beekeeper.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "does not allow admins to remove other admins" do
+      another_user = FactoryGirl.create(:user, email: 'another_user@example.com')
+
+      another_admin = FactoryGirl.create(
+        :beekeeper,
+        user: another_user,
+        apiary: @apiary,
+        creator: @user.id,
+        permission: 'Admin'
+      )
+
+      delete(apiary_beekeeper_path(@apiary, another_admin), nil, @http_headers)
+      expect(response.code).to eq('401')
+
+      parsed_body = JSON.parse(response.body)
+      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+      expect { another_admin.reload }.not_to raise_error
+      expect(another_admin.permission).to eq('Admin')
+    end
   end
 end

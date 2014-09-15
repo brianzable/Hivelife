@@ -24,9 +24,6 @@ FactoryGirl.define do
   end
 
   factory :beekeeper do
-    # ignore do
-    #   permission 'Admin'
-    # end
     permission 'Admin'
   end
 

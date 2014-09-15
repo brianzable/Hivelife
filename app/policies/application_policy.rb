@@ -2,6 +2,7 @@ class ApplicationPolicy
   attr_reader :beekeeper, :record
 
   def initialize(beekeeper, record)
+    raise Pundit::NotAuthorizedError if beekeeper.nil?
     @beekeeper = beekeeper
     @record = record
   end

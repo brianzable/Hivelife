@@ -24,7 +24,6 @@ class ApiariesController < ApplicationController
   # GET /apiaries/new
   def new
     @apiary = Apiary.new
-		authorize(@apiary)
   end
 
   # GET /apiaries/1/edit
