@@ -1,6 +1,6 @@
 class BeekeepersController < ApplicationController
 	respond_to :json
-
+  before_action :authenticate_user!
 	before_action :set_and_authorize_beekeeper, only: [:show, :update, :destroy]
 
   # GET apiaries/{apiary_id}/beekeepers/1.json
@@ -41,7 +41,7 @@ class BeekeepersController < ApplicationController
 
   # POST /apiaries/{apiary_id}/beekeepers/new/preview
 	def preview
-		@beekeeper = Beekeeper.new(create_beekeeper_params)
+    @beekeeper = Beekeeper.new(create_beekeeper_params)
 		if @beekeeper.valid?
 			render action: 'show', status: :ok
 		else

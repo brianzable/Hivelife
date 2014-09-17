@@ -18,11 +18,11 @@ module RequestHelpers
   end
 
   def sign_in(user)
-    confirm user
-    login_as user, scope: :user
+    confirm(user)
+    login_as(user, scope: :user)
   end
 
   def sign_out(user)
-    logout user
+    logout(user)
   end
 end

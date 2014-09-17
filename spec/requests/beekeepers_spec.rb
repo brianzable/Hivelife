@@ -5,10 +5,12 @@ RSpec.describe 'Beekeepers', type: :request do
   before(:each) do
     @user = create_logged_in_user
     @apiary = FactoryGirl.create(:apiary, user_id: @user.id)
-    @beekeeper = FactoryGirl.create(:beekeeper,
-                                    user: @user,
-                                    apiary: @apiary,
-                                    creator: @user.id)
+    @beekeeper = FactoryGirl.create(
+      :beekeeper,
+      user: @user,
+      apiary: @apiary,
+      creator: @user.id
+    )
 
     @http_headers = {
       'Content-Type' => 'application/json',
@@ -93,6 +95,7 @@ RSpec.describe 'Beekeepers', type: :request do
     end
 
     it 'will not allow users with write access to create beekeepers' do
+      Warden.test_reset!
       another_user = create_logged_in_user(email: 'another_user@example.com')
       write_beekeeper = FactoryGirl.create(:beekeeper,
                                            user: another_user,
@@ -212,6 +215,7 @@ RSpec.describe 'Beekeepers', type: :request do
     end
 
     it 'will not allow users with write access to update beekeepers' do
+      Warden.test_reset!
       write_user = create_logged_in_user(email: 'write_user@example.com')
       write_beekeeper = FactoryGirl.create(
         :beekeeper,
@@ -249,6 +253,7 @@ RSpec.describe 'Beekeepers', type: :request do
     end
 
     it 'will not allow users with read access to create beekeepers' do
+      Warden.test_reset!
       read_user = create_logged_in_user(email: 'read_user@example.com')
       write_beekeeper = FactoryGirl.create(
         :beekeeper,
@@ -389,6 +394,7 @@ RSpec.describe 'Beekeepers', type: :request do
     end
 
     it "does not allow write users to remove beekeepers" do
+      Warden.test_reset!
       write_user = create_logged_in_user(email: 'write_user@example.com')
       write_beekeeper = FactoryGirl.create(
         :beekeeper,
@@ -408,6 +414,7 @@ RSpec.describe 'Beekeepers', type: :request do
     end
 
     it "does not allow read users to remove beekeepers" do
+      Warden.test_reset!
       read_user = create_logged_in_user(email: 'read_user@example.com')
       read_beekeeper = FactoryGirl.create(
         :beekeeper,
@@ -455,6 +462,67 @@ RSpec.describe 'Beekeepers', type: :request do
       expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
       expect { another_admin.reload }.not_to raise_error
       expect(another_admin.permission).to eq('Admin')
+    end
+  end
+
+  describe "#preview" do
+    it "does not allow unauthenticated users to preview beekeeper objects" do
+      Warden.test_reset!
+      another_user = FactoryGirl.create(
+        :user,
+        first_name: "Jed",
+        last_name: "Doe",
+        email: "jed@doe.com"
+      )
+
+      payload = {
+        beekeeper: {
+          email: "jed@doe.com",
+          permission: "Read"
+        }
+      }.to_json
+
+      original_beekeeper_count = Beekeeper.count
+
+      post(preview_new_apiary_beekeeper_path(@apiary), payload, @http_headers)
+      expect(response.code).to eq('401')
+
+      parsed_body = JSON.parse(response.body)
+
+      expect(parsed_body["error"]).to eq("You need to sign in or sign up before continuing.")
+
+      expect(Beekeeper.count).to be (original_beekeeper_count)
+    end
+
+    it "allows logged in users to preivew beekeeper objects" do
+      another_user = FactoryGirl.create(
+        :user,
+        first_name: "Jed",
+        last_name: "Doe",
+        email: "jed@doe.com"
+      )
+
+      payload = {
+        beekeeper: {
+          email: "jed@doe.com",
+          permission: "Read"
+        }
+      }.to_json
+
+      original_beekeeper_count = Beekeeper.count
+
+      post(preview_new_apiary_beekeeper_path(@apiary), payload, @http_headers)
+
+      parsed_body = JSON.parse(response.body)
+
+      expect(parsed_body["id"]).to be_nil
+      expect(parsed_body["permission"]).to eq("Read")
+      expect(parsed_body["apiary_id"]).to be(@apiary.id)
+      expect(parsed_body["user"]["user_id"]).to be(another_user.id)
+      expect(parsed_body["user"]["first_name"]).to eq("Jed")
+      expect(parsed_body["user"]["last_name"]).to eq("Doe")
+
+      expect(Beekeeper.count).to be (original_beekeeper_count)
     end
   end
 end
