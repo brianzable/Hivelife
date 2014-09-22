@@ -95,7 +95,6 @@ RSpec.describe 'Beekeepers', type: :request do
     end
 
     it 'will not allow users with write access to create beekeepers' do
-      Warden.test_reset!
       another_user = create_logged_in_user(email: 'another_user@example.com')
       write_beekeeper = FactoryGirl.create(:beekeeper,
                                            user: another_user,

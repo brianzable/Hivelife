@@ -6,6 +6,7 @@ Warden.test_mode!
 
 module RequestHelpers
   def create_logged_in_user(options = {})
+    Warden.test_reset!
     options[:email] = 'user@example.com' unless options.has_key?(:email)
     user = FactoryGirl.create(:user, email: options[:email])
     sign_in(user)

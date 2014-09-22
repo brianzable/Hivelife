@@ -1,6 +1,6 @@
 class Apiary < ActiveRecord::Base
-	has_many :beekeepers
-	has_many :hives
+	has_many :beekeepers, dependent: :destroy
+	has_many :hives, dependent: :destroy
 	has_many :users, through: :beekeepers
 
 	validates :name,
@@ -11,16 +11,17 @@ class Apiary < ActiveRecord::Base
 
 	accepts_nested_attributes_for :beekeepers, allow_destroy: true
 
-	# Returns a string representing the location based on which location information
-	# is available. A zip code is returned if the city and state aren't set.
-	# Examples:
-	# 60540
-	# Naperville, IL
-	def get_location_string
+  def get_location_string
 		if city.blank? || state.blank?
 			return "#{self.zip_code}"
 		else
 			return "#{self.city}, #{self.state}"
 		end
 	end
+
+  def self.for_user(user)
+    self.joins(:beekeepers)
+        .where(beekeepers: { user: user })
+        .includes(:hives)
+  end
 end
