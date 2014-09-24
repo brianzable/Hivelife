@@ -35,4 +35,22 @@ FactoryGirl.define do
     longitude 88.8888888
     hive_type 'Langstroth'
   end
+
+  factory :inspection do
+    month 6
+    day 15
+    year 2014
+    hour 8
+    minute 30
+    ampm 'AM'
+  end
+
+  factory :harvest do
+    month 6
+    day 15
+    year 2014
+    hour 8
+    minute 30
+    ampm 'AM'
+  end
 end
