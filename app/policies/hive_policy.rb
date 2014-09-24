@@ -14,7 +14,7 @@ class HivePolicy < ApplicationPolicy
   end
 
   def update?
-    beekeeper.admin?
+    beekeeper.write?
   end
 
   def destroy?

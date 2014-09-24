@@ -251,15 +251,91 @@ describe 'Hives', type: :request do
 
         parsed_body = JSON.parse(response.body)
         expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
-
       end
     end
 
     describe '#update' do
-      it 'allows users with write permission to edit hive information'
-      it 'allows users with admin permission to edit hive information'
-      it 'does not allow users with read permission to edit hive information'
-      it 'does not allow random users to edit hive information'
+      it 'returns hive information open successful update' do
+        payload = {
+          hive: {
+            hive_type: 'Langstroth',
+          }
+        }.to_json
+
+        put(apiary_hive_path(@apiary, @hive), payload, @http_headers)
+        expect(response.code).to eq('201')
+
+        parsed_body = JSON.parse(response.body)
+
+        expect(parsed_body['id']).to_not be_nil
+        expect(parsed_body['name']).to_not be_nil
+        expect(parsed_body['apiary_id']).to eq(@apiary.id)
+        expect(parsed_body['hive_type']).to eq('Langstroth')
+      end
+
+      it 'allows users with write permission to edit hive information' do
+        @beekeeper.permission = 'Write'
+        @beekeeper.save!
+
+        payload = {
+          hive: {
+            hive_type: 'Warre',
+          }
+        }.to_json
+
+        put(apiary_hive_path(@apiary, @hive), payload, @http_headers)
+        expect(response.code).to eq('201')
+
+        parsed_body = JSON.parse(response.body)
+        expect(parsed_body['id']).to eq(@hive.id)
+      end
+
+      it 'allows users with admin permission to edit hive information' do
+        payload = {
+          hive: {
+            hive_type: 'Warre',
+          }
+        }.to_json
+
+        put(apiary_hive_path(@apiary, @hive), payload, @http_headers)
+        expect(response.code).to eq('201')
+
+        parsed_body = JSON.parse(response.body)
+        expect(parsed_body['id']).to eq(@hive.id)
+      end
+
+      it 'does not allow users with read permission to edit hive information' do
+        @beekeeper.permission = 'Read'
+        @beekeeper.save!
+
+        payload = {
+          hive: {
+            hive_type: 'Warre',
+          }
+        }.to_json
+
+        put(apiary_hive_path(@apiary, @hive), payload, @http_headers)
+        expect(response.code).to eq('401')
+
+        parsed_body = JSON.parse(response.body)
+        expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+      end
+
+      it 'does not allow random users to edit hive information' do
+        unauthorized_user = create_logged_in_user(email: 'another_user@example.com')
+
+        payload = {
+          hive: {
+            hive_type: 'Langstroth',
+          }
+        }.to_json
+
+        put(apiary_hive_path(@apiary, @hive), payload, @http_headers)
+        expect(response.code).to eq('401')
+
+        parsed_body = JSON.parse(response.body)
+        expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+      end
     end
 
     describe '#destroy' do

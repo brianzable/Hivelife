@@ -45,13 +45,13 @@ class HivesController < ApplicationController
   # PATCH/PUT /apiaries/{apiary_id}/hives/1.json
   def update
   	@hive = Hive.find(params[:id])
+    authorize(@hive)
   	@apiary = Apiary.find(params[:apiary_id])
     respond_to do |format|
       if @hive.update(hive_params)
         format.html { redirect_to [@apiary, @hive], notice: 'Hive was successfully updated.' }
-        format.json { head :no_content }
+        format.json { render action: 'show', status: :created, location: [@apiary, @hive] }
       else
-        puts @hive.errors.full_messages
         format.html { render action: 'edit' }
         format.json { render json: @hive.errors, status: :unprocessable_entity }
       end
