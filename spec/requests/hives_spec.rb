@@ -339,12 +339,71 @@ describe 'Hives', type: :request do
     end
 
     describe '#destroy' do
-      it 'allows admins to delete a hive from an apiary'
-      it 'does not allow write users to delete a hive from an apiary'
-      it 'does not allow read users to delete a hive from an apiary'
-      it 'does not allow random users to delete a hive from an apiary'
-      it 'removes all harvests associated with a hive'
-      it 'removes all inspection data associated with a hive'
+      it 'allows admins to delete a hive from an apiary' do
+        expect do
+          delete(apiary_hive_path(@apiary, @hive), nil, @http_headers)
+          expect(response.code).to eq('200')
+        end.to change{ Hive.count }
+      end
+
+      it 'does not allow write users to delete a hive from an apiary' do
+        @beekeeper.permission = 'Write'
+        @beekeeper.save!
+        expect do
+          delete(apiary_hive_path(@apiary, @hive), nil, @http_headers)
+          expect(response.code).to eq('401')
+
+          parsed_body = JSON.parse(response.body)
+          expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+        end.to_not change{ Hive.count }
+      end
+
+      it 'does not allow read users to delete a hive from an apiary' do
+        @beekeeper.permission = 'Read'
+        @beekeeper.save!
+        expect do
+          delete(apiary_hive_path(@apiary, @hive), nil, @http_headers)
+          expect(response.code).to eq('401')
+
+          parsed_body = JSON.parse(response.body)
+          expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+        end.to_not change{ Hive.count }
+      end
+
+      it 'does not allow random users to delete a hive from an apiary' do
+        unauthorized_user = create_logged_in_user(email: 'another_user@example.com')
+        expect do
+          delete(apiary_hive_path(@apiary, @hive), nil, @http_headers)
+          expect(response.code).to eq('401')
+
+          parsed_body = JSON.parse(response.body)
+          expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+        end.to_not change{ Hive.count }
+      end
+
+      it 'removes all harvests associated with a hive' do
+        inspection = FactoryGirl.create(
+          :inspection,
+          hive: @hive
+        )
+
+        expect do
+          delete(apiary_hive_path(@apiary, @hive), nil, @http_headers)
+          expect(response.code).to eq('200')
+        end.to change{ Inspection.count }
+      end
+
+      it 'removes all inspection data associated with a hive' do
+        harvest = FactoryGirl.create(
+          :harvest,
+          hive: @hive
+        )
+
+        expect do
+          delete(apiary_hive_path(@apiary, @hive), nil, @http_headers)
+          expect(response.code).to eq('200')
+        end.to change{ Harvest.count }
+      end
     end
   end
 end

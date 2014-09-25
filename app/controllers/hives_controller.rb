@@ -61,11 +61,14 @@ class HivesController < ApplicationController
   # DELETE /apiaries/{apiary_id}/hives/1
   # DELETE /apiaries/{apiary_id}/hives/1.json
   def destroy
+    @hive = Hive.find(params[:id])
+    authorize(@hive)
+    @apiary = Apiary.find(params[:apiary_id])
     @hive.destroy
     respond_to do |format|
-      format.html { redirect_to hives_url }
-      format.json  { render json: {url => root_url }, status: :ok }
-    end
+			format.html { redirect_to apiary_url(@apiary) }
+      format.json { render json: { head: :no_content } }
+  	end
   end
 
   private

@@ -36,8 +36,8 @@ class Hive < ActiveRecord::Base
 	belongs_to :apiary
 	belongs_to :user
 
-	has_many :inspections
-	has_many :harvests
+	has_many :inspections, dependent: :destroy
+	has_many :harvests, dependent: :destroy
 
 	validates :user_id, :apiary_id,
 						presence: true
