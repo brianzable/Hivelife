@@ -34,63 +34,11 @@ class ApplicationController < ActionController::Base
     end
   end # end configure_permitted_parameters
 
-  def get_permission_for_action
-    action = action_name
-    action_to_permission = {
-      :show => 'Read',
-      :edit => 'Write',
-      :update => 'Write',
-      :create => 'Write',
-      :new => 'Write',
-      :destroy => 'Admin'
-    }
-    action_to_permission[action.to_sym]
-  end
-
-  def verify_beekeeper(apiary_id, required_permission)
-    authenticate_user!
-    user_id = current_user.id
-
-    permission = Beekeeper.permission_for(user_id, apiary_id)
-
-    unless can_perform_action?(permission, required_permission)
-      not_permitted
-    end
-  end
-
-  # Determines whether or not an action can be performed.
-  # Returns true if the permission satisified the required_permission,
-  # false otherwise
-  def can_perform_action?(permission, required_permission)
-    # Admin can do anything, just return true
-    if permission == 'Admin'
-      return true
-    # Write == Write or Read == Read, when permission matches
-    elsif permission == required_permission
-      return true
-    # Write can do anything read can do
-    elsif permission == 'Write' && required_permission == 'Read'
-      return true
-    end
-    return false
-  end
-
-  # Redirects to the root url and creates a flash message
-  # when a user does not have permission to do something
-  def not_permitted
-    redirect_to(root_url,
-                notice: 'You do not have permission to perform this action.')
-  end
-
   def user_not_authorized
     error_message = 'You are not authorized to perform this action.'
     respond_to do |format|
-      format.html do
-        redirect_to(request.referrer || root_path, flash: { error: error_message})
-      end
-      format.json do
-        render json: { error: error_message }, status: :unauthorized
-      end
+      format.html { redirect_to(request.referrer || root_path, flash: { error: error_message}) }
+      format.json { render json: { error: error_message }, status: :unauthorized }
     end
   end
 
