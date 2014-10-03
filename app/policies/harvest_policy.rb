@@ -1,0 +1,2 @@
+class HarvestPolicy < RecordPolicy
+end
