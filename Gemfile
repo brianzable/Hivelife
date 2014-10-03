@@ -45,7 +45,6 @@ gem 'foundation-rails', '~> 5.2.1.0'
 
 # Use Font Awesome for icons
 gem 'font-awesome-rails'
-gem 'doorkeeper'
 gem 'jquery.fileupload-rails'
 gem 'whenever', require: false
 gem 'aws-sdk'

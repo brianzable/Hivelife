@@ -1,6 +1,4 @@
 Bees::Application.routes.draw do
-  use_doorkeeper
-
   authenticated :user do
     root to: 'apiaries#index', as: 'authenticated_root'
   end
