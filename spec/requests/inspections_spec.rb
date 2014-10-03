@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Hives', type: :request do
+describe 'Inspections', type: :request do
   before(:each) do
     @user = create_logged_in_user
     @apiary = FactoryGirl.create(:apiary_with_hives, user_id: @user.id)
