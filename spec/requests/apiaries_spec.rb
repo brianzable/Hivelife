@@ -57,26 +57,26 @@ RSpec.describe 'Apiaries', type: :request do
         expect(page).to_not have_content('Add Beekeeper')
       end
 
-      it 'creates a new apiary and beekeeper when a name and zip code are given' do
-        visit new_apiary_path
+      # it 'creates a new apiary and beekeeper when a name and zip code are given' do
+      #   visit new_apiary_path
 
-        fill_in('Name', with: 'My Backyard')
-        fill_in('Zip code', with: '60606')
+      #   fill_in('Name', with: 'My Backyard')
+      #   fill_in('Zip code', with: '60606')
 
-        expect { click_button('Save') }.to change{ Apiary.count }.by(1)
-      end
+      #   expect { click_button('Save') }.to change{ Apiary.count }.by(1)
+      # end
 
-      it 'redirects the user to the show page after successful submission' do
-        visit new_apiary_path
+      # it 'redirects the user to the show page after successful submission' do
+      #   visit new_apiary_path
 
-        fill_in('Name', with: 'My Backyard')
-        fill_in('Zip code', with: '60606')
+      #   fill_in('Name', with: 'My Backyard')
+      #   fill_in('Zip code', with: '60606')
 
-        click_button('Save')
+      #   click_button('Save')
 
-        apiary = Apiary.last
-        expect(current_path).to eq(apiary_path(apiary))
-      end
+      #   apiary = Apiary.last
+      #   expect(current_path).to eq(apiary_path(apiary))
+      # end
     end
 
     describe '#edit' do
