@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe InspectionPolicy do
+describe HarvestPolicy do
   before(:all) do
     @user = FactoryGirl.build(:user, email: 'an_email@example.com')
 
@@ -33,73 +33,73 @@ describe InspectionPolicy do
     )
 
     @hive = @apiary.hives.first
-    @inspection = FactoryGirl.build(:inspection, hive: @hive)
+    @harvest = FactoryGirl.build(:harvest, hive: @hive)
   end
 
   describe 'show?' do
     it 'returns true for beekeepers with read permissions' do
-      policy = InspectionPolicy.new(@read_beekeeper, @inspection)
+      policy = HarvestPolicy.new(@read_beekeeper, @harvest)
       expect(policy.show?).to be(true)
     end
 
     it 'returns true for beekeepers with write permissions' do
-      policy = InspectionPolicy.new(@write_beekeeper, @inspection)
+      policy = HarvestPolicy.new(@write_beekeeper, @harvest)
       expect(policy.show?).to be(true)
     end
 
     it 'returns true for beekeepers with admin permissions' do
-      policy = InspectionPolicy.new(@admin_beekeeper, @inspection)
+      policy = HarvestPolicy.new(@admin_beekeeper, @harvest)
       expect(policy.show?).to be(true)
     end
   end
 
   describe 'create?' do
     it 'returns false for beekeepers with read permissions' do
-      policy = InspectionPolicy.new(@read_beekeeper, @inspection)
+      policy = HarvestPolicy.new(@read_beekeeper, @harvest)
       expect(policy.create?).to be(false)
     end
 
     it 'returns true for beekeepers with write permissions' do
-      policy = InspectionPolicy.new(@write_beekeeper, @inspection)
+      policy = HarvestPolicy.new(@write_beekeeper, @harvest)
       expect(policy.create?).to be(true)
     end
 
     it 'returns true for beekeepers with admin permissions' do
-      policy = InspectionPolicy.new(@admin_beekeeper, @inspection)
+      policy = HarvestPolicy.new(@admin_beekeeper, @harvest)
       expect(policy.create?).to be(true)
     end
   end
 
   describe 'update?' do
     it 'returns false for beekeepers with read permissions' do
-      policy = InspectionPolicy.new(@read_beekeeper, @inspection)
+      policy = HarvestPolicy.new(@read_beekeeper, @harvest)
       expect(policy.update?).to be(false)
     end
 
     it 'returns true for beekeepers with write permissions' do
-      policy = InspectionPolicy.new(@write_beekeeper, @inspection)
+      policy = HarvestPolicy.new(@write_beekeeper, @harvest)
       expect(policy.update?).to be(true)
     end
 
     it 'returns true for beekeepers with admin permissions' do
-      policy = InspectionPolicy.new(@admin_beekeeper, @inspection)
+      policy = HarvestPolicy.new(@admin_beekeeper, @harvest)
       expect(policy.update?).to be(true)
     end
   end
 
   describe 'destroy?' do
     it 'returns false for beekeepers with read permissions' do
-      policy = InspectionPolicy.new(@read_beekeeper, @inspection)
+      policy = HarvestPolicy.new(@read_beekeeper, @harvest)
       expect(policy.destroy?).to be(false)
     end
 
     it 'returns true for beekeepers with write permissions' do
-      policy = InspectionPolicy.new(@write_beekeeper, @inspection)
+      policy = HarvestPolicy.new(@write_beekeeper, @harvest)
       expect(policy.destroy?).to be(true)
     end
 
     it 'returns true for beekeepers with admin permissions' do
-      policy = InspectionPolicy.new(@admin_beekeeper, @inspection)
+      policy = HarvestPolicy.new(@admin_beekeeper, @harvest)
       expect(policy.destroy?).to be(true)
     end
   end
