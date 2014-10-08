@@ -37,7 +37,7 @@ describe Beekeeper do
 
   describe 'write?' do
     it 'returns true if the permission is Admin' do
-      beekeeper = FactoryGirl.build(:beekeeper, permission: 'Write')
+      beekeeper = FactoryGirl.build(:beekeeper, permission: 'Admin')
       expect(beekeeper.write?).to be(true)
     end
 
