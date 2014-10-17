@@ -79,7 +79,6 @@ class HivesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def hive_params
-      params[:hive][:user_id] = current_user.id
       params.require(:hive).permit(
         :name,
         :hive_type,
@@ -96,10 +95,9 @@ class HivesController < ApplicationController
         :queen_excluder,
         :orientation,
         :breed,
-        :donation_enabled,
+        :public,
         :fine_location_sharing,
-        :apiary_id,
-        :user_id
+        :apiary_id
       )
     end
 

@@ -4,12 +4,11 @@ RSpec.describe 'Beekeepers', type: :request do
 
   before(:each) do
     @user = create_logged_in_user
-    @apiary = FactoryGirl.create(:apiary, user_id: @user.id)
+    @apiary = FactoryGirl.create(:apiary)
     @beekeeper = FactoryGirl.create(
       :beekeeper,
       user: @user,
-      apiary: @apiary,
-      creator: @user.id
+      apiary: @apiary
     )
 
     @http_headers = {
@@ -39,12 +38,11 @@ RSpec.describe 'Beekeepers', type: :request do
 
     it 'does not allow users to view beekeepers at other apiaries' do
       another_user = FactoryGirl.create(:user, email: 'another_user@example.com')
-      another_apiary = FactoryGirl.create(:apiary, user_id: another_user.id)
+      another_apiary = FactoryGirl.create(:apiary)
       another_beekeeper = FactoryGirl.create(
         :beekeeper,
         user: another_user,
         apiary: another_apiary,
-        creator: another_user.id
       )
 
       get apiary_beekeeper_path(another_apiary, another_beekeeper), format: :json
@@ -96,12 +94,12 @@ RSpec.describe 'Beekeepers', type: :request do
 
     it 'will not allow users with write access to create beekeepers' do
       another_user = create_logged_in_user(email: 'another_user@example.com')
-      write_beekeeper = FactoryGirl.create(:beekeeper,
-                                           user: another_user,
-                                           apiary: @apiary,
-                                           creator: @user.id,
-                                           permission: 'Write')
-
+      write_beekeeper = FactoryGirl.create(
+        :beekeeper,
+        user: another_user,
+        apiary: @apiary,
+        permission: 'Write'
+      )
 
       yet_another_user = FactoryGirl.create(:user, email: 'yet_another_user@example.com')
 
@@ -125,11 +123,12 @@ RSpec.describe 'Beekeepers', type: :request do
 
     it 'will not allow users with read access to create beekeepers' do
       another_user = create_logged_in_user(email: 'another_user@example.com')
-      write_beekeeper = FactoryGirl.create(:beekeeper,
-                                           user: another_user,
-                                           apiary: @apiary,
-                                           creator: @user.id,
-                                           permission: 'Write')
+      write_beekeeper = FactoryGirl.create(
+        :beekeeper,
+        user: another_user,
+        apiary: @apiary,
+        permission: 'Write'
+      )
 
       yet_another_user = FactoryGirl.create(:user, email: 'yet_another_user@example.com')
 
@@ -153,7 +152,7 @@ RSpec.describe 'Beekeepers', type: :request do
 
     it 'will not allow random users to create beekeepers at different apiaries' do
       a_user = FactoryGirl.create(:user, email: 'a_user@example.com')
-      an_apiary = FactoryGirl.create(:apiary, user_id: a_user.id)
+      an_apiary = FactoryGirl.create(:apiary)
 
       another_user = FactoryGirl.create(:user, email: 'another_user@example.com')
 
@@ -183,7 +182,6 @@ RSpec.describe 'Beekeepers', type: :request do
         :beekeeper,
         user: new_user,
         apiary: @apiary,
-        creator: @user.id,
         permission: 'Read'
       )
 
@@ -220,7 +218,6 @@ RSpec.describe 'Beekeepers', type: :request do
         :beekeeper,
         user: write_user,
         apiary: @apiary,
-        creator: @user.id,
         permission: 'Write'
       )
 
@@ -229,7 +226,6 @@ RSpec.describe 'Beekeepers', type: :request do
         :beekeeper,
         user: another_user,
         apiary: @apiary,
-        creator: @user.id,
         permission: "Read"
       )
 
@@ -258,7 +254,6 @@ RSpec.describe 'Beekeepers', type: :request do
         :beekeeper,
         user: read_user,
         apiary: @apiary,
-        creator: @user.id,
         permission: 'Write'
       )
 
@@ -267,7 +262,6 @@ RSpec.describe 'Beekeepers', type: :request do
         :beekeeper,
         user: another_user,
         apiary: @apiary,
-        creator: @user.id,
         permission: "Read"
       )
 
@@ -292,12 +286,11 @@ RSpec.describe 'Beekeepers', type: :request do
     it 'will not allow random users to edit beekeepers at different apiaries' do
       a_user = FactoryGirl.create(:user, email: 'a_user@example.com')
 
-      different_apiary = FactoryGirl.create(:apiary, user_id: a_user.id)
+      different_apiary = FactoryGirl.create(:apiary)
       a_beekeeper = FactoryGirl.create(
         :beekeeper,
         user: a_user,
         apiary: different_apiary,
-        creator: a_user.id,
         permission: 'Read'
       )
 
@@ -326,7 +319,6 @@ RSpec.describe 'Beekeepers', type: :request do
         :beekeeper,
         user: another_user,
         apiary: @apiary,
-        creator: @user.id,
         permission: 'Admin'
       )
 
@@ -357,7 +349,6 @@ RSpec.describe 'Beekeepers', type: :request do
         :beekeeper,
         user: a_user,
         apiary: @apiary,
-        creator: @user.id,
         permission: 'Read'
       )
 
@@ -373,13 +364,12 @@ RSpec.describe 'Beekeepers', type: :request do
     it "does not allow users to remove beekeepers from other apiaries" do
       a_user = FactoryGirl.create(:user, email: 'a_user@example.com')
 
-      different_apiary = FactoryGirl.create(:apiary, user_id: a_user.id)
+      different_apiary = FactoryGirl.create(:apiary)
 
       a_beekeeper = FactoryGirl.create(
         :beekeeper,
         user: a_user,
         apiary: different_apiary,
-        creator: a_user.id,
         permission: 'Read'
       )
 
@@ -399,7 +389,6 @@ RSpec.describe 'Beekeepers', type: :request do
         :beekeeper,
         user: write_user,
         apiary: @apiary,
-        creator: @user.id,
         permission: 'Write'
       )
 
@@ -419,7 +408,6 @@ RSpec.describe 'Beekeepers', type: :request do
         :beekeeper,
         user: read_user,
         apiary: @apiary,
-        creator: @user.id,
         permission: 'Read'
       )
 
@@ -450,7 +438,6 @@ RSpec.describe 'Beekeepers', type: :request do
         :beekeeper,
         user: another_user,
         apiary: @apiary,
-        creator: @user.id,
         permission: 'Admin'
       )
 

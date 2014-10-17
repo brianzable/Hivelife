@@ -3,17 +3,15 @@ require 'rails_helper'
 describe 'Hives', type: :request do
   before(:each) do
     @user = create_logged_in_user
-    @apiary = FactoryGirl.create(:apiary_with_hives, user_id: @user.id)
+    @apiary = FactoryGirl.create(:apiary_with_hives)
     @beekeeper = FactoryGirl.create(
       :beekeeper,
       user: @user,
-      apiary: @apiary,
-      creator: @user.id
+      apiary: @apiary
     )
     @hive = FactoryGirl.create(
       :hive,
-      apiary: @apiary,
-      user: @user
+      apiary: @apiary
     )
 
   end
@@ -64,7 +62,7 @@ describe 'Hives', type: :request do
         expect(parsed_body['photo_url']).to eq(@hive.photo_url)
         expect(parsed_body['flight_pattern']).to eq(@hive.flight_pattern)
         expect(parsed_body['fine_location_sharing']).to eq(@hive.fine_location_sharing)
-        expect(parsed_body['donation_enabled']).to eq(@hive.donation_enabled)
+        expect(parsed_body['public']).to eq(@hive.public)
         expect(parsed_body['ventilated']).to eq(@hive.ventilated)
         expect(parsed_body['queen_excluder']).to eq(@hive.queen_excluder)
         expect(parsed_body['entrance_reducer']).to eq(@hive.entrance_reducer)

@@ -5,21 +5,19 @@ describe 'Apiary' do
     it 'returns a list apiaries a user is a member of' do
       user = FactoryGirl.create(:user)
 
-      apiary_with_hives = FactoryGirl.create(:apiary_with_hives, user_id: user.id)
-      another_apiary_with_hives = FactoryGirl.create(:apiary_with_hives, user_id: user.id)
+      apiary_with_hives = FactoryGirl.create(:apiary_with_hives)
+      another_apiary_with_hives = FactoryGirl.create(:apiary_with_hives)
 
       FactoryGirl.create(
         :beekeeper,
         apiary: apiary_with_hives,
-        user: user,
-        creator: user.id
+        user: user
       )
 
       FactoryGirl.create(
         :beekeeper,
         apiary: another_apiary_with_hives,
-        user: user,
-        creator: user.id
+        user: user
       )
 
       results = Apiary.for_user(user)
@@ -29,21 +27,19 @@ describe 'Apiary' do
     it 'also includes all hives belonging to each apiary' do
       user = FactoryGirl.create(:user)
 
-      apiary_with_hives = FactoryGirl.create(:apiary_with_hives, user_id: user.id)
-      another_apiary_with_hives = FactoryGirl.create(:apiary_with_hives, user_id: user.id)
+      apiary_with_hives = FactoryGirl.create(:apiary_with_hives)
+      another_apiary_with_hives = FactoryGirl.create(:apiary_with_hives)
 
       FactoryGirl.create(
         :beekeeper,
         apiary: apiary_with_hives,
-        user: user,
-        creator: user.id
+        user: user
       )
 
       FactoryGirl.create(
         :beekeeper,
         apiary: another_apiary_with_hives,
-        user: user,
-        creator: user.id
+        user: user
       )
 
       results = Apiary.for_user(user)

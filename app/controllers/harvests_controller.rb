@@ -76,7 +76,6 @@ private
   end
 
   def harvest_params
-    params[:harvest][:user_id] = current_user.id
     params[:harvest][:hive_id] = params[:hive_id]
     params.require(:harvest).permit(
       :month,

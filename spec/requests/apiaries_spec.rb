@@ -19,11 +19,13 @@ RSpec.describe 'Apiaries', type: :request do
       end
 
       it 'displays hive count and apiary city/state' do
-        apiary = FactoryGirl.create(:apiary, user_id: @user.id)
-        beekeeper = FactoryGirl.create(:beekeeper,
-                                        user: @user,
-                                        apiary: apiary,
-                                        creator: @user.id)
+        apiary = FactoryGirl.create(:apiary)
+        beekeeper = FactoryGirl.create(
+          :beekeeper,
+          user: @user,
+          apiary: apiary
+        )
+
         visit authenticated_root_path
 
         expect(page).to have_selector('h3', text: '0')
@@ -33,11 +35,12 @@ RSpec.describe 'Apiaries', type: :request do
       end
 
       it 'displays a hive count of two' do
-        apiary_with_hives = FactoryGirl.create(:apiary_with_hives, user_id: @user.id)
-        beekeeper = FactoryGirl.create(:beekeeper,
-                                        user: @user,
-                                        apiary: apiary_with_hives,
-                                        creator: @user.id)
+        apiary_with_hives = FactoryGirl.create(:apiary_with_hives)
+        beekeeper = FactoryGirl.create(
+          :beekeeper,
+          user: @user,
+          apiary: apiary_with_hives
+        )
 
         visit authenticated_root_path
 
@@ -82,23 +85,25 @@ RSpec.describe 'Apiaries', type: :request do
     describe '#edit' do
       context 'Beekeeper management' do
         it 'allows an admin to manage beekeepers' do
-          apiary = FactoryGirl.create(:apiary, user_id: @user.id)
-          beekeeper = FactoryGirl.create(:beekeeper,
-                                         user: @user,
-                                         apiary: apiary,
-                                         creator: @user.id)
+          apiary = FactoryGirl.create(:apiary)
+          beekeeper = FactoryGirl.create(
+            :beekeeper,
+            user: @user,
+            apiary: apiary
+          )
 
           visit edit_apiary_path(apiary)
           expect(page).to have_content('Add Beekeeper')
         end
 
         it 'does not allow non-admins to manage beekeepers' do
-          apiary = FactoryGirl.create(:apiary, user_id: @user.id)
-          beekeeper = FactoryGirl.create(:beekeeper,
-                                         permission: 'Read',
-                                         user: @user,
-                                         apiary: apiary,
-                                         creator: @user.id)
+          apiary = FactoryGirl.create(:apiary)
+          beekeeper = FactoryGirl.create(
+            :beekeeper,
+            permission: 'Read',
+            user: @user,
+            apiary: apiary
+          )
 
           visit edit_apiary_path(apiary)
           expect(page).to_not have_content('Add Beekeeper')
@@ -123,21 +128,19 @@ RSpec.describe 'Apiaries', type: :request do
 
     describe '#index' do
       it "returns a list of the user's apiaries" do
-        apiary_with_hives = FactoryGirl.create(:apiary_with_hives, user_id: @user.id)
-        another_apiary_with_hives = FactoryGirl.create(:apiary_with_hives, user_id: @user.id)
+        apiary_with_hives = FactoryGirl.create(:apiary_with_hives)
+        another_apiary_with_hives = FactoryGirl.create(:apiary_with_hives)
 
         FactoryGirl.create(
           :beekeeper,
           apiary: apiary_with_hives,
           user: @user,
-          creator: @user.id
         )
 
         FactoryGirl.create(
           :beekeeper,
           apiary: another_apiary_with_hives,
           user: @user,
-          creator: @user.id
         )
 
         get(authenticated_root_path, format: :json)
@@ -168,13 +171,12 @@ RSpec.describe 'Apiaries', type: :request do
 
     describe '#show' do
       it 'allows users who are memeber of an apiary to view apiary information' do
-        apiary_with_hives = FactoryGirl.create(:apiary_with_hives, user_id: @user.id)
+        apiary_with_hives = FactoryGirl.create(:apiary_with_hives)
 
         FactoryGirl.create(
           :beekeeper,
           apiary: apiary_with_hives,
-          user: @user,
-          creator: @user.id
+          user: @user
         )
 
         get(apiary_path(apiary_with_hives), format: :json)
@@ -195,7 +197,7 @@ RSpec.describe 'Apiaries', type: :request do
       end
 
       it 'does not allow users who are not members at an apiary to view an apiary' do
-        apiary_with_hives = FactoryGirl.create(:apiary_with_hives, user_id: @user.id)
+        apiary_with_hives = FactoryGirl.create(:apiary_with_hives)
         unauthorized_user = create_logged_in_user(email: 'another_user@example.com')
 
         get(apiary_path(apiary_with_hives), format: :json)
@@ -206,13 +208,12 @@ RSpec.describe 'Apiaries', type: :request do
       end
 
       it 'contains a list of hives associated with this apiary' do
-        apiary_with_hives = FactoryGirl.create(:apiary_with_hives, user_id: @user.id)
+        apiary_with_hives = FactoryGirl.create(:apiary_with_hives)
 
         FactoryGirl.create(
           :beekeeper,
           apiary: apiary_with_hives,
-          user: @user,
-          creator: @user.id
+          user: @user
         )
 
         get(apiary_path(apiary_with_hives), format: :json)
@@ -285,7 +286,6 @@ RSpec.describe 'Apiaries', type: :request do
           :beekeeper,
           apiary: apiary,
           user: @user,
-          creator: @user.id
         )
 
         put(apiary_path(apiary), payload, @http_headers)
@@ -303,7 +303,6 @@ RSpec.describe 'Apiaries', type: :request do
           :beekeeper,
           apiary: apiary,
           user: unauthorized_user,
-          creator: unauthorized_user.id,
           permission: 'Read'
         )
 
@@ -327,7 +326,6 @@ RSpec.describe 'Apiaries', type: :request do
           :beekeeper,
           apiary: apiary,
           user: unauthorized_user,
-          creator: unauthorized_user.id,
           permission: 'Write'
         )
 
@@ -348,8 +346,7 @@ RSpec.describe 'Apiaries', type: :request do
         FactoryGirl.create(
           :beekeeper,
           apiary: apiary,
-          user: @user,
-          creator: @user.id
+          user: @user
         )
 
         another_apiary = FactoryGirl.create(:apiary)
@@ -373,8 +370,7 @@ RSpec.describe 'Apiaries', type: :request do
         FactoryGirl.create(
           :beekeeper,
           apiary: apiary,
-          user: @user,
-          creator: @user.id
+          user: @user
         )
 
         expect do
@@ -392,8 +388,7 @@ RSpec.describe 'Apiaries', type: :request do
         beekeeper = FactoryGirl.create(
           :beekeeper,
           apiary: apiary,
-          user: @user,
-          creator: @user.id
+          user: @user
         )
 
         expect do
@@ -404,13 +399,12 @@ RSpec.describe 'Apiaries', type: :request do
       end
 
       it 'removes all hives associated with this apiary' do
-        apiary = FactoryGirl.create(:apiary_with_hives, user_id: @user.id)
+        apiary = FactoryGirl.create(:apiary_with_hives)
 
         beekeeper = FactoryGirl.create(
           :beekeeper,
           apiary: apiary,
-          user: @user,
-          creator: @user.id
+          user: @user
         )
 
         expect do
@@ -428,7 +422,6 @@ RSpec.describe 'Apiaries', type: :request do
           :beekeeper,
           apiary: apiary,
           user: unauthorized_user,
-          creator: unauthorized_user.id,
           permission: 'Read'
         )
 
@@ -450,7 +443,6 @@ RSpec.describe 'Apiaries', type: :request do
           :beekeeper,
           apiary: apiary,
           user: unauthorized_user,
-          creator: unauthorized_user.id,
           permission: 'Read'
         )
 
@@ -469,8 +461,7 @@ RSpec.describe 'Apiaries', type: :request do
         FactoryGirl.create(
           :beekeeper,
           apiary: apiary,
-          user: @user,
-          creator: @user.id
+          user: @user
         )
 
         another_apiary = FactoryGirl.create(:apiary)

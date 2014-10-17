@@ -5,7 +5,7 @@ json.extract! @inspection, :id, :weather_conditions, :weather_notes, :ventilated
 json.brood_boxes do
   json.array!(@inspection.brood_boxes) do |brood_box|
     json.extract! brood_box, :eggs_sighted, :queen_sighted, :queen_cells_sighted, :swarm_cells_capped,
-                             :honey_sighted, :pollen_sighted, :swarm_cell_sighted, :supercedure_cell_sighted,
+                             :honey_sighted, :pollen_sighted, :swarm_cells_sighted, :supersedure_cells_sighted,
                              :inspection_id, :pattern 
   end
 end

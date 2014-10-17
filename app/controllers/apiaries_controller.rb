@@ -30,17 +30,13 @@ class ApiariesController < ApplicationController
   # POST /apiaries
   # POST /apiairies.json
   def create
-		user_id = current_user.id
-  	params[:apiary][:user_id] = user_id
-
     @apiary = Apiary.new(apiary_params)
     respond_to do |format|
       if @apiary.save
         Beekeeper.create(
           apiary_id: @apiary.id,
-					user_id: user_id,
-					permission: 'Admin',
-					creator: user_id
+					user_id: current_user.id,
+					permission: 'Admin'
         )
         format.html { redirect_to @apiary, notice: 'Apiary was successfully created.' }
         format.json { render action: 'show', status: :created, location: @apiary }
@@ -86,28 +82,25 @@ class ApiariesController < ApplicationController
 				beekeeper_attributes = params[:apiary][:beekeepers_attributes]
 				beekeeper_attributes.each do |index, beekeeper_params|
 					beekeeper_params[:user_id] = User.email_to_user_id(beekeeper_params[:email])
-					beekeeper_params[:creator] = current_user.id
 					beekeeper_params[:apiary_id] = params[:id]
 				end
 			end
 
-      params.require(:apiary)
-            .permit(:name,
-                    :zip_code,
-                    :photo_url,
-                    :user_id,
-                    :city,
-                    :state,
-                    :street_address,
-                    :beekeepers_attributes => [
-                      :id,
-                      :creator,
-                      :apiary_id,
-                      :user_id,
-                      :permission,
-                      :_destroy
-                    ]
-                   )
+      params.require(:apiary).permit(
+              :name,
+              :zip_code,
+              :photo_url,
+              :city,
+              :state,
+              :street_address,
+              :beekeepers_attributes => [
+                :id,
+                :apiary_id,
+                :user_id,
+                :permission,
+                :_destroy
+              ]
+      )
     end
 
 		def pundit_user

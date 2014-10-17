@@ -13,8 +13,6 @@ class Beekeeper < ActiveRecord::Base
 						uniqueness: {scope: :apiary_id,
 												 message: "User is already a beekeeper at this apiary."}
 
-	validates :creator, presence: true
-
 	validates :permission,
 						inclusion: PERMISSIONS.map{ |key, value| value }
 

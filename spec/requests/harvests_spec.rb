@@ -3,17 +3,15 @@ require 'rails_helper'
 describe 'Harvests', type: :request do
   before(:each) do
     @user = create_logged_in_user
-    @apiary = FactoryGirl.create(:apiary_with_hives, user_id: @user.id)
+    @apiary = FactoryGirl.create(:apiary_with_hives)
     @beekeeper = FactoryGirl.create(
       :beekeeper,
       user: @user,
-      apiary: @apiary,
-      creator: @user.id
+      apiary: @apiary
     )
     @hive = FactoryGirl.create(
       :hive,
-      apiary: @apiary,
-      user: @user
+      apiary: @apiary
     )
   end
 

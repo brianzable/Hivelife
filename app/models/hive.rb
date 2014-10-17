@@ -34,13 +34,11 @@ class Hive < ActiveRecord::Base
 	ENTRANCE_REDUCER_SMALL = 'Small'
 
 	belongs_to :apiary
-	belongs_to :user
 
 	has_many :inspections, dependent: :destroy
 	has_many :harvests, dependent: :destroy
 
-	validates :user_id, :apiary_id,
-						presence: true
+	validates :apiary_id, presence: true
 
 	validates :hive_type,
 						inclusion: TYPES.map{ |key, value| value }

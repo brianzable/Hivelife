@@ -22,7 +22,6 @@ class InspectionsController < ApplicationController
   # GET /hives/{hive_id}/inspections/1/edit
   def edit
     @action = hive_inspection_url(@hive, @inspection)
-    @method = :put
     authorize(@inspection)
   end
 
@@ -80,7 +79,6 @@ class InspectionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def inspection_params
-      params[:inspection][:user_id] = current_user.id
       params[:inspection][:hive_id] = params[:hive_id]
 			params.require(:inspection).permit(
         :month,
@@ -99,7 +97,6 @@ class InspectionsController < ApplicationController
         :hive_orientation,
         :flight_pattern,
         :notes,
-        :user_id,
         :hive_id,
         :health,
         :honey_supers_attributes => honey_super_attributes,
@@ -121,8 +118,8 @@ class InspectionsController < ApplicationController
         :queen_cells_sighted,
         :honey_sighted,
         :pollen_sighted,
-        :swarm_cell_sighted,
-        :supercedure_cell_sighted,
+        :swarm_cells_sighted,
+        :supersedure_cells_sighted,
         :swarm_cells_capped,
         :_destroy
       ]

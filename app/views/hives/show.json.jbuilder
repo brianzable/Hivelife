@@ -1,5 +1,5 @@
 json.extract! @hive, :id, :name, :apiary_id, :breed, :hive_type, :photo_url, :flight_pattern, 
-                      :fine_location_sharing, :donation_enabled, :ventilated, :queen_excluder,
+                      :fine_location_sharing, :public, :ventilated, :queen_excluder,
                       :entrance_reducer, :entrance_reducer_size, :latitude, :longitude, :street_address,
                       :city, :state, :zip_code, :orientation
 json.inspections do

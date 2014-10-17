@@ -4,23 +4,18 @@ describe InspectionPolicy do
   before(:all) do
     @user = FactoryGirl.build(:user, email: 'an_email@example.com')
 
-    @apiary = FactoryGirl.build(
-      :apiary_with_hives,
-      user_id: @user.id
-    )
+    @apiary = FactoryGirl.build(:apiary_with_hives)
 
     @admin_beekeeper = FactoryGirl.build(
       :beekeeper,
       user: FactoryGirl.build(:user, email: 'admin_user@example.com'),
-      apiary: @apiary,
-      creator: @user.id
+      apiary: @apiary
     )
 
     @write_beekeeper = FactoryGirl.build(
       :beekeeper,
       user: FactoryGirl.build(:user, email: 'write_user@example.com'),
       apiary: @apiary,
-      creator: @user.id,
       permission: 'Write'
     )
 
@@ -28,7 +23,6 @@ describe InspectionPolicy do
       :beekeeper,
       user: FactoryGirl.build(:user, email: 'read_user@example.com'),
       apiary: @apiary,
-      creator: @user.id,
       permission: 'Read'
     )
 

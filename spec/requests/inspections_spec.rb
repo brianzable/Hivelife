@@ -3,17 +3,15 @@ require 'rails_helper'
 describe 'Inspections', type: :request do
   before(:each) do
     @user = create_logged_in_user
-    @apiary = FactoryGirl.create(:apiary_with_hives, user_id: @user.id)
+    @apiary = FactoryGirl.create(:apiary_with_hives)
     @beekeeper = FactoryGirl.create(
       :beekeeper,
       user: @user,
       apiary: @apiary,
-      creator: @user.id
     )
     @hive = FactoryGirl.create(
       :hive,
       apiary: @apiary,
-      user: @user
     )
   end
 
@@ -66,8 +64,8 @@ describe 'Inspections', type: :request do
         expect(parsed_brood_box['swarm_cells_capped']).to eq(brood_box.swarm_cells_capped)
         expect(parsed_brood_box['honey_sighted']).to eq(brood_box.honey_sighted)
         expect(parsed_brood_box['pollen_sighted']).to eq(brood_box.pollen_sighted)
-        expect(parsed_brood_box['swarm_cell_sighted']).to eq(brood_box.swarm_cell_sighted)
-        expect(parsed_brood_box['supercedure_cell_sighted']).to eq(brood_box.supercedure_cell_sighted)
+        expect(parsed_brood_box['swarm_cells_sighted']).to eq(brood_box.swarm_cells_sighted)
+        expect(parsed_brood_box['supersedure_cells_sighted']).to eq(brood_box.supersedure_cells_sighted)
         expect(parsed_brood_box['inspection_id']).to eq(brood_box.inspection_id)
 
         parsed_honey_supers = parsed_body['honey_supers']

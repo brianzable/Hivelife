@@ -18,7 +18,7 @@ FactoryGirl.define do
       end
 
       after(:create) do |apiary, evaluator|
-        create_list(:hive, evaluator.hives_count, apiary: apiary, user_id: apiary.user_id)
+        create_list(:hive, evaluator.hives_count, apiary: apiary)
       end
     end
   end
@@ -93,8 +93,8 @@ FactoryGirl.define do
     queen_cells_sighted 1
     swarm_cells_capped 1
     honey_sighted 1
-    swarm_cell_sighted 1
-    supercedure_cell_sighted 1
+    swarm_cells_sighted 1
+    supersedure_cells_sighted 1
   end
 
   factory :honey_super do
