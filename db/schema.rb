@@ -11,10 +11,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141003211210) do
+ActiveRecord::Schema.define(version: 20141017143926) do
 
   create_table "apiaries", force: true do |t|
-    t.integer  "user_id"
     t.string   "name"
     t.string   "zip_code"
     t.string   "photo_url",      default: "defaults/beehive_placeholder.png", null: false
@@ -28,7 +27,6 @@ ActiveRecord::Schema.define(version: 20141003211210) do
   create_table "beekeepers", force: true do |t|
     t.integer  "apiary_id"
     t.integer  "user_id"
-    t.integer  "creator"
     t.string   "permission"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -45,8 +43,8 @@ ActiveRecord::Schema.define(version: 20141003211210) do
     t.datetime "updated_at"
     t.boolean  "honey_sighted"
     t.boolean  "pollen_sighted"
-    t.boolean  "swarm_cell_sighted"
-    t.boolean  "supercedure_cell_sighted"
+    t.boolean  "swarm_cells_sighted"
+    t.boolean  "supersedure_cells_sighted"
   end
 
   create_table "diseases", force: true do |t|
@@ -66,11 +64,9 @@ ActiveRecord::Schema.define(version: 20141003211210) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "hive_id"
-    t.integer  "user_id"
   end
 
   create_table "hives", force: true do |t|
-    t.integer  "user_id"
     t.integer  "apiary_id"
     t.string   "name",                                            default: "",                                 null: false
     t.string   "breed"
@@ -78,7 +74,7 @@ ActiveRecord::Schema.define(version: 20141003211210) do
     t.string   "photo_url",                                       default: "defaults/beehive_placeholder.png", null: false
     t.string   "flight_pattern"
     t.boolean  "fine_location_sharing",                           default: false,                              null: false
-    t.boolean  "donation_enabled",                                default: false,                              null: false
+    t.boolean  "public",                                          default: false,                              null: false
     t.boolean  "ventilated"
     t.boolean  "queen_excluder"
     t.boolean  "entrance_reducer"
@@ -104,7 +100,6 @@ ActiveRecord::Schema.define(version: 20141003211210) do
   end
 
   create_table "inspections", force: true do |t|
-    t.integer  "user_id"
     t.decimal  "temperature",           precision: 10, scale: 0
     t.string   "weather_conditions"
     t.string   "weather_notes"
