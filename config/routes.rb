@@ -7,18 +7,6 @@ Bees::Application.routes.draw do
 
   get '/data', to: 'static_pages#data'
 
-  namespace :api do
-    namespace :data do
-      resources :harvests, only: [:index]
-      resources :hives, only: [:index]
-      resources :inspections, only: [:index]
-    end
-
-    namespace :mobile do
-      resources :apiaries
-    end
-  end
-
   resources :apiaries do
   	resources :hives, except: [:index]
     resources :beekeepers, except: [:index, :new, :edit] do
