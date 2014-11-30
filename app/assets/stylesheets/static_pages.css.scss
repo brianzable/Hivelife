@@ -8,7 +8,7 @@ body {
   height: auto;
   top: 0;
   left: 0;
-  background: url("https://dl.dropboxusercontent.com/u/47340/background.JPG") no-repeat center center;
+  background: url("https://dl.dropboxusercontent.com/u/47340/bg/background-compressed.jpg") no-repeat center center;
   background-color: $background-color;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -17,7 +17,7 @@ body {
 }
 
 #header {
-  margin-top: 10em;
+  margin-top: 15em;
 }
 
 #container {
@@ -35,6 +35,7 @@ body {
   padding: 8px;
   margin-left: auto;
   margin-right: auto;
+  box-shadow: 0 2px 0 0 #E5B560;
 }
 
 #email {
