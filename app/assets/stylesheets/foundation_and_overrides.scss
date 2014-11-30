@@ -57,7 +57,7 @@ $body-bg: $main-background;
 // We use these as default colors throughout
 // $primary-color: #008CBA;
 // $primary-color: rgba(0, 0, 0, 0);
-$primary-color: $header-footer-background;
+$primary-color: white;
 // $secondary-color: #e7e7e7;
 // $alert-color: #f04124;
 // $success-color: #43AC6A;
@@ -129,7 +129,7 @@ $primary-color: $header-footer-background;
 // $header-text-rendering: optimizeLegibility;
 
 // We use these to control header font sizes
-// $h1-font-size: rem-calc(44);
+$h1-font-size: rem-calc(88);
 // $h2-font-size: rem-calc(37);
 // $h3-font-size: rem-calc(27);
 // $h4-font-size: rem-calc(23);
@@ -331,6 +331,7 @@ $primary-color: $header-footer-background;
 // We use these to control button text styles.
 // $button-font-family: $body-font-family;
 // $button-font-color: #fff;
+// $button-font-color: #fff;
 // $button-font-color-alt: #333;
 // $button-font-tny: rem-calc(11);
 // $button-font-sml: rem-calc(13);
@@ -490,7 +491,7 @@ $button-function-factor: 50%;
 // $form-label-bottom-margin: 0;
 // $input-font-family: inherit;
 // $input-font-color: rgba(0,0,0,0.75);
-// $input-font-size: rem-calc(14);
+$input-font-size: rem-calc(18);
 // $input-bg-color: #fff;
 // $input-focus-bg-color: scale-color(#fff, $lightness: -2%);
 // $input-border-color: scale-color(#fff, $lightness: -20%);
