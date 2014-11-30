@@ -1,5 +1,6 @@
 $background-color: #E5CB61;
-//$background-color: #FDE3A7;
+$email-background: #FAAD37;
+
 body {
   position: absolute;
   min-height:100%;
@@ -39,7 +40,7 @@ body {
 #email {
   margin-top: 60px;
   width: 100%;
-  background: #FAAD37;
+  background: $email-background;
 }
 
 #footer {
