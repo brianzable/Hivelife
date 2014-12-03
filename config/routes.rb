@@ -1,5 +1,7 @@
 Bees::Application.routes.draw do
+  post '/mailing_list', to: 'static_pages#add_email'
   get '*path' => redirect('/')
+
   # authenticated :user do
   #   root to: 'apiaries#index', as: 'authenticated_root'
   # end
