@@ -8,7 +8,7 @@ body {
   height: auto;
   top: 0;
   left: 0;
-  background: url("https://dl.dropboxusercontent.com/u/47340/bg/background-compressed.jpg") no-repeat center center;
+  background: url("https://s3-us-west-2.amazonaws.com/hivelife/background-compressed.jpg") no-repeat center center;
   background-color: $background-color;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -72,4 +72,15 @@ body {
 
 .info {
   padding: 0px 50px 50px 50px; /* top right bottom left */
+}
+
+.icon-link {
+  color: white;
+}
+.icon-link:hover {
+  color: white;
+  background: none;
+}
+.icon-link:visited {
+  color: white;
 }
