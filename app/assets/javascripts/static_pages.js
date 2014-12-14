@@ -19,7 +19,7 @@ $(document).ready(function() {
           $('#result-message').html("Thanks for the support!");
         }
         else {
-          $('#result-message').html("Somthing went wrong! Please try again later");
+          $('#result-message').html("Something went wrong! Please try again later");
         }
       }
     });
