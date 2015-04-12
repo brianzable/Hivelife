@@ -35,7 +35,7 @@ gem 'capybara', group: [:development, :test]
 gem 'factory_girl_rails', group: [:development, :test]
 
 # Use devise for Authentication
-gem 'devise'
+gem 'devise', '~> 3.4.0'
 
 # Use Pundit for Authorization
 gem 'pundit'
