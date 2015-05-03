@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Apiary' do
+describe Apiary, type: :model do
   describe 'self.for_user' do
     it 'returns a list apiaries a user is a member of' do
       user = FactoryGirl.create(:user)

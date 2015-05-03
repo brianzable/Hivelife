@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'BeekeeperPolicy' do
+describe BeekeeperPolicy, type: :model do
   before(:all) do
     @user = FactoryGirl.build(:user, email: 'an_email@example.com')
 

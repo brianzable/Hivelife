@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'ApiaryPolicy' do
+describe ApiaryPolicy, type: :model do
   before(:all) do
     @user = FactoryGirl.build(:user, email: 'an_email@example.com')
 

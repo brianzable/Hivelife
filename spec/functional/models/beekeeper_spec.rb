@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Beekeeper do
+describe Beekeeper, type: :model do
   describe 'admin?' do
     it 'returns true if the permission is Admin' do
       beekeeper = FactoryGirl.build(:beekeeper, permission: 'Admin')
