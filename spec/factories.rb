@@ -13,7 +13,7 @@ FactoryGirl.define do
     state 'IL'
 
     factory :apiary_with_hives do
-      ignore do
+      transient do
         hives_count 2
       end
 
@@ -52,7 +52,7 @@ FactoryGirl.define do
     minute 30
     ampm 'AM'
     notes 'Other notes'
-    ignore do
+    transient do
       brood_box_count 2
       honey_super_count 2
     end
