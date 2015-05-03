@@ -1,6 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe 'Beekeepers', type: :request do
+RSpec.describe BeekeepersController, type: :controller do
+  render_views
 
   before(:each) do
     @user = create_logged_in_user
@@ -11,15 +12,15 @@ RSpec.describe 'Beekeepers', type: :request do
       apiary: @apiary
     )
 
-    @http_headers = {
-      'Content-Type' => 'application/json',
-      'Accept' => 'application/json'
-    }
+    # @http_headers = {
+    #   'Content-Type' => 'application/json',
+    #   'Accept' => 'application/json'
+    # }
   end
 
   describe '#show' do
     it 'returns a JSON representation of a beekeeper' do
-      get apiary_beekeeper_path(@apiary, @beekeeper), format: :json
+      get :show, apiary_id: @apiary.id, id: @beekeeper.id, format: :json
 
       beekeeper_json = {
         id: @beekeeper.id,
@@ -45,7 +46,7 @@ RSpec.describe 'Beekeepers', type: :request do
         apiary: another_apiary,
       )
 
-      get apiary_beekeeper_path(another_apiary, another_beekeeper), format: :json
+      get :show, apiary_id: another_apiary.id, id: another_beekeeper.id, format: :json
       expect(response.code).to eq("401")
 
       parsed_body = JSON.parse(response.body)
@@ -57,29 +58,33 @@ RSpec.describe 'Beekeepers', type: :request do
     it 'creates a new Beekeeper in the database' do
       new_user = FactoryGirl.create(:user, email: "new_guy@example.com")
       payload = {
+        apiary_id: @apiary.id,
         beekeeper: {
           email: new_user.email,
           permission: 'Read'
-        }
+        },
+        format: :json
       }
-      original_beek_count = Beekeeper.count
 
-      post(apiary_beekeepers_path(@apiary), payload.to_json, @http_headers)
+      expect do
+        post :create, payload
+      end.to change {Beekeeper.count}.by(1)
 
       expect(response).to be_success
-      expect(Beekeeper.count).to be(original_beek_count + 1)
     end
 
     it 'returns a JSON representation of the new beekeeper object' do
       new_user = FactoryGirl.create(:user, email: "new_guy@example.com")
       payload = {
+        apiary_id: @apiary.id,
         beekeeper: {
           email: new_user.email,
           permission: 'Read'
-        }
+        },
+        format: :json
       }
 
-      post(apiary_beekeepers_path(@apiary), payload.to_json, @http_headers)
+      post :create, payload
 
       expect(response).to be_success
 
@@ -104,21 +109,22 @@ RSpec.describe 'Beekeepers', type: :request do
       yet_another_user = FactoryGirl.create(:user, email: 'yet_another_user@example.com')
 
       payload = {
+        apiary_id: @apiary.id,
         beekeeper: {
           email: yet_another_user.email,
           permission: 'Write'
-        }
+        },
+        format: :json
       }
 
-      original_beek_count = Beekeeper.count
+      expect do
+        post :create, payload
+      end.to_not change { Beekeeper.count }
 
-      post(apiary_beekeepers_path(@apiary), payload.to_json, @http_headers)
       expect(response.code).to eq("401")
 
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['error']).to eq("You are not authorized to perform this action.")
-
-      expect(Beekeeper.count).to be(original_beek_count)
     end
 
     it 'will not allow users with read access to create beekeepers' do
@@ -133,21 +139,22 @@ RSpec.describe 'Beekeepers', type: :request do
       yet_another_user = FactoryGirl.create(:user, email: 'yet_another_user@example.com')
 
       payload = {
+        apiary_id: @apiary.id,
         beekeeper: {
           email: yet_another_user.email,
           permission: 'Read'
-        }
+        },
+        format: :json
       }
 
-      original_beek_count = Beekeeper.count
+      expect do
+        post :create, payload
+      end.to_not change { Beekeeper.count }
 
-      post(apiary_beekeepers_path(@apiary), payload.to_json, @http_headers)
       expect(response.code).to eq("401")
 
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['error']).to eq("You are not authorized to perform this action.")
-
-      expect(Beekeeper.count).to be(original_beek_count)
     end
 
     it 'will not allow random users to create beekeepers at different apiaries' do
@@ -157,21 +164,22 @@ RSpec.describe 'Beekeepers', type: :request do
       another_user = FactoryGirl.create(:user, email: 'another_user@example.com')
 
       payload = {
+        apiary_id: an_apiary.id,
         beekeeper: {
           email: another_user.email,
           permission: 'Read'
-        }
+        },
+        format: :json
       }
 
-      original_beek_count = Beekeeper.count
+      expect do
+        post :create, payload
+      end.to_not change { Beekeeper.count }
 
-      post(apiary_beekeepers_path(an_apiary), payload.to_json, @http_headers)
       expect(response.code).to eq("401")
 
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['error']).to eq("You are not authorized to perform this action.")
-
-      expect(Beekeeper.count).to be(original_beek_count)
     end
   end
 
@@ -186,23 +194,24 @@ RSpec.describe 'Beekeepers', type: :request do
       )
 
       payload = {
+        id: new_beekeeper.id,
+        apiary_id: @apiary.id,
         beekeeper: {
           permission: 'Write'
-        }
+        },
+        format: :json
       }
 
       expect(new_beekeeper.permission).to eq('Read')
 
-      put(apiary_beekeeper_path(@apiary, new_beekeeper), payload.to_json, @http_headers)
+      put :update, payload
+
+      new_beekeeper.reload
+      expect(new_beekeeper.permission).to eq('Write')
 
       expect(response).to be_success
 
-      new_beekeeper.reload
-
-      expect(new_beekeeper.permission).to eq('Write')
-
       parsed_response = JSON.parse(response.body)
-
       expect(parsed_response["id"]).to be(new_beekeeper.id)
       expect(parsed_response["apiary_id"]).to be(@apiary.id)
       expect(parsed_response["permission"]).to eq("Write")
@@ -230,18 +239,22 @@ RSpec.describe 'Beekeepers', type: :request do
       )
 
       payload = {
+        id: another_beekeeper.id,
+        apiary_id: @apiary.id,
         beekeeper: {
           permission: 'Write'
-        }
+        },
+        format: :json
       }
 
       expect(another_beekeeper.permission).to eq('Read')
 
-      put(apiary_beekeeper_path(@apiary, another_beekeeper), payload.to_json, @http_headers)
-      expect(response.code).to eq("401")
+      put :update, payload
 
       another_beekeeper.reload
       expect(another_beekeeper.permission).to eq('Read')
+
+      expect(response.code).to eq("401")
 
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['error']).to eq("You are not authorized to perform this action.")
@@ -266,18 +279,22 @@ RSpec.describe 'Beekeepers', type: :request do
       )
 
       payload = {
+        id: another_beekeeper.id,
+        apiary_id: @apiary.id,
         beekeeper: {
           permission: 'Write'
-        }
+        },
+        format: :json
       }
 
       expect(another_beekeeper.permission).to eq('Read')
 
-      put(apiary_beekeeper_path(@apiary, another_beekeeper), payload.to_json, @http_headers)
-      expect(response.code).to eq("401")
+      put :update, payload
 
       another_beekeeper.reload
       expect(another_beekeeper.permission).to eq('Read')
+
+      expect(response.code).to eq("401")
 
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['error']).to eq("You are not authorized to perform this action.")
@@ -295,21 +312,25 @@ RSpec.describe 'Beekeepers', type: :request do
       )
 
       payload = {
+        id: a_beekeeper.id,
+        apiary_id: different_apiary.id,
         beekeeper: {
           permission: 'Admin'
-        }
+        },
+        format: :json
       }
 
       expect(a_beekeeper.permission).to eq('Read')
 
-      put(apiary_beekeeper_path(different_apiary, a_beekeeper), payload.to_json, @http_headers)
+      put :update, payload
+
+      a_beekeeper.reload
+      expect(a_beekeeper.permission).to eq('Read')
+
       expect(response.code).to eq('401')
 
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
-
-      a_beekeeper.reload
-      expect(a_beekeeper.permission).to eq('Read')
     end
 
     it "does not allow admin to demote other admin" do
@@ -325,12 +346,16 @@ RSpec.describe 'Beekeepers', type: :request do
       expect(another_admin.permission).to eq('Admin')
 
       payload = {
+        id: another_admin.id,
+        apiary_id: @apiary.id,
         beekeeper: {
           permission: 'Read'
-        }
+        },
+        format: :json
       }
 
-      put(apiary_beekeeper_path(@apiary, another_admin), payload.to_json, @http_headers)
+      put :update, payload
+
       expect(response.code).to eq('401')
 
       parsed_body = JSON.parse(response.body)
@@ -352,7 +377,10 @@ RSpec.describe 'Beekeepers', type: :request do
         permission: 'Read'
       )
 
-      delete(apiary_beekeeper_path(@apiary, a_beekeeper), nil, @http_headers)
+      expect do
+        delete :destroy, apiary_id: @apiary.id, id: a_beekeeper.id, format: :json
+      end.to change { Beekeeper.count }.by(-1)
+
       expect(response.code).to eq('200')
 
       parsed_body = JSON.parse(response.body)
@@ -373,7 +401,10 @@ RSpec.describe 'Beekeepers', type: :request do
         permission: 'Read'
       )
 
-      delete(apiary_beekeeper_path(different_apiary, a_beekeeper), nil, @http_headers)
+      expect do
+        delete :destroy, apiary_id: different_apiary.id, id: a_beekeeper.id, format: :json
+      end.to_not change { Beekeeper.count }
+
       expect(response.code).to eq('401')
 
       parsed_body = JSON.parse(response.body)
@@ -392,7 +423,10 @@ RSpec.describe 'Beekeepers', type: :request do
         permission: 'Write'
       )
 
-      delete(apiary_beekeeper_path(@apiary, @beekeeper), nil, @http_headers)
+      expect do
+        delete :destroy, apiary_id: @apiary.id, id: @beekeeper.id, format: :json
+      end.to_not change { Beekeeper.count }
+
       expect(response.code).to eq('401')
 
       parsed_body = JSON.parse(response.body)
@@ -411,7 +445,10 @@ RSpec.describe 'Beekeepers', type: :request do
         permission: 'Read'
       )
 
-      delete(apiary_beekeeper_path(@apiary, @beekeeper), nil, @http_headers)
+      expect do
+        delete :destroy, apiary_id: @apiary.id, id: @beekeeper.id, format: :json
+      end.to_not change { Beekeeper.count }
+
       expect(response.code).to eq('401')
 
       parsed_body = JSON.parse(response.body)
@@ -421,7 +458,9 @@ RSpec.describe 'Beekeepers', type: :request do
     end
 
     it "allows admins to remove themselves" do
-      delete(apiary_beekeeper_path(@apiary, @beekeeper), nil, @http_headers)
+      expect do
+        delete :destroy, apiary_id: @apiary.id, id: @beekeeper.id, format: :json
+      end.to change { Beekeeper.count }.by(-1)
 
       expect(response.code).to eq('200')
 
@@ -441,74 +480,16 @@ RSpec.describe 'Beekeepers', type: :request do
         permission: 'Admin'
       )
 
-      delete(apiary_beekeeper_path(@apiary, another_admin), nil, @http_headers)
+      expect do
+        delete :destroy, apiary_id: @apiary.id, id: another_admin.id, format: :json
+      end.to_not change { Beekeeper.count }
+
       expect(response.code).to eq('401')
 
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
       expect { another_admin.reload }.not_to raise_error
       expect(another_admin.permission).to eq('Admin')
-    end
-  end
-
-  describe "#preview" do
-    it "does not allow unauthenticated users to preview beekeeper objects" do
-      Warden.test_reset!
-      another_user = FactoryGirl.create(
-        :user,
-        first_name: "Jed",
-        last_name: "Doe",
-        email: "jed@doe.com"
-      )
-
-      payload = {
-        beekeeper: {
-          email: "jed@doe.com",
-          permission: "Read"
-        }
-      }.to_json
-
-      original_beekeeper_count = Beekeeper.count
-
-      post(preview_new_apiary_beekeeper_path(@apiary), payload, @http_headers)
-      expect(response.code).to eq('401')
-
-      parsed_body = JSON.parse(response.body)
-
-      expect(parsed_body["error"]).to eq("You need to sign in or sign up before continuing.")
-
-      expect(Beekeeper.count).to be (original_beekeeper_count)
-    end
-
-    it "allows logged in users to preivew beekeeper objects" do
-      another_user = FactoryGirl.create(
-        :user,
-        first_name: "Jed",
-        last_name: "Doe",
-        email: "jed@doe.com"
-      )
-
-      payload = {
-        beekeeper: {
-          email: "jed@doe.com",
-          permission: "Read"
-        }
-      }.to_json
-
-      original_beekeeper_count = Beekeeper.count
-
-      post(preview_new_apiary_beekeeper_path(@apiary), payload, @http_headers)
-
-      parsed_body = JSON.parse(response.body)
-
-      expect(parsed_body["id"]).to be_nil
-      expect(parsed_body["permission"]).to eq("Read")
-      expect(parsed_body["apiary_id"]).to be(@apiary.id)
-      expect(parsed_body["user"]["user_id"]).to be(another_user.id)
-      expect(parsed_body["user"]["first_name"]).to eq("Jed")
-      expect(parsed_body["user"]["last_name"]).to eq("Doe")
-
-      expect(Beekeeper.count).to be (original_beekeeper_count)
     end
   end
 end
