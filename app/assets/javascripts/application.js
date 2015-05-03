@@ -14,7 +14,6 @@
 //= require jquery_ujs
 //= require jquery.fileupload
 //= require foundation
-//= require jquery.turbolinks
 //= require_tree .
 
 $(document).ready(function() {
