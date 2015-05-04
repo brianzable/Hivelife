@@ -18,6 +18,4 @@ Bees::Application.routes.draw do
   	resources :inspections, except: [:index]
   	resources :harvests, except: [:index]
   end
-
-  devise_for :users
 end
