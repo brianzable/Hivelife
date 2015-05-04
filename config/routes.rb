@@ -14,4 +14,6 @@ Bees::Application.routes.draw do
   	resources :inspections, except: [:index]
   	resources :harvests, except: [:index]
   end
+
+  resources :users, except: [:index, :new, :edit]
 end
