@@ -1,8 +1,4 @@
 Bees::Application.routes.draw do
-  authenticated :user do
-    root to: 'apiaries#index', as: 'authenticated_root'
-  end
-
   root 'static_pages#index'
 
   get '/data', to: 'static_pages#data'
