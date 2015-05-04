@@ -34,6 +34,9 @@ gem 'factory_girl_rails', group: [:development, :test]
 # Use Pundit for Authorization
 gem 'pundit'
 
+# Use Sorcery for authentication
+gem 'sorcery'
+
 # Use foundation for frontend
 gem 'foundation-rails', '~> 5.2.1.0'
 
@@ -42,3 +45,4 @@ gem 'font-awesome-rails'
 gem 'jquery.fileupload-rails'
 gem 'whenever', require: false
 gem 'aws-sdk'
+gem 'responders', '~> 2.0'
