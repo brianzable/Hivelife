@@ -18,6 +18,7 @@ RSpec.describe UsersController, type: :controller do
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['id']).to_not be_nil
       expect(parsed_body['email']).to eq('user@example.com')
+      expect(parsed_body['authentication_token']).to_not be_nil
     end
   end
 
