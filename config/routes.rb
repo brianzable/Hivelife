@@ -2,6 +2,7 @@ Bees::Application.routes.draw do
   root 'static_pages#index'
 
   get '/data', to: 'static_pages#data'
+  post '/sign_in', to: 'sessions#sign_in'
 
   resources :apiaries do
   	resources :hives, except: [:index]
