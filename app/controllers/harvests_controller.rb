@@ -1,29 +1,23 @@
 class HarvestsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :require_login
   before_action :set_harvest, only: [:edit, :update, :destroy]
   before_action :set_hive, only: [:edit, :update, :create]
   around_action :user_time_zone
 
-  # GET /hives/{hive_id}/harvests/1
-  # GET /hives/{hive_id}/harvests/1.json
   def show
     @harvest = Harvest.find(params[:id])
     authorize(@harvest)
   end
 
-  # GET /hives/{hive_id}/harvests/new
   def new
     @hive = Hive.find(params[:hive_id])
     @harvest = Harvest.new
     authorize(@harvest)
   end
 
-  # GET /hives/{hive_id}/harvests/1/edit
   def edit
   end
 
-  # POST /hives/{hive_id}/harvests
-  # POST /hives/{hive_id}/harvests.json
   def create
     @harvest = Harvest.new(harvest_params)
     @hive = Hive.find(params[:hive_id])
@@ -39,8 +33,6 @@ class HarvestsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /hives/{hive_id}/harvests/1
-  # PATCH/PUT /hives/{hive_id}/harvests/1.json
   def update
     authorize(@harvest)
     respond_to do |format|
@@ -54,8 +46,6 @@ class HarvestsController < ApplicationController
     end
   end
 
-  # DELETE /hives/{hive_id}/harvests/1
-  # DELETE /hives/{hive_id}/harvests/1.json
   def destroy
     authorize(@harvest)
     @harvest.destroy
@@ -67,6 +57,7 @@ class HarvestsController < ApplicationController
   end
 
 private
+
   def set_harvest
     @harvest = Harvest.find(params[:id])
   end

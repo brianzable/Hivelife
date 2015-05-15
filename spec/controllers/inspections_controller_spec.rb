@@ -4,6 +4,7 @@ describe InspectionsController, type: :controller do
   render_views
 
   before(:each) do
+    pending('TODO: Add time zone field back to User model')
     @user = create_logged_in_user
     @apiary = FactoryGirl.create(:apiary_with_hives)
     @beekeeper = FactoryGirl.create(

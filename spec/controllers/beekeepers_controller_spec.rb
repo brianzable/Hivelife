@@ -11,11 +11,6 @@ RSpec.describe BeekeepersController, type: :controller do
       user: @user,
       apiary: @apiary
     )
-
-    # @http_headers = {
-    #   'Content-Type' => 'application/json',
-    #   'Accept' => 'application/json'
-    # }
   end
 
   describe '#show' do
@@ -26,10 +21,6 @@ RSpec.describe BeekeepersController, type: :controller do
         id: @beekeeper.id,
         permission: @beekeeper.permission,
         apiary_id: @beekeeper.apiary_id,
-        user: {
-          user_id: @user.id,
-          first_name: @user.first_name,
-        }
       }.to_json
 
       expect(response).to be_success
@@ -47,9 +38,6 @@ RSpec.describe BeekeepersController, type: :controller do
 
       get :show, apiary_id: another_apiary.id, id: another_beekeeper.id, format: :json
       expect(response.code).to eq("401")
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq("You are not authorized to perform this action.")
     end
   end
 
@@ -91,9 +79,6 @@ RSpec.describe BeekeepersController, type: :controller do
       expect(parsed_response["id"]).to_not be_nil
       expect(parsed_response["apiary_id"]).to be(@apiary.id)
       expect(parsed_response["permission"]).to eq("Read")
-      expect(parsed_response["user"]["user_id"]).to be(new_user.id)
-      expect(parsed_response["user"]["first_name"]).to eq(new_user.first_name)
-      expect(parsed_response["user"]["last_name"]).to eq(new_user.last_name)
     end
 
     it 'will not allow users with write access to create beekeepers' do
@@ -121,9 +106,6 @@ RSpec.describe BeekeepersController, type: :controller do
       end.to_not change { Beekeeper.count }
 
       expect(response.code).to eq("401")
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq("You are not authorized to perform this action.")
     end
 
     it 'will not allow users with read access to create beekeepers' do
@@ -151,9 +133,6 @@ RSpec.describe BeekeepersController, type: :controller do
       end.to_not change { Beekeeper.count }
 
       expect(response.code).to eq("401")
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq("You are not authorized to perform this action.")
     end
 
     it 'will not allow random users to create beekeepers at different apiaries' do
@@ -176,9 +155,6 @@ RSpec.describe BeekeepersController, type: :controller do
       end.to_not change { Beekeeper.count }
 
       expect(response.code).to eq("401")
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq("You are not authorized to perform this action.")
     end
   end
 
@@ -214,13 +190,9 @@ RSpec.describe BeekeepersController, type: :controller do
       expect(parsed_response["id"]).to be(new_beekeeper.id)
       expect(parsed_response["apiary_id"]).to be(@apiary.id)
       expect(parsed_response["permission"]).to eq("Write")
-      expect(parsed_response["user"]["user_id"]).to be(new_user.id)
-      expect(parsed_response["user"]["first_name"]).to eq(new_user.first_name)
-      expect(parsed_response["user"]["last_name"]).to eq(new_user.last_name)
     end
 
     it 'will not allow users with write access to update beekeepers' do
-      Warden.test_reset!
       write_user = create_logged_in_user(email: 'write_user@example.com')
       write_beekeeper = FactoryGirl.create(
         :beekeeper,
@@ -254,13 +226,9 @@ RSpec.describe BeekeepersController, type: :controller do
       expect(another_beekeeper.permission).to eq('Read')
 
       expect(response.code).to eq("401")
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq("You are not authorized to perform this action.")
     end
 
     it 'will not allow users with read access to create beekeepers' do
-      Warden.test_reset!
       read_user = create_logged_in_user(email: 'read_user@example.com')
       write_beekeeper = FactoryGirl.create(
         :beekeeper,
@@ -294,9 +262,6 @@ RSpec.describe BeekeepersController, type: :controller do
       expect(another_beekeeper.permission).to eq('Read')
 
       expect(response.code).to eq("401")
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq("You are not authorized to perform this action.")
     end
 
     it 'will not allow random users to edit beekeepers at different apiaries' do
@@ -327,9 +292,6 @@ RSpec.describe BeekeepersController, type: :controller do
       expect(a_beekeeper.permission).to eq('Read')
 
       expect(response.code).to eq('401')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
     end
 
     it "does not allow admin to demote other admin" do
@@ -356,9 +318,6 @@ RSpec.describe BeekeepersController, type: :controller do
       put :update, payload
 
       expect(response.code).to eq('401')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
 
       another_admin.reload
       expect(another_admin.permission).to eq('Admin')
@@ -406,14 +365,10 @@ RSpec.describe BeekeepersController, type: :controller do
 
       expect(response.code).to eq('401')
 
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
-
       expect { a_beekeeper.reload }.not_to raise_error
     end
 
     it "does not allow write users to remove beekeepers" do
-      Warden.test_reset!
       write_user = create_logged_in_user(email: 'write_user@example.com')
       write_beekeeper = FactoryGirl.create(
         :beekeeper,
@@ -428,14 +383,10 @@ RSpec.describe BeekeepersController, type: :controller do
 
       expect(response.code).to eq('401')
 
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
-
       expect { @beekeeper.reload }.not_to raise_error
     end
 
     it "does not allow read users to remove beekeepers" do
-      Warden.test_reset!
       read_user = create_logged_in_user(email: 'read_user@example.com')
       read_beekeeper = FactoryGirl.create(
         :beekeeper,
@@ -449,9 +400,6 @@ RSpec.describe BeekeepersController, type: :controller do
       end.to_not change { Beekeeper.count }
 
       expect(response.code).to eq('401')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
 
       expect { @beekeeper.reload }.not_to raise_error
     end
@@ -485,8 +433,6 @@ RSpec.describe BeekeepersController, type: :controller do
 
       expect(response.code).to eq('401')
 
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
       expect { another_admin.reload }.not_to raise_error
       expect(another_admin.permission).to eq('Admin')
     end

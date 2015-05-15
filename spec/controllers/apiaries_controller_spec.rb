@@ -83,9 +83,6 @@ RSpec.describe ApiariesController, type: :controller do
 
       get :show, id: apiary_with_hives.id, format: :json
       expect(response.code).to eq("401")
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body["error"]).to eq("You are not authorized to perform this action.")
     end
 
     it 'contains a list of hives associated with this apiary' do
@@ -210,9 +207,7 @@ RSpec.describe ApiariesController, type: :controller do
 
       put :update, payload
 
-      parsed_body = JSON.parse(response.body)
       expect(response.code).to eq("401")
-      expect(parsed_body["error"]).to eq("You are not authorized to perform this action.")
     end
 
     it 'does not allow users with write permissions to update an apiary' do
@@ -237,9 +232,7 @@ RSpec.describe ApiariesController, type: :controller do
 
       put :update, payload
 
-      parsed_body = JSON.parse(response.body)
       expect(response.code).to eq("401")
-      expect(parsed_body["error"]).to eq("You are not authorized to perform this action.")
     end
 
     it 'does not allow administrators of other apiaries to update other apiaries' do
@@ -263,9 +256,7 @@ RSpec.describe ApiariesController, type: :controller do
 
       put :update, payload
 
-      parsed_body = JSON.parse(response.body)
       expect(response.code).to eq("401")
-      expect(parsed_body["error"]).to eq("You are not authorized to perform this action.")
     end
   end
 
@@ -336,9 +327,7 @@ RSpec.describe ApiariesController, type: :controller do
       expect do
         delete :destroy, id: apiary.id, format: :json
 
-        parsed_body = JSON.parse(response.body)
         expect(response.code).to eq("401")
-        expect(parsed_body["error"]).to eq("You are not authorized to perform this action.")
       end.to_not change { Apiary.count }
     end
 
@@ -357,9 +346,7 @@ RSpec.describe ApiariesController, type: :controller do
       expect do
         delete :destroy, id: apiary.id, format: :json
 
-        parsed_body = JSON.parse(response.body)
         expect(response.code).to eq("401")
-        expect(parsed_body["error"]).to eq("You are not authorized to perform this action.")
       end.to_not change { Apiary.count }
     end
 
@@ -376,9 +363,7 @@ RSpec.describe ApiariesController, type: :controller do
       expect do
         delete :destroy, id: another_apiary.id, format: :json
 
-        parsed_body = JSON.parse(response.body)
         expect(response.code).to eq("401")
-        expect(parsed_body["error"]).to eq("You are not authorized to perform this action.")
       end.to_not change{ Apiary.count }
     end
   end

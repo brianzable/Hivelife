@@ -1,14 +1,11 @@
 class BeekeepersController < ApplicationController
 	respond_to :json
-  before_action :authenticate_user!
+  before_action :require_login
 	before_action :set_and_authorize_beekeeper, only: [:show, :update, :destroy]
 
-  # GET apiaries/{apiary_id}/beekeepers/1.json
   def show
   end
 
-  # POST /apiaries/{apiary_id}/beekeepers
-  # POST /apiaries/{apiary_id}/beekeepers.json
   def create
 		@beekeeper = Beekeeper.new(create_beekeeper_params)
 		authorize @beekeeper
@@ -21,8 +18,6 @@ class BeekeepersController < ApplicationController
     end
   end
 
-  # PATCH/PUT /apiaries/{apiary_id}/beekeepers/1
-  # PATCH/PUT /apiaries/{apiary_id}/beekeepers/1.json
   def update
     if @beekeeper.update(update_beekeeper_params)
 			render action: 'show', status: :ok
@@ -32,25 +27,13 @@ class BeekeepersController < ApplicationController
 		end
   end
 
-  # DELETE /apiaries/{apiary_id}/beekeepers/1
-  # DELETE /apiaries/{apiary_id}/beekeepers/1.json
   def destroy
     @beekeeper.destroy
 		render json: { head: :no_content }
   end
 
-  # POST /apiaries/{apiary_id}/beekeepers/new/preview
-	def preview
-    @beekeeper = Beekeeper.new(create_beekeeper_params)
-		if @beekeeper.valid?
-			render action: 'show', status: :ok
-		else
-			render json: { errors: @beekeeper.errors.full_messages },
-						status: :unprocessable_entity
-		end
-	end
-
 private
+
   def set_and_authorize_beekeeper
     @beekeeper = Beekeeper.includes(:user).where(
       id: params[:id],
@@ -60,7 +43,7 @@ private
   end
 
   def create_beekeeper_params
-    params[:beekeeper][:user_id] = User.email_to_user_id(params[:beekeeper][:email])
+    params[:beekeeper][:user_id] = User.where(email: params[:beekeeper][:email]).take.id
 		params[:beekeeper][:apiary_id] = params[:apiary_id]
     params.require(:beekeeper).permit(:apiary_id, :user_id, :permission, :email, :creator)
   end

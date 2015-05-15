@@ -1,5 +1,5 @@
 class ApiariesController < ApplicationController
-  before_action :authenticate_user!
+  before_action :require_login
   before_action :set_apiary, only: [:show, :edit, :update, :destroy]
 
   def index
@@ -17,12 +17,9 @@ class ApiariesController < ApplicationController
     @apiary = Apiary.new
   end
 
-  # GET /apiaries/1/edit
   def edit
   end
 
-  # POST /apiaries
-  # POST /apiairies.json
   def create
     @apiary = Apiary.new(apiary_params)
     respond_to do |format|
@@ -41,8 +38,6 @@ class ApiariesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /apiaries/1
-  # PATCH/PUT /apiaries/1.json
   def update
     respond_to do |format|
       if @apiary.update(apiary_params)
@@ -55,8 +50,6 @@ class ApiariesController < ApplicationController
     end
   end
 
-  # DELETE /apiaries/1
-  # DELETE /apiaries/1.json
   def destroy
     @apiary.destroy
     respond_to do |format|

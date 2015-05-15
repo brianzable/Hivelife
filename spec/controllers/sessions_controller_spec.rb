@@ -5,11 +5,8 @@ RSpec.describe SessionsController, type: :controller do
 
   describe 'sign_in' do
     it 'returns a token given a username and password' do
-      user = User.create(
-        email: 'user@example.com',
-        password: '11111111',
-        password_confirmation: '11111111'
-      )
+      user = FactoryGirl.create(:user, email: 'user@example.com')
+      user.activate!
 
       payload = {
         email: 'user@example.com',
