@@ -29,7 +29,6 @@ RSpec.describe BeekeepersController, type: :controller do
         user: {
           user_id: @user.id,
           first_name: @user.first_name,
-          last_name: @user.last_name
         }
       }.to_json
 

@@ -21,3 +21,6 @@
 
 en:
   hello: "Hello world"
+  user_mailer:
+    activation_needed_email:
+      subject: "Verify your Hivelife account!"

@@ -16,5 +16,6 @@ Bees::Application.routes.draw do
   	resources :harvests, except: [:index]
   end
 
+  get '/users/:activation_token/activate', to: 'users#activate'
   resources :users, except: [:index, :new, :edit]
 end

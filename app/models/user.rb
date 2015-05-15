@@ -3,9 +3,9 @@ class User < ActiveRecord::Base
 
   before_create :set_authentication_token
 
-  validates :password, length: { minimum: 8 }
-  validates :password, confirmation: true
-  validates :password_confirmation, presence: true
+  validates :password, length: { minimum: 8 }, allow_blank: true
+  validates :password, confirmation: true, on: :create
+  validates :password_confirmation, presence: true, on: :create
 
   validates :email, uniqueness: true
 
