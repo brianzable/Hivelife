@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20150507173746) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "apiaries", force: :cascade do |t|
     t.string   "name",           limit: 255
     t.string   "zip_code",       limit: 255
@@ -25,30 +28,30 @@ ActiveRecord::Schema.define(version: 20150507173746) do
   end
 
   create_table "beekeepers", force: :cascade do |t|
-    t.integer  "apiary_id",  limit: 4
-    t.integer  "user_id",    limit: 4
+    t.integer  "apiary_id"
+    t.integer  "user_id"
     t.string   "permission", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "brood_boxes", force: :cascade do |t|
-    t.integer  "inspection_id",             limit: 4
+    t.integer  "inspection_id"
     t.string   "pattern",                   limit: 255
-    t.boolean  "eggs_sighted",              limit: 1
-    t.boolean  "queen_sighted",             limit: 1
-    t.boolean  "queen_cells_sighted",       limit: 1
-    t.boolean  "swarm_cells_capped",        limit: 1
+    t.boolean  "eggs_sighted"
+    t.boolean  "queen_sighted"
+    t.boolean  "queen_cells_sighted"
+    t.boolean  "swarm_cells_capped"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "honey_sighted",             limit: 1
-    t.boolean  "pollen_sighted",            limit: 1
-    t.boolean  "swarm_cells_sighted",       limit: 1
-    t.boolean  "supersedure_cells_sighted", limit: 1
+    t.boolean  "honey_sighted"
+    t.boolean  "pollen_sighted"
+    t.boolean  "swarm_cells_sighted"
+    t.boolean  "supersedure_cells_sighted"
   end
 
   create_table "diseases", force: :cascade do |t|
-    t.integer  "inspection_id", limit: 4
+    t.integer  "inspection_id"
     t.string   "disease_type",  limit: 255
     t.string   "treatment",     limit: 255
     t.datetime "created_at"
@@ -56,28 +59,28 @@ ActiveRecord::Schema.define(version: 20150507173746) do
   end
 
   create_table "harvests", force: :cascade do |t|
-    t.integer  "honey_weight", limit: 4
-    t.integer  "wax_weight",   limit: 4
+    t.integer  "honey_weight"
+    t.integer  "wax_weight"
     t.datetime "harvested_at"
     t.string   "weight_units", limit: 255
     t.string   "notes",        limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "hive_id",      limit: 4
+    t.integer  "hive_id"
   end
 
   create_table "hives", force: :cascade do |t|
-    t.integer  "apiary_id",             limit: 4
+    t.integer  "apiary_id"
     t.string   "name",                  limit: 255,                           default: "",                                 null: false
     t.string   "breed",                 limit: 255
     t.string   "hive_type",             limit: 255
     t.string   "photo_url",             limit: 255,                           default: "defaults/beehive_placeholder.png", null: false
     t.string   "flight_pattern",        limit: 255
-    t.boolean  "fine_location_sharing", limit: 1,                             default: false,                              null: false
-    t.boolean  "public",                limit: 1,                             default: false,                              null: false
-    t.boolean  "ventilated",            limit: 1
-    t.boolean  "queen_excluder",        limit: 1
-    t.boolean  "entrance_reducer",      limit: 1
+    t.boolean  "fine_location_sharing",                                       default: false,                              null: false
+    t.boolean  "public",                                                      default: false,                              null: false
+    t.boolean  "ventilated"
+    t.boolean  "queen_excluder"
+    t.boolean  "entrance_reducer"
     t.string   "entrance_reducer_size", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -91,10 +94,10 @@ ActiveRecord::Schema.define(version: 20150507173746) do
   end
 
   create_table "honey_supers", force: :cascade do |t|
-    t.integer  "inspection_id",     limit: 4
-    t.decimal  "full",                        precision: 10
-    t.decimal  "capped",                      precision: 10
-    t.boolean  "ready_for_harvest", limit: 1
+    t.integer  "inspection_id"
+    t.decimal  "full",              precision: 10
+    t.decimal  "capped",            precision: 10
+    t.boolean  "ready_for_harvest"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -104,17 +107,17 @@ ActiveRecord::Schema.define(version: 20150507173746) do
     t.string   "weather_conditions",    limit: 255
     t.string   "weather_notes",         limit: 255
     t.string   "notes",                 limit: 255
-    t.boolean  "ventilated",            limit: 1
-    t.boolean  "entrance_reducer",      limit: 1
+    t.boolean  "ventilated"
+    t.boolean  "entrance_reducer"
     t.string   "entrance_reducer_size", limit: 255
-    t.boolean  "queen_excluder",        limit: 1
+    t.boolean  "queen_excluder"
     t.string   "hive_orientation",      limit: 255
     t.string   "flight_pattern",        limit: 255
     t.string   "health",                limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "inspected_at"
-    t.integer  "hive_id",               limit: 4
+    t.integer  "hive_id"
   end
 
   create_table "users", force: :cascade do |t|
