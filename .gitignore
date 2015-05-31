@@ -26,3 +26,8 @@
 
 # Ignore compiled assets
 /public/assets/*
+
+# Ignore client dependencies
+/client/node_modules/*
+/client/bower_components/*
+
