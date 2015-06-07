@@ -181,7 +181,7 @@ gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
 // Watch Files For Changes & Reload
 gulp.task('serve', ['styles', 'elements', 'images'], function () {
-  var proxy = proxyMiddleware('/api', {target: 'http://0.0.0.0:3000'})
+  var proxy = proxyMiddleware('/v1/api', {target: 'http://0.0.0.0:3000'})
 
   browserSync({
     notify: false,
