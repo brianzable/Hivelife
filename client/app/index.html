@@ -66,27 +66,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </paper-toolbar>
 
         <!-- Drawer Content -->
-          <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}">
-            <a data-route="login" href="/">
-              <iron-icon icon="home"></iron-icon>
-              <span>Home</span>
+        <paper-menu class="list" attr-for-ected="data-route" selected="{{route}}">
+          <template is="dom-repeat" items="{{menuOptions}}">
+            <a data-route="{{item.route}}" href="{{item.path}}">
+              <iron-icon icon="{{item.icon}}"></iron-icon>
+              <span>{{item.text}}</span>
             </a>
-
-            <a data-route="users" href="/users">
-              <iron-icon icon="info"></iron-icon>
-              <span>Users</span>
-            </a>
-
-            <a data-route="apiaries" href="/apiaries">
-              <iron-icon icon="mail"></iron-icon>
-              <span>Apiaries</span>
-            </a>
-
-            <a data-route="logout" href="/logout">
-              <iron-icon icon="mail"></iron-icon>
-              <span>Logout</span>
-            </a>
-          </paper-menu>
+          </template>
+        </paper-menu>
       </div>
       <paper-header-panel main mode="waterfall-tall">
         <!-- Main Toolbar -->

@@ -15,6 +15,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // Learn more about auto-binding templates at http://goo.gl/Dx1u2g
   var app = document.querySelector('#app');
 
+  app.menuOptions = [
+    { route: 'login',    path: '/',         icon: 'home', text: 'Home' },
+    { route: 'users',    path: '/users',    icon: 'info', text: 'Users' },
+    { route: 'apiaries', path: '/apiaries', icon: 'mail', text: 'Apiaries' },
+    { route: 'logout',   path: '/logout',   icon: 'mail', text: 'Logout' },
+  ];
+
   app.displayInstalledToast = function() {
     document.querySelector('#caching-complete').show();
   };
