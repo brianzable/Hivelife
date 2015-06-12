@@ -16,11 +16,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/login', function () {
-      app.route = 'login;'
+      app.route = 'login';
     });
 
     page('/logout', function () {
-      this.localStorage.removeItem('authenticationToken')
+      this.localStorage.removeItem('authenticationToken');
       page.redirect('/');
     });
 
@@ -47,7 +47,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         next();
       }
       else {
-        page.redirect('/')
+        page.redirect('/');
       }
     }
 

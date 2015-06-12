@@ -63,7 +63,7 @@
       },
 
       handleLoginError: function (event) {
-        window.localStorage.removeItem('authenticationToken')
+        window.localStorage.removeItem('authenticationToken');
         this.$.loginFailed.show();
       },
     });
