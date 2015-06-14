@@ -60,11 +60,11 @@
         var response = event.detail.response;
         var authenticationToken = response.session.authentication_token;
 
-        this.fire('session-create', { authenticationToken: authenticationToken })
+        this.fire('session-create', { authenticationToken: authenticationToken });
         this.fire('page-redirect', { path: '/apiaries' });
       },
 
-      handleLoginError: function (event) {
+      handleLoginError: function () {
         this.$.loginFailed.show();
       },
     });
