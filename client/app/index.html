@@ -95,6 +95,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <!-- Main Content -->
           <iron-pages attr-for-selected="data-route" selected="{{route}}">
+            <section data-route="home">
+              <paper-material>
+                <home-page></home-page>
+              </paper-material>
+            </section>
 
             <section data-route="login">
               <paper-material elevation="1">

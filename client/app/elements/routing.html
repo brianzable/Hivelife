@@ -12,16 +12,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <script>
   window.addEventListener('WebComponentsReady', function() {
     page('/', function () {
-      app.route = 'login';
+      app.route = 'home';
     });
 
     page('/login', function () {
+      if (app.userLoggedIn()) {
+        page.redirect('/apiaries');
+      }
       app.route = 'login';
     });
 
     page('/logout', function () {
-      this.localStorage.removeItem('authenticationToken');
-      page.redirect('/');
+      app.clearSession();
+      page.redirect('/login');
     });
 
     page('/users', function () {
@@ -42,11 +45,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     function verifySession(context, next) {
-      var authenticationToken = this.localStorage.getItem('authenticationToken');
-      if (authenticationToken !== null) {
+      if (app.userLoggedIn()) {
+        app.showLoggedInMenu();
         next();
       }
       else {
+        app.showLoggedOutMenu();
         page.redirect('/');
       }
     }

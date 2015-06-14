@@ -15,21 +15,55 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // Learn more about auto-binding templates at http://goo.gl/Dx1u2g
   var app = document.querySelector('#app');
 
-  app.menuOptions = [
-    { route: 'login',    path: '/',         icon: 'home', text: 'Home' },
+  var loggedInMenuOptions = [
     { route: 'users',    path: '/users',    icon: 'info', text: 'Users' },
     { route: 'apiaries', path: '/apiaries', icon: 'mail', text: 'Apiaries' },
     { route: 'logout',   path: '/logout',   icon: 'mail', text: 'Logout' },
   ];
 
+  var loggedOutMenuOptions = [
+    { route: 'home',    path: '/',      icon: 'home', text: 'Home' },
+    { route: 'login',   path: '/login', icon: 'home', text: 'Login' }
+  ];
+
+  app.showLoggedInMenu = function () {
+    app.menuOptions = loggedInMenuOptions;
+  };
+
+  app.showLoggedOutMenu = function () {
+    app.menuOptions = loggedOutMenuOptions;
+  };
+
   app.displayInstalledToast = function() {
     document.querySelector('#caching-complete').show();
+  };
+
+  app.clearSession = function () {
+    this.showLoggedOutMenu();
+    window.localStorage.removeItem('authenticationToken');
+  };
+
+  app.userLoggedIn = function () {
+    return window.localStorage.getItem('authenticationToken') !== null;
   };
 
   // Listen for template bound event to know when bindings
   // have resolved and content has been stamped to the page
   app.addEventListener('template-bound', function() {
     console.log('Our app is ready to rock!');
+  });
+
+  document.addEventListener('page-redirect', function (event) {
+    page.redirect(event.detail.path);
+  });
+
+  document.addEventListener('session-create', function (event) {
+    window.localStorage.setItem('authenticationToken', event.detail.authenticationToken);
+  });
+
+  document.addEventListener('user-unauthorized', function () {
+    clearSession();
+    page.redirect('/login');
   });
 
   // See https://github.com/Polymer/polymer/issues/1381
@@ -40,6 +74,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     var drawerPanel = document.querySelector('#paperDrawerPanel');
     drawerPanel.forceNarrow = true;
   });
+
+  app.menuOptions = app.userLoggedIn() ? loggedInMenuOptions : loggedOutMenuOptions;
 
 })(document);
 
