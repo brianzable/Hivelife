@@ -3,4 +3,34 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-Bees::Application.load_tasks
+# Bees::Application.load_tasks
+Rails.application.load_tasks
+
+namespace :db do
+  desc 'Rebuilds the database and populates sample data'
+  task :rebuild do
+    Rake::Task['db:drop']
+    Rake::Task['db:create']
+    Rake::Task['db:schema:load']
+    Rake::Task['db:load_sample_data']
+  end
+
+  desc 'Populates the database with sample data'
+  task :load_sample_data => :environment do
+    user = FactoryGirl.create(
+      :user,
+      email: 'user@example.com',
+      password: '11111111',
+      password_confirmation: '11111111'
+    )
+
+    main_apiary = FactoryGirl.create(:apiary_with_hives)
+
+    FactoryGirl.create(
+      :beekeeper,
+      apiary: main_apiary,
+      user: user,
+      permission: 'Admin'
+    )
+  end
+end

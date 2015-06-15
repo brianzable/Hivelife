@@ -3,5 +3,6 @@ FactoryGirl.define do
     email { "#{SecureRandom.uuid}@example.com" }
     password '11111111'
     password_confirmation '11111111'
+    activation_state 'active'
   end
 end

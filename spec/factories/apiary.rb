@@ -6,12 +6,9 @@ FactoryGirl.define do
     state 'IL'
 
     factory :apiary_with_hives do
-      transient do
-        hives_count 2
-      end
 
       after(:create) do |apiary, evaluator|
-        create_list(:hive, evaluator.hives_count, apiary: apiary)
+        create_list(:hive, 2, apiary: apiary)
       end
     end
   end
