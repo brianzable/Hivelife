@@ -1,5 +1,6 @@
 class BeekeepersController < ApplicationController
 	respond_to :json
+
   before_action :require_login
 	before_action :set_and_authorize_beekeeper, only: [:show, :update, :destroy]
 
