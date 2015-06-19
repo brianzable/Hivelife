@@ -3,16 +3,46 @@
 
   <template>
     <h1>Apiaries</h1>
+    <iron-ajax
+      id="client"
+      url="/v1/api/apiaries"
+      method="get"
+      on-response="handleResponse"
+      on-error="handleError"></iron-ajax>
   </template>
 </dom-module>
 
-<script src="../../bower_components/page/page.js"></script>
 <script>
   (function () {
     Polymer({
       is: 'apiaries-page',
 
+      properties: {
+        token: String
+      },
+
       ready: function () {
+      },
+
+      loadData: function (event) {
+        var client = this.$.client;
+
+        var headers = {
+          'Authorization': 'Token token=' + this.token,
+          'Accept': 'application/json'
+        };
+        client.headers = headers;
+        client.contentType = 'application/json';
+        console.log(headers);
+        client.generateRequest();
+      },
+
+      handleResponse: function (event) {
+        console.log(event.detail.response);
+      },
+
+      handleError: function (event) {
+        console.log(event.detail);
       }
     });
   })();

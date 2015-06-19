@@ -1,9 +1,11 @@
 class ApiariesController < ApplicationController
-  before_action :require_login
+  respond_to :json
+
+  before_action :authenticate
   before_action :set_apiary, only: [:show, :edit, :update, :destroy]
 
   def index
-    @apiaries = Apiary.for_user(current_user)
+    @apiaries = Apiary.for_user(@user)
   end
 
   def show

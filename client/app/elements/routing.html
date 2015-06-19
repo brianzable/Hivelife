@@ -21,9 +21,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         page.redirect('/');
       }
     }
-    // We use Page.js for routing. This is a Micro
-    // client-side router inspired by the Express router
-    // More info: https://visionmedia.github.io/page.js/
+
     page('/', function () {
       app.route = 'home';
     });
@@ -50,6 +48,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/apiaries', verifySession, function () {
+      console.log(app.$.apiariesPage);
+      app.$.apiariesPage.loadData();
       app.route = 'apiaries';
     });
 

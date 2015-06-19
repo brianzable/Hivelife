@@ -20,6 +20,7 @@ class Apiary < ActiveRecord::Base
 	end
 
   def self.for_user(user)
+    puts user
     self.joins(:beekeepers)
         .where(beekeepers: { user: user })
         .includes(:hives)
