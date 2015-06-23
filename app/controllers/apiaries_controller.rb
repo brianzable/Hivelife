@@ -2,7 +2,7 @@ class ApiariesController < ApplicationController
   respond_to :json
 
   before_action :authenticate
-  before_action :set_apiary, only: [:show, :edit, :update, :destroy]
+  before_action :set_apiary, only: [:update, :destroy]
 
   def index
     @apiaries = Apiary.for_user(@user)
@@ -11,15 +11,6 @@ class ApiariesController < ApplicationController
   def show
     @apiary = Apiary.includes(:hives).find(params[:id])
     authorize(@apiary)
-
-    @beekeepers = Beekeeper.for_apiary(params[:id])
-  end
-
-  def new
-    @apiary = Apiary.new
-  end
-
-  def edit
   end
 
   def create
@@ -94,7 +85,7 @@ private
 
   def pundit_user
     Beekeeper.where(
-      user_id: current_user.id,
+      user_id: @user.id,
       apiary_id: params[:id]
     ).take
   end

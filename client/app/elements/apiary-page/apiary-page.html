@@ -1,0 +1,46 @@
+<dom-module id="apiary-page">
+  <link rel="stylesheet" href="apiary-page.css">
+
+  <template>
+    <h1>apiary</h1>
+    <iron-ajax
+      id="client"
+      method="get"
+      on-response="handleResponse"
+      on-error="handleError"></iron-ajax>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'apiary-page',
+
+      properties: {
+        token: String,
+        apiaryId: Number
+      },
+
+      loadData: function (event) {
+        var client = this.$.client;
+
+        var headers = {
+          'Authorization': 'Token token=' + this.token,
+          'Accept': 'application/json'
+        };
+        client.headers = headers;
+        client.contentType = 'application/json';
+        client.url='/v1/api/apiaries/' + this.apiaryId;
+        client.generateRequest();
+      },
+
+      handleResponse: function (event) {
+        console.log(event.detail.response);
+      },
+
+      handleError: function (event) {
+        console.log(event.detail);
+      }
+    });
+  })();
+</script>

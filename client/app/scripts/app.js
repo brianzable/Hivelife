@@ -8,7 +8,7 @@
 
   var loggedInMenuOptions = [
     { route: 'users',    path: '/users',    icon: 'info', text: 'Users' },
-    { route: 'apiaries', path: '/apiaries', icon: 'mail', text: 'Apiaries' },
+    { route: 'apiaries', path: '/apiaries/1', icon: 'mail', text: 'Apiaries' },
     { route: 'logout',   path: '/logout',   icon: 'mail', text: 'Logout' },
   ];
 
