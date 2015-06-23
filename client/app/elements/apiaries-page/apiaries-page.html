@@ -3,6 +3,11 @@
 
   <template>
     <h1>Apiaries</h1>
+
+    <template is="dom-repeat" items="{{apiaries}}">
+      <a href="{{getApiaryPath(item.id)}}">{{item.name}}</a>
+    </template>
+
     <iron-ajax
       id="client"
       url="/v1/api/apiaries"
@@ -21,6 +26,10 @@
         token: String
       },
 
+      getApiaryPath: function (id) {
+        return 'apiaries/' + id;
+      },
+
       loadData: function (event) {
         var client = this.$.client;
 
@@ -35,6 +44,7 @@
 
       handleResponse: function (event) {
         console.log(event.detail.response);
+        this.apiaries = event.detail.response;
       },
 
       handleError: function (event) {
