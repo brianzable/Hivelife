@@ -41,10 +41,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       page.redirect('/login');
     });
 
-    page('/users', function () {
-      app.route = 'users';
-    });
-
     page('/apiaries/:id', function (data) {
       app.route = 'apiary-show';
       app.$.apiaryPage.apiaryId = data.params.id;
@@ -54,6 +50,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     page('/apiaries', verifySession, function () {
       app.route = 'apiaries';
       app.$.apiariesPage.loadData();
+    });
+
+    page('/profile', verifySession, function () {
+      app.route = 'my-profile';
+    });
+
+    page('/about', function () {
+      app.route = 'about';
+    });
+
+    page('/contact', function () {
+      app.route = 'contact';
+    });
+
+    page('/data', function () {
+      app.route = 'data-portal';
     });
 
     page({

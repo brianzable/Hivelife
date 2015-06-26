@@ -7,14 +7,20 @@
   var app = document.querySelector('#app');
 
   var loggedInMenuOptions = [
-    { route: 'users',    path: '/users',    icon: 'info', text: 'Users' },
-    { route: 'apiaries', path: '/apiaries/1', icon: 'mail', text: 'Apiaries' },
-    { route: 'logout',   path: '/logout',   icon: 'mail', text: 'Logout' },
+    { route: 'my-profile',  path: '/profile',  icon: 'info', text: 'My Profile' },
+    { route: 'apiaries',    path: '/apiaries', icon: 'mail', text: 'Apiaries' },
+    { route: 'data-portal', path: '/data',     icon: 'info', text: 'Data Portal' },
+    { route: 'contact',     path: '/contact',  icon: 'info', text: 'Contact Us' },
+    { route: 'about',       path: '/about',    icon: 'info', text: 'About Us' },
+    { route: 'logout',      path: '/logout',   icon: 'mail', text: 'Logout' }
   ];
 
   var loggedOutMenuOptions = [
-    { route: 'home',    path: '/',      icon: 'home', text: 'Home' },
-    { route: 'login',   path: '/login', icon: 'home', text: 'Login' }
+    { route: 'home',        path: '/',        icon: 'home', text: 'Home' },
+    { route: 'data-portal', path: '/data',    icon: 'info', text: 'Data Portal' },
+    { route: 'contact',     path: '/contact', icon: 'info', text: 'Contact Us' },
+    { route: 'about',       path: '/about',   icon: 'info', text: 'About Us' },
+    { route: 'login',       path: '/login',   icon: 'home', text: 'Login' }
   ];
 
   app.showLoggedInMenu = function () {
