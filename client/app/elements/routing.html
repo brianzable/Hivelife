@@ -11,65 +11,60 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <script src="../../bower_components/page/page.js"></script>
 <script>
   window.addEventListener('WebComponentsReady', function() {
-    function verifySession(context, next) {
-      if (app.userLoggedIn()) {
-        app.showLoggedInMenu();
-        next();
-      }
-      else {
-        app.showLoggedOutMenu();
-        page.redirect('/');
-      }
-    }
-
     page('/', function () {
-      if (app.userLoggedIn()) {
-        page.redirect('/apiaries');
-      }
+      app.layoutManager = 'root';
       app.route = 'home';
     });
 
     page('/login', function () {
-      if (app.userLoggedIn()) {
-        page.redirect('/apiaries');
-      }
+      app.layoutManager = 'root';
       app.route = 'login';
     });
 
     page('/logout', function () {
-      app.clearSession();
       page.redirect('/login');
     });
 
     page('/apiaries/:id', function (data) {
+      app.apiaryId = data.params.id;
+      app.layoutManager = 'apiary';
       app.route = 'apiary-show';
-      app.$.apiaryPage.apiaryId = data.params.id;
-      app.$.apiaryPage.loadData();
     });
 
-    page('/apiaries', verifySession, function () {
+    page('/apiaries', function () {
+      app.layoutManager = 'root';
       app.route = 'apiaries';
-      app.$.apiariesPage.loadData();
     });
 
-    page('/profile', verifySession, function () {
+    page('/apiaries/:apiaryId/hives/:id', function (data) {
+      app.apiaryId = data.params.apiaryId;
+      app.hiveId = data.params.hiveId;
+      app.layoutManager = 'apiary';
+      app.route = 'hive-show';
+    });
+
+    page('/profile', function () {
+      app.layoutManager = 'root';
       app.route = 'my-profile';
     });
 
     page('/about', function () {
+      app.layoutManager = 'root';
       app.route = 'about';
     });
 
     page('/contact', function () {
+      app.layoutManager = 'root';
       app.route = 'contact';
     });
 
     page('/data', function () {
+      app.layoutManager = 'root';
       app.route = 'data-portal';
     });
 
     page({
-      hashbang: false
+      hashbang: true
     });
   });
 </script>

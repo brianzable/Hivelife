@@ -56,97 +56,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body unresolved class="fullbleed layout vertical">
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
+    <iron-pages attr-for-selected="data-layout-manager" selected="{{layoutManager}}">
+      <section data-layout-manager="apiary">
+        <apiary-layout-manager route="{{route}}" apiaryId="{{apiaryId}}" hiveId="{{hiveId}}"></apiary-layout-manager>
+      </section>
 
-    <paper-drawer-panel id="paperDrawerPanel">
-      <div drawer>
-
-        <!-- Drawer Toolbar -->
-        <paper-toolbar id="drawerToolbar">
-          <span>Menu</span>
-        </paper-toolbar>
-
-        <!-- Drawer Content -->
-        <paper-menu class="list" attr-for-ected="data-route" selected="{{route}}">
-          <template is="dom-repeat" items="{{menuOptions}}">
-            <a data-route="{{item.route}}" href="{{item.path}}">
-              <iron-icon icon="{{item.icon}}"></iron-icon>
-              <span>{{item.text}}</span>
-            </a>
-          </template>
-        </paper-menu>
-      </div>
-
-      <paper-header-panel main mode="waterfall-tall">
-        <!-- Main Toolbar -->
-        <paper-toolbar id="mainToolbar">
-          <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
-          <span class="flex"></span>
-
-          <!-- Toolbar icons -->
-          <paper-icon-button icon="refresh"></paper-icon-button>
-          <paper-icon-button icon="search"></paper-icon-button>
-
-          <!-- Application name -->
-          <div class="middle paper-font-display2 app-name">Hivelife</div>
-
-          <!-- Application sub title -->
-          <div class="bottom title"></div>
-        </paper-toolbar>
-        <!-- Main Content -->
-        <div class="content">
-          <iron-pages attr-for-selected="data-route" selected="{{route}}">
-            <section data-route="home">
-              <paper-material>
-                <home-page></home-page>
-              </paper-material>
-            </section>
-
-            <section data-route="login">
-              <paper-material elevation="1">
-                <login-page></login-page>
-              </paper-material>
-            </section>
-
-            <section data-route="my-profile">
-              <paper-material elevation="1">
-                <h2 class="paper-font-display2">Profile Page</h2>
-              </paper-material>
-            </section>
-
-            <section data-route="data-portal">
-              <paper-material elevation="1">
-                <h2 class="paper-font-display2">Data Portal</h2>
-              </paper-material>
-            </section>
-
-            <section data-route="contact">
-              <paper-material elevation="1">
-                <h2 class="paper-font-display2">Contact Page</h2>
-              </paper-material>
-            </section>
-
-            <section data-route="about">
-              <paper-material elevation="1">
-                <h2 class="paper-font-display2">About Page</h2>
-              </paper-material>
-            </section>
-
-            <section data-route="apiaries">
-              <paper-material elevation="1">
-                <apiaries-page id="apiariesPage" token="{{authenticationToken}}"></apiaries-page>
-              </paper-material>
-            </section>
-
-            <section data-route="apiary-show">
-              <paper-material elevation="1">
-                <apiary-page id="apiaryPage" token="{{authenticationToken}}"></apiary-page>
-              </paper-material>
-            </section>
-
-          </iron-pages>
-        </div>
-      </paper-header-panel>
-    </paper-drawer-panel>
+      <section data-layout-manager="root">
+        <root-layout-manager route="{{route}}"></root-layout-manager>
+      </section>
+    </iron-pages>
 
     <paper-toast id="caching-complete"
                  duration="6000"

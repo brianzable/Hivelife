@@ -1,0 +1,89 @@
+<dom-module id="apiary-layout-manager">
+  <link rel="import" type="css" href="apiary-layout-manager.css">
+  <link rel="import" type="css" href="layout-manager-shared.css">
+
+  <template>
+    <paper-header-panel main mode="waterfall-tall" class="fit">
+
+      <paper-toolbar id="mainToolbar">
+        <a id="backLink" href="{{backLink}}">
+          <paper-icon-button id="backButton" icon="arrow-back">
+        </paper-icon-button></a>
+        <span class="flex"></span>
+        <paper-icon-button icon="more-vert"></paper-icon-button>
+
+        <div class="middle paper-font-display2 app-name">{{apiaryid}}</div>
+
+        <div class="bottom">
+          <paper-tabs selected="{{selected}}">
+            <template is="dom-repeat" items="{{tabs}}">
+              <paper-tab>{{item}}</paper-tab>
+            </template>
+          </paper-tabs>
+        </div>
+      </paper-toolbar>
+
+      <div class="content">
+        <iron-pages attr-for-selected="data-route" selected="{{route}}">
+          <section data-route="apiary-show">
+            <apiary-page apiaryId="{{apiaryid}}" selected="{{selected}}"></apiary-page>
+          </section>
+          <section data-route="hive-show">
+            <hive-page hiveId="{{hiveid}}" selected="{{selected}}"></hive-page>
+          </section>
+        </iron-pages>
+      </div>
+    </paper-header-panel>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'apiary-layout-manager',
+
+      properties: {
+        route: {
+          type: String,
+          notify: true,
+          value: 'apiary-show',
+          observer: '_routeChanged'
+        },
+        apiaryId: {
+          type: String,
+          notify: true,
+        },
+        hiveId: {
+          type: String,
+          notify: true,
+        },
+        selected: {
+          type: Number,
+          value: 0
+        }
+      },
+
+      _layoutConfiguration: function (route) {
+        var apiaryId = this.apiaryid;
+        switch (route) {
+          case 'hive-show':
+            return {
+              tabs: ['INSPECTIONS', 'HARVESTS', 'MAP'],
+              backLink: '/apiaries/' + apiaryId
+            }
+          default:
+            return {
+              tabs: ['HIVES', 'BEEKEEPERS'],
+              backLink: '/apiaries'
+            }
+        }
+      },
+
+      _routeChanged: function (newRoute, oldRoute) {
+        var layoutConfiguration = this._layoutConfiguration(newRoute);
+        this.tabs = layoutConfiguration.tabs;
+        this.backLink = layoutConfiguration.backLink;
+      }
+    });
+  })();
+</script>
