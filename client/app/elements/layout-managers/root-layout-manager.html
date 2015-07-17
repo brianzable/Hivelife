@@ -20,8 +20,7 @@
         </paper-menu>
       </div>
 
-      <paper-header-panel main mode="waterfall-tall">
-
+      <paper-header-panel id="mainPanel" main mode="waterfall-tall">
         <paper-toolbar id="mainToolbar">
           <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
           <span class="flex"></span>
@@ -74,7 +73,7 @@
 
             <section data-route="apiaries">
               <paper-material elevation="1">
-                <a href="/apiaries/1"><h2 class="paper-font-display2">Apiaries</h2></a>
+                <apiaries-page scrollTarget="{{this.$.mainPanel.scroller}}"></apiaries-page>
               </paper-material>
             </section>
           </iron-pages>
@@ -99,6 +98,7 @@
 
       ready: function () {
         var drawerPanel = this.$.paperDrawerPanel;
+
         this.loggedInMenuOptions = [
           { route: 'my-profile',  path: '/profile',  icon: 'info', text: 'My Profile' },
           { route: 'apiaries',    path: '/apiaries', icon: 'mail', text: 'Apiaries' },
