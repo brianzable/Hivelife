@@ -33,6 +33,12 @@
   (function () {
     Polymer({
       is: 'login-page',
+      properties: {
+        session: {
+          type: Object,
+          notify: true,
+        }
+      },
 
       ready: function () {
         var loginButton = this.$.loginButton;
@@ -60,8 +66,7 @@
         var response = event.detail.response;
         var authenticationToken = response.session.authentication_token;
 
-        this.fire('session-create', { authenticationToken: authenticationToken });
-        this.fire('page-redirect', { path: '/apiaries' });
+        this.session = response.session;
       },
 
       handleLoginError: function () {

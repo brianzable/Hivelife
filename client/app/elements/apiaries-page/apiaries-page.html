@@ -5,12 +5,18 @@
     <iron-list id="list" items="[[data]]" as="item" scrollTarget="{{scrollTarget}}">
       <template>
         <apiary-list-item>
-          <span class="count">{{item.count}}</span>
+          <span class="count">{{item.hive_count}}</span>
           <span class="name">{{item.name}}</span>
           <span class="location">{{item.location}}</span>
         </apiary-list-item>
       </template>
     </iron-list>
+    <iron-ajax
+      id="client"
+      url="/v1/api/apiaries"
+      method="get"
+      on-response="handleResponse"
+      on-error="handleError"></iron-ajax>
   </template>
 </dom-module>
 
@@ -20,37 +26,27 @@
       is: 'apiaries-page',
 
       properties: {
-        token: String,
+        authenticationToken: String,
         scrollTarget: Object
       },
 
       ready: function () {
-        this.$.list.items = [
-          { count: 2, name: "Bee Yard", location: 'Somewhere, IL' },
-          { count: 21, name: 'Another Bee Yard', location: 'Chicago, IL' },
-          { count: 1, name: 'Marvy Apiary', location: 'Bensenville, IL' },
-        ];
+        this.data = [];
       },
 
-      getApiaryPath: function (id) {
-        return 'apiaries/' + id;
-      },
-
-      loadData: function (event) {
+      loadData: function () {
         var client = this.$.client;
 
-        var headers = {
-          'Authorization': 'Token token=' + this.token,
+        client.headers = {
+          'Authorization': 'Token token=' + this.authenticationToken,
           'Accept': 'application/json'
         };
-        client.headers = headers;
         client.contentType = 'application/json';
         client.generateRequest();
       },
 
       handleResponse: function (event) {
-        console.log(event.detail.response);
-        this.apiaries = event.detail.response;
+        this.data = event.detail.response;
       },
 
       handleError: function (event) {

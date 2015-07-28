@@ -11,11 +11,14 @@
   };
 
   app.addEventListener('dom-change', function() {
-    console.log('Our app is ready to rock!');
+    app.$.sessionStore.addEventListener('value-changed', function (event) {
+      var session = event.detail.value;
+      app.authenticationToken = session.authentication_token;
+    });
   });
 
   // See https://github.com/Polymer/polymer/issues/1381
   window.addEventListener('WebComponentsReady', function() {
-    // imports are loaded and elements have been registered
+
   });
 })(document);

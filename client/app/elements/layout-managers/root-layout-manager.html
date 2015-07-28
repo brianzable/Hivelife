@@ -43,7 +43,7 @@
 
             <section data-route="login">
               <paper-material elevation="1">
-                <login-page></login-page>
+                <login-page session="{{session}}"></login-page>
               </paper-material>
             </section>
 
@@ -73,7 +73,7 @@
 
             <section data-route="apiaries">
               <paper-material elevation="1">
-                <apiaries-page scrollTarget="{{this.$.mainPanel.scroller}}"></apiaries-page>
+                <apiaries-page id="apiariesPage" scrollTarget="{{this.$.mainPanel.scroller}}" authentication-token="{{authenticationToken}}"></apiaries-page>
               </paper-material>
             </section>
           </iron-pages>
@@ -93,6 +93,10 @@
           type: String,
           value: 'home',
           notify: true,
+        },
+        authenticationToken: {
+          type: String,
+          value: 'default'
         }
       },
 
@@ -117,8 +121,11 @@
         ];
 
         this.menuOptions = this.loggedInMenuOptions;
-      }
+      },
 
+      loadApiaries: function () {
+        this.$.apiariesPage.loadData();
+      }
     });
   })();
 </script>

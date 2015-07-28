@@ -34,6 +34,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     page('/apiaries', function () {
       app.layoutManager = 'root';
       app.route = 'apiaries';
+      app.$.rootManager.loadApiaries();
     });
 
     page('/apiaries/:apiaryId/hives/:id', function (data) {
