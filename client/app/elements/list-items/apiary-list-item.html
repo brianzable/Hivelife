@@ -17,36 +17,30 @@
       font-size 12px;
       color: var(--secondary-text-color);
     }
-    a {
-      color: inherit;
-      text-decoration: inherit;
-    }
   </style>
 
   <template>
-    <a href="/apiaries/1">
-      <div class="layout horizontal">
-        <div id="count" class="layout vertical">
-          <div class="main-text layout vertical center">
-            <content select=".count"></content>
-          </div>
-
-          <div class="sub-text layout vertical center">
-            HIVES
-          </div>
+    <div class="layout horizontal">
+      <div id="count" class="layout vertical">
+        <div class="main-text layout vertical center">
+          <content select=".count"></content>
         </div>
 
-        <div class="layout vertical">
-          <div class="main-text flex">
-            <content select=".name"></content>
-          </div>
-
-          <div class="sub-text flex">
-            <content select=".location"></content>
-          </div>
+        <div class="sub-text layout vertical center">
+          HIVES
         </div>
       </div>
-    </a>
+
+      <div class="layout vertical">
+        <div class="main-text flex">
+          <content select=".name"></content>
+        </div>
+
+        <div class="sub-text flex">
+          <content select=".location"></content>
+        </div>
+      </div>
+    </div>
   </template>
 </dom-module>
 

@@ -29,6 +29,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.apiaryId = data.params.id;
       app.layoutManager = 'apiary';
       app.route = 'apiary-show';
+      app.$.apiaryManager.loadApiary();
     });
 
     page('/apiaries', function () {

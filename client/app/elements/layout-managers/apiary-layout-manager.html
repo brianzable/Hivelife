@@ -12,7 +12,7 @@
         <span class="flex"></span>
         <paper-icon-button icon="more-vert"></paper-icon-button>
 
-        <div class="middle paper-font-display2 app-name">{{apiaryid}}</div>
+        <div class="middle paper-font-display2 app-name">{{name}}</div>
 
         <div class="bottom">
           <paper-tabs selected="{{selected}}">
@@ -34,6 +34,13 @@
         </iron-pages>
       </div>
     </paper-header-panel>
+
+    <iron-ajax
+      id="client"
+      url="/v1/api/apiaries/1"
+      method="get"
+      on-response="handleResponse"
+      on-error="handleError"></iron-ajax>
   </template>
 </dom-module>
 
@@ -61,6 +68,22 @@
           type: Number,
           value: 0
         }
+      },
+
+      loadApiary: function () {
+        var client = this.$.client;
+
+        client.headers = {
+          'Authorization': 'Token token=' + this.authenticationToken,
+          'Accept': 'application/json'
+        };
+        client.contentType = 'application/json';
+        client.generateRequest();
+      },
+
+      handleResponse: function (event) {
+        var response = event.detail.response;
+        this.name = response.name;
       },
 
       _layoutConfiguration: function (route) {

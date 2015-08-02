@@ -58,7 +58,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template is="dom-bind" id="app">
     <iron-pages attr-for-selected="data-layout-manager" selected="{{layoutManager}}">
       <section data-layout-manager="apiary">
-        <apiary-layout-manager route="{{route}}" apiaryId="{{apiaryId}}" hiveId="{{hiveId}}"></apiary-layout-manager>
+        <apiary-layout-manager
+          id="apiaryManager"
+          authentication-token="{{authenticationToken}}"
+          route="{{route}}"
+          apiaryId="{{apiaryId}}"
+          hiveId="{{hiveId}}">
+        </apiary-layout-manager>
       </section>
 
       <section data-layout-manager="root">

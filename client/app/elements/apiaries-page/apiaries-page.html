@@ -4,11 +4,13 @@
   <template>
     <iron-list id="list" items="[[data]]" as="item" scrollTarget="{{scrollTarget}}">
       <template>
-        <apiary-list-item>
-          <span class="count">{{item.hive_count}}</span>
-          <span class="name">{{item.name}}</span>
-          <span class="location">{{item.location}}</span>
-        </apiary-list-item>
+        <a href="{{_apiaryUrl(item)}}" style="text-decoration: none; color: inherit;">
+          <apiary-list-item apiary-id="{{item.id}}">
+            <span class="count">{{item.hive_count}}</span>
+            <span class="name">{{item.name}}</span>
+            <span class="location">{{item.location}}</span>
+          </apiary-list-item>
+        </a>
       </template>
     </iron-list>
 
@@ -56,6 +58,10 @@
 
       handleError: function (event) {
         console.log(event.detail);
+      },
+
+      _apiaryUrl: function (item) {
+        return 'apiaries/' + item.id;
       }
     });
   })();
