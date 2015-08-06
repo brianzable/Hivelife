@@ -1,27 +1,21 @@
 class HivesController < ApplicationController
-  before_action :authenticate_user!
-  around_filter :user_time_zone
+  before_action :authenticate
+  # around_action :user_time_zone
+
+  def index
+    @hives = Hive.where(apiary_id: params[:apiary_id])
+  end
 
   def show
     @hive = Hive.includes(:apiary, :inspections, :harvests).find(params[:id])
     authorize(@hive)
   end
 
-  def new
-    @hive = Hive.new
-    @apiary = Apiary.find(params[:apiary_id])
-  end
-
-  def edit
-  	@hive = Hive.find(params[:id])
-  	@apiary = Apiary.find(params[:apiary_id])
-  end
-
   def create
     params[:hive][:apiary_id] = params[:apiary_id]
 
     @hive = Hive.new(hive_params)
-		authorize(@hive)
+    authorize(@hive)
 
     @apiary = Apiary.find(params[:apiary_id])
     respond_to do |format|

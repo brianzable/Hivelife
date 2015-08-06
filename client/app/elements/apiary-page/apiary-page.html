@@ -4,8 +4,7 @@
   <template>
     <iron-pages selected="{{selected}}">
       <section>
-        <h1>Hive List</h1>
-        <a href="/apiaries/1/hives/1"><h2>A Hive</h2></a>
+        <hive-list id="hiveList" authentication-token="{{authenticationToken}}" apiary-id="{{apiaryId}}"></hive-list>
         <paper-fab icon="add"></paper-fab>
       </section>
 
@@ -22,6 +21,9 @@
       is: 'apiary-page',
 
       properties: {
+        authenticationToken: {
+          type: String
+        },
         apiaryId: {
           type: Number,
           notify: true
@@ -31,6 +33,10 @@
           notify: true,
           value: 0
         }
+      },
+
+      loadData: function () {
+        this.$.hiveList.loadHives();
       }
     });
   })();

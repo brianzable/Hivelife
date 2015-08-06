@@ -5,7 +5,7 @@ Bees::Application.routes.draw do
       post '/sign_in', to: 'sessions#sign_in'
 
       resources :apiaries do
-        resources :hives, except: [:index]
+        resources :hives, except: [:new, :edit]
         resources :beekeepers, except: [:index, :new, :edit] do
           post 'preview', on: :new
         end

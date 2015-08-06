@@ -1,0 +1,61 @@
+<dom-module id="hive-list">
+  <template>
+    <iron-list id="list" items="[[data]]" as="item" scrollTarget="{{scrollTarget}}">
+      <template>
+        <span>{{item.name}}</span>
+      </template>
+    </iron-list>
+
+    <iron-ajax
+      id="client"
+      method="get"
+      on-response="handleResponse"
+      on-error="handleError"></iron-ajax>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'hive-list',
+
+      properties: {
+        apiaryId: Number,
+        authenticationToken: String,
+        scrollTarget: Object
+      },
+
+      ready: function () {
+        this.data = [];
+      },
+
+      loadHives: function () {
+        var client = this.$.client;
+
+        client.url = 'v1/api/apiaries/' + this.apiaryId + '/hives';
+        client.contentType = 'application/json';
+        client.headers = {
+          'Authorization': 'Token token=' + this.authenticationToken,
+          'Accept': 'application/json'
+        };
+        client.generateRequest();
+      },
+
+      handleResponse: function (event) {
+        this.data = event.detail.response;
+      },
+
+      handleError: function (event) {
+        console.log(event.detail);
+      },
+
+      _hivesPath: function () {
+        return 'apiaries/' + this.apiaryId + '/hives';
+      },
+
+      _hivePath: function (item) {
+        return 'apiaries/' + this.apiaryId + '/hives/' + item.id;
+      }
+    });
+  })();
+</script>
