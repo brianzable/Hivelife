@@ -1,4 +1,4 @@
-<dom-module id="apiary-list-item">
+<dom-module id="hive-list-item">
   <link rel="import" type="css" href="list-item-shared.css">
   <link rel="import" type="css" href="apiary-list-item.css">
 
@@ -10,17 +10,13 @@
         </div>
 
         <div class="sub-text layout vertical center">
-          HIVES
+          INSPECTIONS
         </div>
       </div>
 
-      <div class="layout vertical">
+      <div class="layout horizontal center">
         <div class="main-text flex">
           <content select=".name"></content>
-        </div>
-
-        <div class="sub-text flex">
-          <content select=".location"></content>
         </div>
       </div>
     </div>
@@ -30,7 +26,8 @@
 <script>
   (function () {
     Polymer({
-      is: 'apiary-list-item'
+      is: 'hive-list-item'
     });
   })();
 </script>
+

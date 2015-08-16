@@ -90,12 +90,11 @@
       },
 
       _layoutConfiguration: function (route) {
-        var apiaryId = this.apiaryid;
         switch (route) {
           case 'hive-show':
             return {
               tabs: ['INSPECTIONS', 'HARVESTS', 'MAP'],
-              backLink: '/apiaries/' + apiaryId
+              backLink: '/apiaries/' + this.apiaryId
             }
           default:
             return {

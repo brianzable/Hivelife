@@ -2,7 +2,12 @@
   <template>
     <iron-list id="list" items="[[data]]" as="item" scrollTarget="{{scrollTarget}}">
       <template>
-        <span>{{item.name}}</span>
+        <a href="{{_hiveUrl(item)}}" style="text-decoration: none; color: inherit;">
+          <hive-list-item>
+            <span class="count">1</span>
+            <span class="name">{{item.name}}</span>
+          </hive-list-item>
+        </a>
       </template>
     </iron-list>
 
@@ -53,7 +58,7 @@
         return 'apiaries/' + this.apiaryId + '/hives';
       },
 
-      _hivePath: function (item) {
+      _hiveUrl: function (item) {
         return 'apiaries/' + this.apiaryId + '/hives/' + item.id;
       }
     });

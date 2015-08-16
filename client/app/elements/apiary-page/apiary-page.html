@@ -4,7 +4,9 @@
   <template>
     <iron-pages selected="{{selected}}">
       <section>
-        <hive-list id="hiveList" authentication-token="{{authenticationToken}}" apiary-id="{{apiaryId}}"></hive-list>
+        <paper-material elevation="1">
+          <hive-list id="hiveList" authentication-token="{{authenticationToken}}" apiary-id="{{apiaryId}}"></hive-list>
+        </paper-material>
         <paper-fab icon="add"></paper-fab>
       </section>
 
