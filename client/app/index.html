@@ -68,7 +68,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </section>
 
       <section data-layout-manager="root">
-        <root-layout-manager id="rootManager" route="{{route}}" authentication-token="{{authenticationToken}}"></root-layout-manager>
+        <root-layout-manager
+          id="rootManager"
+          session="{{session}}"
+          route="{{route}}"
+          authentication-token="{{authenticationToken}}">
+        </root-layout-manager>
       </section>
     </iron-pages>
 

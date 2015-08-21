@@ -96,13 +96,14 @@
         },
         authenticationToken: {
           type: String,
-          value: 'default'
+        },
+        session: {
+          type: Object,
+          notify: true
         }
       },
 
       ready: function () {
-        var drawerPanel = this.$.paperDrawerPanel;
-
         this.loggedInMenuOptions = [
           { route: 'my-profile',  path: '/profile',  icon: 'info', text: 'My Profile' },
           { route: 'apiaries',    path: '/apiaries', icon: 'mail', text: 'Apiaries' },
@@ -119,8 +120,14 @@
           { route: 'about',       path: '/about',   icon: 'info', text: 'About Us' },
           { route: 'login',       path: '/login',   icon: 'home', text: 'Login' }
         ];
+      },
 
-        this.menuOptions = this.loggedInMenuOptions;
+      reloadMenu: function () {
+        if (this.authenticationToken !== null) {
+          this.menuOptions = this.loggedInMenuOptions;
+        } else {
+          this.menuOptions = this.loggedOutMenuOptions;
+        }
       },
 
       loadApiaries: function () {

@@ -64,9 +64,8 @@
 
       handleLoginResponse: function (event) {
         var response = event.detail.response;
-        var authenticationToken = response.session.authentication_token;
-
         this.session = response.session;
+        this.fire('page-redirect', { path: '/' });
       },
 
       handleLoginError: function () {

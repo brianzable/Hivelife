@@ -13,7 +13,17 @@
   app.addEventListener('dom-change', function() {
     app.$.sessionStore.addEventListener('value-changed', function (event) {
       var session = event.detail.value;
-      app.authenticationToken = session.authentication_token;
+      if (session === null) {
+        app.authenticationToken = null;
+      } else {
+        app.authenticationToken = session.authentication_token;
+      }
+
+      app.$.rootManager.reloadMenu();
+    });
+
+    app.$.rootManager.addEventListener('page-redirect', function (event) {
+      page.redirect(event.detail.path);
     });
   });
 
