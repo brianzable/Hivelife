@@ -11,7 +11,10 @@
       </section>
 
       <section>
-        <h1>Beekeeper List</h1>
+        <paper-material elevation="1">
+          <beekeeper-list id="beekeeperList" authentication-token="{{authenticationToken}}" apiary-id="{{apiaryId}}"></beekeeper-list>
+        </paper-material>
+        <paper-fab icon="add"></paper-fab>
       </section>
     </iron-pages>
   </template>
@@ -39,6 +42,7 @@
 
       loadData: function () {
         this.$.hiveList.loadHives();
+        this.$.beekeeperList.loadBeekeepers();
       }
     });
   })();

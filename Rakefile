@@ -19,10 +19,14 @@ namespace :db do
   task :load_sample_data => :environment do
     user = FactoryGirl.create(
       :user,
+      first_name: 'Brian',
+      last_name: 'Zable',
+      photo_url: 'https://dl.dropboxusercontent.com/u/47340/profile.png',
       email: 'user@example.com',
       password: '11111111',
-      password_confirmation: '11111111'
+      password_confirmation: '11111111',
     )
+    user.activate!
 
     main_apiary = FactoryGirl.create(:apiary_with_hives)
 

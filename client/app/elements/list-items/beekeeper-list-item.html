@@ -1,0 +1,31 @@
+<dom-module id="beekeeper-list-item">
+  <link rel="import" type="css" href="list-item-shared.css">
+  <link rel="import" type="css" href="apiary-list-item.css">
+
+  <template>
+    <div class="layout horizontal">
+      <div id="photo" class="layout vertical">
+        <content select=".photo"></content>
+      </div>
+
+      <div class="layout vertical">
+        <div class="main-text flex">
+          <content select=".name"></content>
+        </div>
+
+        <div class="sub-text flex">
+          <content select=".role"></content>
+        </div>
+      </div>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'beekeeper-list-item'
+    });
+  })();
+</script>
+

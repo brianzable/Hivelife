@@ -6,9 +6,7 @@ Bees::Application.routes.draw do
 
       resources :apiaries do
         resources :hives, except: [:new, :edit]
-        resources :beekeepers, except: [:index, :new, :edit] do
-          post 'preview', on: :new
-        end
+        resources :beekeepers, except: [:new, :edit]
       end
 
       resources :hives do
