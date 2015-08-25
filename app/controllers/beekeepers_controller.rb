@@ -8,7 +8,7 @@ class BeekeepersController < ApplicationController
     @beekeepers = Beekeeper.where(apiary_id: params[:apiary_id])
   end
 
-    def show
+  def show
   end
 
   def create
@@ -56,6 +56,6 @@ private
   end
 
   def pundit_user
-    Beekeeper.where(user_id: current_user.id, apiary_id: params[:apiary_id]).first
+    Beekeeper.where(user_id: @user.id, apiary_id: params[:apiary_id]).first
   end
 end

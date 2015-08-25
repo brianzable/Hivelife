@@ -1,4 +1,6 @@
 class HivesController < ApplicationController
+  respond_to :json
+
   before_action :authenticate
   # around_action :user_time_zone
 
@@ -85,9 +87,6 @@ private
   end
 
   def pundit_user
-    Beekeeper.where(
-      user_id: current_user.id,
-      apiary_id: params[:apiary_id]
-    ).first
+    Beekeeper.where(user_id: @user.id, apiary_id: params[:apiary_id]).first
   end
 end

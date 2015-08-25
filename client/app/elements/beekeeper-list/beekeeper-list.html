@@ -2,13 +2,11 @@
   <template>
     <iron-list id="list" items="[[data]]" as="item" scrollTarget="{{scrollTarget}}">
       <template>
-        <a href="{{_beekeeperUrl(item)}}" style="text-decoration: none; color: inherit;">
-          <beekeeper-list-item>
-            <iron-image class="photo" style="height: 60px; width: 60px; border-radius: 50%;" src="{{item.photo_url}}" sizing="cover"></iron-image>
-            <span class="name">{{item.name}}</span>
-            <span class="role">{{item.role}}</span>
-          </beekeeper-list-item>
-        </a>
+        <beekeeper-list-item>
+          <iron-image class="photo" style="height: 60px; width: 60px; border-radius: 50%;" src="{{item.photo_url}}" sizing="cover"></iron-image>
+          <span class="name">{{item.name}}</span>
+          <span class="role">{{item.role}}</span>
+        </beekeeper-list-item>
       </template>
     </iron-list>
 
@@ -39,7 +37,6 @@
         var client = this.$.client;
 
         client.url = 'v1/api/apiaries/' + this.apiaryId + '/beekeepers';
-        console.log(client.url);
         client.contentType = 'application/json';
         client.headers = {
           'Authorization': 'Token token=' + this.authenticationToken,
@@ -54,10 +51,6 @@
 
       handleError: function (event) {
         console.log(event.detail);
-      },
-
-      _beekeepersPath: function () {
-        return 'apiaries/' + this.apiaryId + '/beekeepers';
       },
     });
   })();

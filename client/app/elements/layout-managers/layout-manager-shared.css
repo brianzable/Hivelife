@@ -18,6 +18,17 @@
   height: 120px;
 }
 
+paper-tabs {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+#backButton {
+  color: white;
+}
+
 /* Small breakpoint */
 @media (max-width: 600px) {
 

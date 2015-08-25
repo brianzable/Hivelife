@@ -41,8 +41,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     page('/apiaries/:apiaryId/hives/:id', function (data) {
       app.apiaryId = data.params.apiaryId;
-      app.hiveId = data.params.hiveId;
-      app.layoutManager = 'apiary';
+      app.hiveId = data.params.id;
+      app.layoutManager = 'hive';
+      app.$.hiveManager.loadHive();
       app.route = 'hive-show';
     });
 

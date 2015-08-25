@@ -61,10 +61,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <apiary-layout-manager
           id="apiaryManager"
           authentication-token="{{authenticationToken}}"
-          route="{{route}}"
-          apiary-id="{{apiaryId}}"
-          hiveId="{{hiveId}}">
+          apiary-id="{{apiaryId}}">
         </apiary-layout-manager>
+      </section>
+
+      <section data-layout-manager="hive">
+        <hive-layout-manager
+          id="hiveManager"
+          authentication-token="{{authenticationToken}}"
+          hive-id="{{hiveId}}"
+          apiary-id="{{apiaryId}}">
+        </hive-layout-manager>
       </section>
 
       <section data-layout-manager="root">

@@ -1,12 +1,11 @@
-<dom-module id="apiary-layout-manager">
-  <link rel="import" type="css" href="apiary-layout-manager.css">
+<dom-module id="hive-layout-manager">
   <link rel="import" type="css" href="layout-manager-shared.css">
 
   <template>
     <paper-header-panel main mode="waterfall-tall" class="fit">
 
       <paper-toolbar id="mainToolbar">
-        <a id="backLink" href="/apiaries">
+        <a id="backLink" href="{{backLink}}">
           <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
         </a>
         <span class="flex"></span>
@@ -16,8 +15,9 @@
 
         <div class="bottom">
           <paper-tabs selected="{{selected}}">
-            <paper-tab>HIVES</paper-tab>
-            <paper-tab>BEEKEEPERS</paper-tab>
+            <paper-tab>INSPECTIONS</paper-tab>
+            <paper-tab>HARVESTS</paper-tab>
+            <paper-tab>MAP</paper-tab>
           </paper-tabs>
         </div>
       </paper-toolbar>
@@ -25,17 +25,15 @@
       <div class="content">
         <iron-pages selected="{{selected}}">
           <section>
-            <paper-material elevation="1">
-              <hive-list id="hiveList" authentication-token="{{authenticationToken}}" apiary-id="{{apiaryId}}"></hive-list>
-            </paper-material>
-            <paper-fab icon="add"></paper-fab>
+            <h1>Inspection List</h1>
           </section>
 
           <section>
-            <paper-material elevation="1">
-              <beekeeper-list id="beekeeperList" authentication-token="{{authenticationToken}}" apiary-id="{{apiaryId}}"></beekeeper-list>
-            </paper-material>
-            <paper-fab icon="add"></paper-fab>
+            <h1>Harvest List</h1>
+          </section>
+
+          <section>
+            <google-map class="fit"></google-map>
           </section>
         </iron-pages>
       </div>
@@ -52,15 +50,16 @@
 <script>
   (function () {
     Polymer({
-      is: 'apiary-layout-manager',
+      is: 'hive-layout-manager',
 
       properties: {
         apiaryId: {
-          type: String,
+          type: Number,
           notify: true,
+          observer: '_apiaryIdChanged'
         },
         hiveId: {
-          type: String,
+          type: Number,
           notify: true,
         },
         selected: {
@@ -69,10 +68,10 @@
         }
       },
 
-      loadApiary: function () {
+      loadHive: function () {
         var client = this.$.client;
 
-        client.url = 'v1/api/apiaries/' + this.apiaryId;
+        client.url = 'v1/api/apiaries/' + this.apiaryId + '/hives/' + this.hiveId;
         client.contentType = 'application/json';
         client.headers = {
           'Authorization': 'Token token=' + this.authenticationToken,
@@ -80,13 +79,19 @@
         };
         client.generateRequest();
 
-        this.$.hiveList.loadHives();
-        this.$.beekeeperList.loadBeekeepers();
+        /* this.$.inspectionList.loadData(); */
+        /* this.$.harvestList.loadData(); */
       },
 
       handleResponse: function (event) {
         var response = event.detail.response;
+        console.log('Response:');
+        console.log(response);
         this.name = response.name;
+      },
+
+      _apiaryIdChanged: function (newValue, oldValue) {
+        this.backLink = 'apiaries/' + newValue;
       }
     });
   })();
