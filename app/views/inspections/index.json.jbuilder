@@ -1,4 +1,6 @@
-json.array!(@inspections) do |report|
-  json.extract! report, :id
-  json.url report_url(report, format: :json)
+json.array!(@inspections) do |inspection|
+  json.id inspection.id
+  json.notes inspection.notes
+  json.last_edit
+  json.inspected_at inspection.inspected_at
 end

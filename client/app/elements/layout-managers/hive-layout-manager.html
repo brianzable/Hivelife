@@ -25,7 +25,9 @@
       <div class="content">
         <iron-pages selected="{{selected}}">
           <section>
-            <h1>Inspection List</h1>
+            <paper-material elevation="1">
+              <inspection-list id="inspectionList" authentication-token="{{authenticationToken}}" hive-id="{{hiveId}}"></inspection-list>
+            </paper-material>
           </section>
 
           <section>
@@ -79,14 +81,12 @@
         };
         client.generateRequest();
 
-        /* this.$.inspectionList.loadData(); */
+        this.$.inspectionList.loadData();
         /* this.$.harvestList.loadData(); */
       },
 
       handleResponse: function (event) {
         var response = event.detail.response;
-        console.log('Response:');
-        console.log(response);
         this.name = response.name;
       },
 

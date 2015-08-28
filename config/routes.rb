@@ -10,7 +10,7 @@ Bees::Application.routes.draw do
       end
 
       resources :hives do
-        resources :inspections, except: [:index]
+        resources :inspections, except: [:new, :edit]
         resources :harvests, except: [:index]
       end
 

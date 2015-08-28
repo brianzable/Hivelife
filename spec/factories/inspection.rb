@@ -15,10 +15,6 @@ FactoryGirl.define do
     minute 30
     ampm 'AM'
     notes 'Other notes'
-    transient do
-      brood_box_count 2
-      honey_super_count 2
-    end
 
     factory :inspection_with_brood_boxes do
       after(:create) do |inspection, evaluator|

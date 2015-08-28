@@ -1,23 +1,15 @@
 class InspectionsController < ApplicationController
-  before_action :require_login
+  before_action :authenticate
   before_action :set_inspection, only: [:edit, :update, :destroy]
-  before_action :set_hive, only: [:edit, :update, :create]
-  around_action :user_time_zone
+  # before_action :set_hive, only: [:edit, :update, :create]
+  # around_action :user_time_zone
+
+  def index
+    @inspections = Inspection.where(hive_id: params[:hive_id])
+  end
 
   def show
     @inspection = Inspection.includes(:brood_boxes, :honey_supers).find(params[:id])
-    authorize(@inspection)
-  end
-
-  def new
-    @inspection = Inspection.new
-    authorize(@inspection)
-
-    @hive = Hive.find(params[:hive_id])
-  end
-
-  def edit
-    @action = hive_inspection_url(@hive, @inspection)
     authorize(@inspection)
   end
 
