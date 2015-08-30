@@ -1,0 +1,15 @@
+<script>
+  var HivelifeBehaviors = HivelifeBehaviors || {};
+  HivelifeBehaviors.TimeBehavior = {
+    _monthFromTimestamp: function (timestamp) {
+      var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+      var month = new Date(timestamp).getMonth();
+
+      return months[month];
+    },
+
+    _dayFromTimestamp: function (timestamp) {
+      return new Date(timestamp).getDate();
+    }
+  };
+</script>

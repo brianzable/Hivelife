@@ -1,4 +1,6 @@
 json.array!(@harvests) do |harvest|
-  json.extract! harvest, :id, :honey_weight, :wax_weight, :harvested_at, :weight_units, :notes
-  json.url harvest_url(harvest, format: :json)
+  json.id harvest.id
+  json.notes harvest.notes
+  json.last_edit 'TODO: Implement this'
+  json.harvested_at harvest.harvested_at
 end

@@ -29,7 +29,13 @@ namespace :db do
           inspected_at: Time.now - 3.hours,
           notes: 'Everything seems to be well in the hive. Will probably need to add a new honey super next week.'
         )
+        hive.harvests << FactoryGirl.build(
+          :harvest,
+          harvested_at: Time.now - 3.hours,
+          notes: '4 frames, 16 lbs of light, clover honey'
+        )
       end
+
       hive.save
     end
 

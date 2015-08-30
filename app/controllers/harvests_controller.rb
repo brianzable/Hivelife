@@ -1,21 +1,16 @@
 class HarvestsController < ApplicationController
-  before_action :require_login
-  before_action :set_harvest, only: [:edit, :update, :destroy]
-  before_action :set_hive, only: [:edit, :update, :create]
-  around_action :user_time_zone
+  before_action :authenticate
+  before_action :set_harvest, only: [:update, :destroy]
+  # before_action :set_hive, only: [:edit, :update, :create]
+  # around_action :user_time_zone
+
+  def index
+    @harvests = Harvest.where(hive_id: params[:hive_id])
+  end
 
   def show
     @harvest = Harvest.find(params[:id])
     authorize(@harvest)
-  end
-
-  def new
-    @hive = Hive.find(params[:hive_id])
-    @harvest = Harvest.new
-    authorize(@harvest)
-  end
-
-  def edit
   end
 
   def create
@@ -86,9 +81,6 @@ private
 
   def pundit_user
     apiary_id = Hive.includes(:apiary).find(params[:hive_id]).apiary.id
-    Beekeeper.where(
-      user_id: current_user.id,
-      apiary_id: apiary_id
-    ).first
+    Beekeeper.where(user_id: current_user.id, apiary_id: apiary_id).first
   end
 end

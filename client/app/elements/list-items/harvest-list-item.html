@@ -1,0 +1,36 @@
+<dom-module id="harvest-list-item">
+  <link rel="import" type="css" href="list-item-shared.css">
+
+  <template>
+    <div class="layout horizontal">
+      <div id="count" class="layout vertical">
+        <div class="main-text layout vertical center">
+          <content select=".day"></content>
+        </div>
+
+        <div class="sub-text layout vertical center">
+          <content select=".month"></content>
+        </div>
+      </div>
+
+      <div class="layout vertical">
+        <div class="main-text notes flex">
+          <content select=".notes"></content>
+        </div>
+
+        <div class="sub-text flex">
+          <content select=".beekeeper"></content>
+        </div>
+      </div>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'harvest-list-item'
+    });
+  })();
+</script>
+

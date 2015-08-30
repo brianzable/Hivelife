@@ -1,14 +1,14 @@
-<dom-module id="inspection-list">
+<dom-module id="harvest-list">
   <template>
     <iron-list id="list" items="[[data]]" as="item" scrollTarget="{{scrollTarget}}">
       <template>
-        <a href="{{_inspectionUrl(item)}}" style="text-decoration: none; color: inherit;">
-          <inspection-list-item>
-            <span class="day">{{_dayFromTimestamp(item.inspected_at)}}</span>
-            <span class="month">{{_monthFromTimestamp(item.inspected_at)}}</span>
+        <a href="{{_harvestUrl(item)}}" style="text-decoration: none; color: inherit;">
+          <harvest-list-item>
+            <span class="day">{{_dayFromTimestamp(item.harvested_at)}}</span>
+            <span class="month">{{_monthFromTimestamp(item.harvested_at)}}</span>
             <span class="notes">{{item.notes}}</span>
             <span class="beekeeper">{{item.last_edit}}</span>
-          </inspection-list-item>
+          </harvest-list-item>
         </a>
       </template>
     </iron-list>
@@ -24,7 +24,7 @@
 <script>
   (function () {
     Polymer({
-      is: 'inspection-list',
+      is: 'harvest-list',
       behaviors: [HivelifeBehaviors.TimeBehavior],
 
       properties: {
@@ -40,7 +40,7 @@
       loadData: function () {
         var client = this.$.client;
 
-        client.url = 'v1/api/hives/' + this.hiveId + '/inspections';
+        client.url = 'v1/api/hives/' + this.hiveId + '/harvests';
         client.contentType = 'application/json';
         client.headers = {
           'Authorization': 'Token token=' + this.authenticationToken,
@@ -57,8 +57,19 @@
         console.log(event.detail);
       },
 
-      _inspectionUrl: function (item) {
-        return 'hives/' + this.hiveId + '/inspections/' + item.id;
+      _harvestUrl: function (item) {
+        return 'hives/' + this.hiveId + '/harvests/' + item.id;
+      },
+
+      _monthFromInspectionDate: function (inspectionDate) {
+        var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        var month = new Date(inspectionDate).getMonth();
+
+        return months[month];
+      },
+
+      _dayFromInspectionDate: function (inspectionDate) {
+        return new Date(inspectionDate).getDate();
       }
     });
   })();

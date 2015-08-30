@@ -31,7 +31,9 @@
           </section>
 
           <section>
-            <h1>Harvest List</h1>
+            <paper-material elevation="1">
+              <harvest-list id="harvestList" authentication-token="{{authenticationToken}}" hive-id="{{hiveId}}"></harvest-list>
+            </paper-material>
           </section>
 
           <section>
@@ -82,7 +84,7 @@
         client.generateRequest();
 
         this.$.inspectionList.loadData();
-        /* this.$.harvestList.loadData(); */
+        this.$.harvestList.loadData();
       },
 
       handleResponse: function (event) {
