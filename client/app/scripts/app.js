@@ -22,7 +22,7 @@
       app.$.rootManager.reloadMenu();
     });
 
-    app.$.rootManager.addEventListener('page-redirect', function (event) {
+    app.$.pages.addEventListener('page-redirect', function (event) {
       page.redirect(event.detail.path);
     });
   });

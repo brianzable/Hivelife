@@ -56,7 +56,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body unresolved class="fullbleed layout vertical">
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
-    <iron-pages attr-for-selected="data-layout-manager" selected="{{layoutManager}}">
+    <iron-pages id="pages" attr-for-selected="data-layout-manager" selected="{{layoutManager}}">
       <section data-layout-manager="apiary">
         <apiary-layout-manager
           id="apiaryManager"
@@ -82,21 +82,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           authentication-token="{{authenticationToken}}">
         </root-layout-manager>
       </section>
+
+      <section data-layout-manager="apiary-form">
+      <apiary-form
+        id="apiaryForm"
+        authentication-token="{{authenticationToken}}">
+      </apiary-form>
+      </section>
     </iron-pages>
 
-    <paper-toast id="caching-complete"
-                 duration="6000"
-                 text="Caching complete! This app will work offline.">
-    </paper-toast>
+    <!-- <paper-toast id="caching-complete" -->
+    <!--              duration="6000" -->
+    <!--              text="Caching complete! This app will work offline."> -->
+    <!-- </paper-toast> -->
 
-    <platinum-sw-register auto-register
-                          clients-claim
-                          skip-waiting
-                          on-service-worker-installed="displayInstalledToast">
-      <platinum-sw-cache default-cache-strategy="networkFirst"
-                         precache-file="precache.json">
-      </platinum-sw-cache>
-    </platinum-sw-register>
+    <!-- <platinum-sw-register auto-register -->
+    <!--                       clients-claim -->
+    <!--                       skip-waiting -->
+    <!--                       on-service-worker-installed="displayInstalledToast"> -->
+    <!--   <platinum-sw-cache default-cache-strategy="networkFirst" -->
+    <!--                      precache-file="precache.json"> -->
+    <!--   </platinum-sw-cache> -->
+    <!-- </platinum-sw-register> -->
 
     <iron-localstorage id="sessionStore" name="session" value="{{session}}"></iron-localstorage>
   </template>

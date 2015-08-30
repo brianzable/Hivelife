@@ -15,19 +15,12 @@ class ApiariesController < ApplicationController
 
   def create
     @apiary = Apiary.new(apiary_params)
-    respond_to do |format|
-      if @apiary.save
-        Beekeeper.create(
-          apiary_id: @apiary.id,
-          user_id: current_user.id,
-          permission: 'Admin'
-        )
-        format.html { redirect_to @apiary, notice: 'Apiary was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @apiary }
-      else
-        format.html { render action: 'new' }
-        format.json { render json: @apiary.errors, status: :unprocessable_entity }
-      end
+
+    if @apiary.save
+      Beekeeper.create(apiary: @apiary, user: @user, permission: 'Admin')
+      render action: 'show', status: :created, location: @apiary
+    else
+      render json: @apiary.errors, status: :unprocessable_entity
     end
   end
 
@@ -58,35 +51,17 @@ private
   end
 
   def apiary_params
-    if params[:apiary][:beekeepers_attributes]
-      beekeeper_attributes = params[:apiary][:beekeepers_attributes]
-      beekeeper_attributes.each do |index, beekeeper_params|
-        beekeeper_params[:user_id] = User.email_to_user_id(beekeeper_params[:email])
-        beekeeper_params[:apiary_id] = params[:id]
-      end
-    end
-
     params.require(:apiary).permit(
       :name,
       :zip_code,
       :photo_url,
       :city,
       :state,
-      :street_address,
-      :beekeepers_attributes => [
-        :id,
-        :apiary_id,
-        :user_id,
-        :permission,
-        :_destroy
-      ]
+      :street_address
     )
   end
 
   def pundit_user
-    Beekeeper.where(
-      user_id: @user.id,
-      apiary_id: params[:id]
-    ).take
+    Beekeeper.where(user_id: @user.id, apiary_id: params[:id]).take
   end
 end

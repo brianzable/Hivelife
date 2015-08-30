@@ -25,6 +25,12 @@ paper-tabs {
   left: 0;
 }
 
+paper-fab {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+}
+
 #backButton {
   color: white;
 }

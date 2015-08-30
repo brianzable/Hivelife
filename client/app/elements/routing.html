@@ -26,6 +26,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       page.redirect('/login');
     });
 
+    page('/apiaries/new', function () {
+      app.route = 'apiary-new';
+      app.layoutManager = 'apiary-form';
+    });
+
     page('/apiaries/:id', function (data) {
       app.apiaryId = data.params.id;
       app.layoutManager = 'apiary';

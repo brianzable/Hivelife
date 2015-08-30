@@ -1,0 +1,79 @@
+<dom-module id="apiary-form">
+  <link rel="import" type="css" href="form-common.css">
+
+  <template>
+    <paper-header-panel class="fit">
+      <paper-toolbar id="mainToolbar">
+        <a id="backLink" href="/apiaries">
+          <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
+        </a>
+        <div>New Apiary</div>
+        <span class="flex"></span>
+        <paper-icon-button id="formSubmit" icon="check"></paper-icon-button>
+      </paper-toolbar>
+
+      <div class="content">
+        <paper-material elements="1">
+          <h1>Apiary Information</h1>
+          <paper-input id="name" label="apiary name"></paper-input>
+          <paper-input id="streetAddress" label="street address"></paper-input>
+          <paper-input id="city" label="city"></paper-input>
+          <paper-input id="state" label="state"></paper-input>
+          <paper-input id="postalCode" label="postal code"></paper-input>
+        </paper-material>
+      </div>
+    </paper-header-panel>
+
+    <iron-ajax
+      id="createApiaryRequest"
+      url="/v1/api/apiaries"
+      method="post"
+      on-response="handleApiaryCreate"
+      on-error="handleCreateFailure">
+    </iron-ajax>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'apiary-form',
+
+      listeners: {
+        'formSubmit.click': '_submitForm'
+      },
+
+      _submitForm: function () {
+        var payload = {
+          apiary: {
+            name: this.$.name.value,
+            street_address: this.$.streetAddress.value,
+            city: this.$.city.value,
+            state: this.$.state.value,
+            zip_code: this.$.postalCode.value
+          }
+        }
+
+        var client = this.$.createApiaryRequest;
+        client.headers = {
+          'Authorization': 'Token token=' + this.authenticationToken,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        };
+
+        client.body = payload;
+        client.generateRequest();
+      },
+
+      handleApiaryCreate: function (event) {
+        var response = event.detail.response;
+        this.fire('page-redirect', { path: '/apiaries/' + response.id});
+      },
+
+      handleCreateFailure: function (event) {
+        console.log(event.detail);
+      }
+    });
+  })();
+</script>
+
