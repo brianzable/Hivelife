@@ -1,0 +1,16 @@
+<script>
+  var HivelifeBehaviors = HivelifeBehaviors || {};
+  HivelifeBehaviors.RequestBehavior = {
+    ready: function () {
+      this.$.client.headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      };
+      this.$.contentType = 'application/json';
+    },
+
+    _setAuthorization: function () {
+      this.$.client.headers['Authorization'] = 'Token token=' + this.authenticationToken;
+    },
+  };
+</script>

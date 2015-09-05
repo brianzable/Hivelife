@@ -24,13 +24,12 @@
       </div>
     </paper-header-panel>
 
-    <iron-ajax
-      id="createApiaryRequest"
-      url="/v1/api/apiaries"
-      method="post"
-      on-response="handleApiaryCreate"
-      on-error="handleCreateFailure">
-    </iron-ajax>
+    <apiary-show-request
+      id="getApiaryRequest"
+      apiary-id="{{apiaryId}}"
+      authentication-token="{{authenticationToken}}"
+      on-data-load="handleApiaryLoad">
+    </apiary-show-request>
   </template>
 </dom-module>
 
@@ -43,37 +42,41 @@
         'formSubmit.click': '_submitForm'
       },
 
-      _submitForm: function () {
-        var payload = {
-          apiary: {
-            name: this.$.name.value,
-            street_address: this.$.streetAddress.value,
-            city: this.$.city.value,
-            state: this.$.state.value,
-            zip_code: this.$.postalCode.value
-          }
-        }
+      /* _submitForm: function () { */
+      /*   var payload = { */
+      /*     apiary: { */
+      /*       name: this.$.name.value, */
+      /*       street_address: this.$.streetAddress.value, */
+      /*       city: this.$.city.value, */
+      /*       state: this.$.state.value, */
+      /*       zip_code: this.$.postalCode.value */
+      /*     } */
+      /*   }; */
 
-        var client = this.$.createApiaryRequest;
-        client.headers = {
-          'Authorization': 'Token token=' + this.authenticationToken,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        };
+      /*   var client = this.$.createApiaryRequest; */
+      /*   client.headers = { */
+      /*     'Authorization': 'Token token=' + this.authenticationToken, */
+      /*     'Content-Type': 'application/json', */
+      /*     'Accept': 'application/json' */
+      /*   }; */
 
-        client.body = payload;
-        client.generateRequest();
+      /*   client.body = payload; */
+      /*   client.generateRequest(); */
+      /* }, */
+
+      loadApiary: function () {
+        this.$.getApiaryRequest.send();
       },
 
-      handleApiaryCreate: function (event) {
-        var response = event.detail.response;
-        this.fire('page-redirect', { path: '/apiaries/' + response.id});
-      },
+      handleApiaryLoad: function (event) {
+        var apiary = event.detail.apiary;
 
-      handleCreateFailure: function (event) {
-        console.log(event.detail);
+        this.$.name.value = apiary.name;
+        this.$.streetAddress.value = apiary.street_address;
+        this.$.city.value = apiary.city;
+        this.$.state.value = apiary.state;
+        this.$.postalCode.value = apiary.zip_code;
       }
     });
   })();
 </script>
-

@@ -38,6 +38,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.$.apiaryManager.loadApiary();
     });
 
+    page('/apiaries/:id/edit', function (data) {
+      app.apiaryId = data.params.id;
+      app.layoutManager = 'apiary-form';
+      app.route = 'apiary-edit';
+      app.$.apiaryForm.loadApiary();
+    });
+
     page('/apiaries', function () {
       app.layoutManager = 'root';
       app.route = 'apiaries';

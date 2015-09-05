@@ -47,11 +47,12 @@
       </div>
     </paper-header-panel>
 
-    <iron-ajax
-      id="client"
-      method="get"
-      on-response="handleResponse"
-      on-error="handleError"></iron-ajax>
+    <apiary-show-request
+      id="request"
+      apiary-id="{{apiaryId}}"
+      authentication-token="{{authenticationToken}}"
+      on-data-load="handleResponse">
+    </apiary-show-request>
   </template>
 </dom-module>
 
@@ -71,28 +72,17 @@
         }
       },
 
-      ready: function () {
-      },
-
       loadApiary: function () {
-        var client = this.$.client;
         this.editPath = '/apiaries/' + this.apiaryId  + '/edit';
 
-        client.url = 'v1/api/apiaries/' + this.apiaryId;
-        client.contentType = 'application/json';
-        client.headers = {
-          'Authorization': 'Token token=' + this.authenticationToken,
-          'Accept': 'application/json'
-        };
-        client.generateRequest();
-
+        this.$.request.send();
         this.$.hiveList.loadHives();
         this.$.beekeeperList.loadBeekeepers();
       },
 
       handleResponse: function (event) {
-        var response = event.detail.response;
-        this.name = response.name;
+        var apiary = event.detail.apiary;
+        this.name = apiary.name;
       }
     });
   })();

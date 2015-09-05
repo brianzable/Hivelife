@@ -3,6 +3,7 @@ FactoryGirl.define do
     name 'Test Apiary'
     zip_code '60126'
     city 'My City'
+    street_address '123 Fake Street'
     state 'IL'
 
     factory :apiary_with_hives do

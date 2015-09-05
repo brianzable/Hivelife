@@ -13,11 +13,11 @@
       </template>
     </iron-list>
 
-    <iron-ajax
-      id="client"
-      method="get"
-      on-response="handleResponse"
-      on-error="handleError"></iron-ajax>
+    <!-- <iron-ajax -->
+    <!--   id="client" -->
+    <!--   method="get" -->
+    <!--   on-response="handleResponse" -->
+    <!--   on-error="handleError"></iron-ajax> -->
   </template>
 </dom-module>
 
@@ -38,14 +38,14 @@
       },
 
       loadData: function () {
-        var client = this.$.client;
+        /* var client = this.$.client; */
 
-        client.url = 'v1/api/hives/' + this.hiveId + '/inspections';
-        client.contentType = 'application/json';
-        client.headers = {
-          'Authorization': 'Token token=' + this.authenticationToken,
-          'Accept': 'application/json'
-        };
+        /* client.url = 'v1/api/hives/' + this.hiveId + '/inspections'; */
+        /* client.contentType = 'application/json'; */
+        /* client.headers = { */
+        /*   'Authorization': 'Token token=' + this.authenticationToken, */
+        /*   'Accept': 'application/json' */
+        /* }; */
         client.generateRequest();
       },
 
