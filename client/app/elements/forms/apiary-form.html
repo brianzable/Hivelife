@@ -7,7 +7,7 @@
         <a id="backLink" href="/apiaries">
           <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
         </a>
-        <div>New Apiary</div>
+        <div>{{pageTitle}}</div>
         <span class="flex"></span>
         <paper-icon-button id="formSubmit" icon="check"></paper-icon-button>
       </paper-toolbar>
@@ -28,8 +28,22 @@
       id="getApiaryRequest"
       apiary-id="{{apiaryId}}"
       authentication-token="{{authenticationToken}}"
-      on-data-load="handleApiaryLoad">
+      on-data-load="handleLoad">
     </apiary-show-request>
+
+    <apiary-create-request
+      id="createApiaryRequest"
+      apiary-id="{{apiaryId}}"
+      authentication-token="{{authenticationToken}}"
+      on-data-load="handleCreate">
+    </apiary-create-request>
+
+    <apiary-update-request
+      id="updateApiaryRequest"
+      apiary-id="{{apiaryId}}"
+      authentication-token="{{authenticationToken}}"
+      on-data-load="handleUpdate">
+    </apiary-update-request>
   </template>
 </dom-module>
 
@@ -42,33 +56,41 @@
         'formSubmit.click': '_submitForm'
       },
 
-      /* _submitForm: function () { */
-      /*   var payload = { */
-      /*     apiary: { */
-      /*       name: this.$.name.value, */
-      /*       street_address: this.$.streetAddress.value, */
-      /*       city: this.$.city.value, */
-      /*       state: this.$.state.value, */
-      /*       zip_code: this.$.postalCode.value */
-      /*     } */
-      /*   }; */
+      _submitForm: function () {
+        var payload = {
+          apiary: {
+            name: this.$.name.value,
+            street_address: this.$.streetAddress.value,
+            city: this.$.city.value,
+            state: this.$.state.value,
+            zip_code: this.$.postalCode.value
+          }
+        };
 
-      /*   var client = this.$.createApiaryRequest; */
-      /*   client.headers = { */
-      /*     'Authorization': 'Token token=' + this.authenticationToken, */
-      /*     'Content-Type': 'application/json', */
-      /*     'Accept': 'application/json' */
-      /*   }; */
-
-      /*   client.body = payload; */
-      /*   client.generateRequest(); */
-      /* }, */
-
-      loadApiary: function () {
-        this.$.getApiaryRequest.send();
+        var request = this._requestForSubmit();
+        request.payload = payload;
+        request.send();
       },
 
-      handleApiaryLoad: function (event) {
+      _requestForSubmit: function () {
+        if (this.mode === 'new') {
+          return this.$.createApiaryRequest;
+        } else {
+          return this.$.updateApiaryRequest;
+        }
+      },
+
+      setup: function () {
+        if (this.mode === 'new') {
+          this.pageTitle = 'New Apiary';
+          this.clearFields();
+        } else {
+          this.pageTitle = 'Edit Apiary';
+          this.$.getApiaryRequest.send();
+        }
+      },
+
+      handleLoad: function (event) {
         var apiary = event.detail.apiary;
 
         this.$.name.value = apiary.name;
@@ -76,6 +98,28 @@
         this.$.city.value = apiary.city;
         this.$.state.value = apiary.state;
         this.$.postalCode.value = apiary.zip_code;
+      },
+
+      clearFields: function () {
+        this.$.name.value = '';
+        this.$.streetAddress.value = '';
+        this.$.city.value = '';
+        this.$.state.value = '';
+        this.$.postalCode.value = '';
+      },
+
+      handleCreate: function (event) {
+        var apiary = event.detail.apiary;
+
+        this.fire('app-message', { message: 'Apiary successfully created!' });
+        this.fire('page-redirect', { path: '/apiaries/' + apiary.id });
+      },
+
+      handleUpdate: function (event) {
+        var apiary = event.detail.apiary;
+
+        this.fire('app-message', { message: 'Apiary sucessfully updated!' });
+        this.fire('page-redirect', { path: '/apiaries/' + apiary.id });
       }
     });
   })();

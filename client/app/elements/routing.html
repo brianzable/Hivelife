@@ -29,6 +29,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     page('/apiaries/new', function () {
       app.route = 'apiary-new';
       app.layoutManager = 'apiary-form';
+      app.$.apiaryForm.mode = 'new';
+      app.$.apiaryForm.setup();
     });
 
     page('/apiaries/:id', function (data) {
@@ -42,7 +44,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.apiaryId = data.params.id;
       app.layoutManager = 'apiary-form';
       app.route = 'apiary-edit';
-      app.$.apiaryForm.loadApiary();
+      app.$.apiaryForm.mode = 'edit';
+      app.$.apiaryForm.setup();
     });
 
     page('/apiaries', function () {

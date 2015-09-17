@@ -25,6 +25,11 @@
     app.$.pages.addEventListener('page-redirect', function (event) {
       page.redirect(event.detail.path);
     });
+
+    app.$.pages.addEventListener('app-message', function (event) {
+      app.$.appToast.text = event.detail.message;
+      app.$.appToast.show();
+    });
   });
 
   // See https://github.com/Polymer/polymer/issues/1381
