@@ -48,17 +48,11 @@
     </paper-header-panel>
 
     <apiary-show-request
-      id="showRequest"
+      id="getApiaryRequest"
       apiary-id="{{apiaryId}}"
       authentication-token="{{authenticationToken}}"
-      on-data-load="handleResponse">
+      on-data-load="handleLoad">
     </apiary-show-request>
-
-    <apiary-create-request
-      id="createRequest"
-      authentication-token="{{authenticationToken}}"
-      on-data-load="handleResponse">
-    </apiary-create-request>
   </template>
 </dom-module>
 
@@ -81,12 +75,12 @@
       loadApiary: function () {
         this.editPath = '/apiaries/' + this.apiaryId  + '/edit';
 
-        this.$.createRequest.send();
+        this.$.getApiaryRequest.send();
         this.$.hiveList.loadHives();
         this.$.beekeeperList.loadBeekeepers();
       },
 
-      handleResponse: function (event) {
+      handleLoad: function (event) {
         var apiary = event.detail.apiary;
         this.name = apiary.name;
       }
