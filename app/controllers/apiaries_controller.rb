@@ -25,14 +25,10 @@ class ApiariesController < ApplicationController
   end
 
   def update
-    respond_to do |format|
-      if @apiary.update(apiary_params)
-        format.html { redirect_to @apiary, notice: 'Apiary was successfully updated.' }
-        format.json { render action: 'show', status: :created, location: @apiary }
-      else
-        format.html { render action: 'edit' }
-        format.json { render json: @apiary.errors, status: :unprocessable_entity }
-      end
+    if @apiary.update(apiary_params)
+      render action: 'show', status: :created, location: @apiary
+    else
+      render json: @apiary.errors, status: :unprocessable_entity
     end
   end
 
