@@ -4,7 +4,6 @@
 
   <template>
     <paper-header-panel main mode="waterfall-tall" class="fit">
-
       <paper-toolbar id="mainToolbar">
         <a id="backLink" href="/apiaries">
           <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
@@ -41,7 +40,12 @@
             <paper-material elevation="1">
               <beekeeper-list id="beekeeperList" authentication-token="{{authenticationToken}}" apiary-id="{{apiaryId}}"></beekeeper-list>
             </paper-material>
-            <paper-fab icon="add"></paper-fab>
+            <add-beekeeper-dialog
+              id="addBeekeeperDialog"
+              apiary-id="{{apiaryId}}"
+              authentication-token="{{authenticationToken}}">
+            </add-beekeeper-dialog>
+            <paper-fab id="addBeekeeperButton" icon="add"></paper-fab>
           </section>
         </iron-pages>
       </div>
@@ -61,6 +65,10 @@
     Polymer({
       is: 'apiary-layout-manager',
 
+      listeners: {
+        'addBeekeeperDialog.beekeeper-added': '_reloadBeekeepers'
+      },
+
       properties: {
         apiaryId: {
           type: String,
@@ -70,6 +78,13 @@
           type: Number,
           value: 0
         }
+      },
+
+      ready: function () {
+        var dialog = this.$.addBeekeeperDialog;
+        this.$.addBeekeeperButton.addEventListener('click', function () {
+          dialog.toggle();
+        });
       },
 
       loadApiary: function () {
@@ -83,6 +98,10 @@
       handleLoad: function (event) {
         var apiary = event.detail.apiary;
         this.name = apiary.name;
+      },
+
+      _reloadBeekeepers: function () {
+        this.$.beekeeperList.loadBeekeepers();
       }
     });
   })();

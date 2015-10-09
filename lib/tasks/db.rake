@@ -9,6 +9,22 @@ namespace :db do
 
   desc 'Populates the database with sample data'
   task :load_sample_data => :environment do
+    other_users = []
+    10.times do |index|
+      u = FactoryGirl.create(
+        :user,
+        first_name: 'John',
+        last_name: 'Doe',
+        photo_url: 'https://dl.dropboxusercontent.com/u/47340/profile.png',
+        email: "user#{index}@example.com",
+        password: '11111111',
+        password_confirmation: '11111111',
+      )
+      u.activate!
+
+      other_users << u
+    end
+
     user = FactoryGirl.create(
       :user,
       first_name: 'Brian',
@@ -45,5 +61,14 @@ namespace :db do
       user: user,
       permission: 'Admin'
     )
+
+    other_users.each do |u|
+      FactoryGirl.create(
+        :beekeeper,
+        apiary: main_apiary,
+        user: u,
+        permission: 'Read'
+      )
+    end
   end
 end

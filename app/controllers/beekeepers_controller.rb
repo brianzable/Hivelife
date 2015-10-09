@@ -2,10 +2,13 @@ class BeekeepersController < ApplicationController
   respond_to :json
 
   before_action :authenticate
+  before_action :set_beekeeper_user, only: [:create]
+  before_action :set_apiary, only: [:create]
   before_action :set_and_authorize_beekeeper, only: [:show, :update, :destroy]
 
   def index
     @beekeepers = Beekeeper.where(apiary_id: params[:apiary_id])
+    authorize(@beekeepers.first)
   end
 
   def show
@@ -35,7 +38,7 @@ class BeekeepersController < ApplicationController
     render json: { head: :no_content }
   end
 
-private
+  private
 
   def set_and_authorize_beekeeper
     @beekeeper = Beekeeper.includes(:user).where(
@@ -45,17 +48,24 @@ private
     authorize @beekeeper
   end
 
+  def set_beekeeper_user
+    @beekeeper_user = User.where(email: params[:beekeeper][:email]).take
+  end
+
+  def set_apiary
+    @apiary = Apiary.find(params[:apiary_id])
+  end
+
   def create_beekeeper_params
-    params[:beekeeper][:user_id] = User.where(email: params[:beekeeper][:email]).take.id
-    params[:beekeeper][:apiary_id] = params[:apiary_id]
-    params.require(:beekeeper).permit(:apiary_id, :user_id, :permission, :email, :creator)
+    whitelisted_params = params.require(:beekeeper).permit(:permission)
+    whitelisted_params.merge(user: @beekeeper_user, apiary: @apiary)
   end
 
   def update_beekeeper_params
-    params.require(:beekeeper).permit(:permission, :apiary_id)
+    params.require(:beekeeper).permit(:permission)
   end
 
   def pundit_user
-    Beekeeper.where(user_id: @user.id, apiary_id: params[:apiary_id]).first
+    @current_beekeeper = Beekeeper.where(user_id: @user.id, apiary_id: params[:apiary_id]).take
   end
 end

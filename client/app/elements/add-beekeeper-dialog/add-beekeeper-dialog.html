@@ -1,0 +1,92 @@
+<dom-module id="add-beekeeper-dialog">
+  <style>
+    paper-dialog {
+      background: white;
+      width: 500px;
+      height: 200px;
+    }
+
+    paper-button {
+      margin-top: 15px;
+    }
+
+    paper-dropdown-menu {
+      width: 100px;
+    }
+
+    #errorMessage {
+      color: red;
+    }
+  </style>
+  <template>
+    <paper-dialog id="addBeekeeperDialog">
+      <div class="layout vertical">
+        <div class="layout horizontal center">
+          <paper-input id="email" class="flex" label="email address"></paper-input>
+          <paper-dropdown-menu id="permission" label="role">
+            <paper-menu class="dropdown-content">
+              <paper-item>Read</paper-item>
+              <paper-item>Write</paper-item>
+              <paper-item>Admin</paper-item>
+            </paper-menu>
+          </paper-dropdown-menu>
+          <paper-button id="formSubmit" raised role="button">Add</paper-button>
+        </div>
+
+        <div id="errorMessage" style="display: none;">
+          <iron-icon icon="icons:error-outline"></iron-icon>
+          <span id="errorMessageText">Succesfully added so and so.</span>
+        </div>
+      </div>
+    </paper-dialog>
+
+    <beekeeper-create-request
+      id="createBeekeeperRequest"
+      apiary-id="{{apiaryId}}"
+      authentication-token="{{authenticationToken}}"
+    </beekeeper-create-request>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'add-beekeeper-dialog',
+
+      listeners: {
+        'formSubmit.click': '_submitForm',
+        'createBeekeeperRequest.data-load': '_handleCreate'
+      },
+
+      toggle: function () {
+        this.$.addBeekeeperDialog.toggle();
+      },
+
+      _submitForm: function () {
+        var client = this.$.createBeekeeperRequest;
+
+        client.payload = {
+          beekeeper: {
+            email: this.$.email.value,
+            permission: this.$.permission.selectedItemLabel
+          }
+        };
+
+        this.$.createBeekeeperRequest.send();
+      },
+
+      _handleCreate: function (event) {
+        this.$.errorMessage.style.display = 'none';
+        this.$.email.value = '';
+        this.toggle();
+        this.fire('beekeeper-added');
+      },
+
+      _handleError: function (event) {
+        var errorMessage = event.target.lastRequest.xhr.response.errors[0];
+        this.$.errorMessage.style.display = 'block';
+        this.$.errorMessageText.innerHTML = errorMessage;
+      }
+    });
+  })();
+</script>

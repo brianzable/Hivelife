@@ -2,7 +2,11 @@
   <template>
     <iron-list id="list" items="[[data]]" as="item" scrollTarget="{{scrollTarget}}">
       <template>
-        <beekeeper-list-item>
+        <beekeeper-list-item
+          apiary-id="{{apiaryId}}"
+          beekeeper-id="{{item.id}}"
+          editable="{{item.editable}}"
+          authentication-token="{{authenticationToken}}">
           <iron-image class="photo" style="height: 60px; width: 60px; border-radius: 50%;" src="{{item.photo_url}}" sizing="cover"></iron-image>
           <span class="name">{{item.name}}</span>
           <span class="role">{{item.role}}</span>
@@ -29,6 +33,10 @@
         scrollTarget: Object
       },
 
+      listeners: {
+        'list.beekeeper-delete': '_handleBeekeeperDelete'
+      },
+
       ready: function () {
         this.data = [];
       },
@@ -43,6 +51,14 @@
           'Accept': 'application/json'
         };
         client.generateRequest();
+      },
+
+      _handleBeekeeperDelete: function (event) {
+        console.log(event.detail);
+        var result = event.detail.error;
+        if (result === false) {
+          this.loadBeekeepers();
+        }
       },
 
       handleResponse: function (event) {

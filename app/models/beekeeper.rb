@@ -1,4 +1,10 @@
 class Beekeeper < ActiveRecord::Base
+  module Roles
+    Viewer = 'Read'
+    Inspector = 'Write'
+    Admin = 'Admin'
+  end
+
 	PERMISSIONS = [["Can View", "Read"],
 								 ["Can Edit", "Write"],
 								 ["Admin", "Admin"]]

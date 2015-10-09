@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from Pundit::NotAuthorizedError, with: :render_unauthorized
 
-protected
+  protected
 
   def authenticate
     authenticate_with_token || render_unauthorized

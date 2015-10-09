@@ -35,7 +35,6 @@ class ApiariesController < ApplicationController
   def destroy
     @apiary.destroy
     respond_to do |format|
-      format.html { redirect_to apiaries_url }
       format.json { render json: { head: :no_content } }
     end
   end

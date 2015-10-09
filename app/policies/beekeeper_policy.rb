@@ -3,7 +3,11 @@ class BeekeeperPolicy < ApplicationPolicy
     def resolve
       scope
     end
-  end # end scope
+  end
+
+  def index?
+    beekeeper.read?
+  end
 
   def show?
     beekeeper.read?

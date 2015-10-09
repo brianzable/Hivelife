@@ -1,0 +1,48 @@
+<dom-module id="beekeeper-delete-request">
+  <template>
+    <iron-ajax
+      id="client"
+      method="DELETE"
+      on-response="_handleSuccess"
+      on-error="_handleError">
+    </iron-ajax>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'beekeeper-delete-request',
+      behaviors: [HivelifeBehaviors.RequestBehavior],
+      properties: {
+        authenticationToken: String,
+        beekeeperId: Number
+      },
+
+      send: function () {
+        this._setAuthorization();
+        this.$.client.url = 'v1/api/apiaries/' + this.apiaryId + '/beekeepers/' + this.beekeeperId;
+        this.$.client.generateRequest();
+      },
+
+      _handleSuccess: function (event) {
+        var detail = {
+          error: false,
+          beekeeper: null
+        };
+
+        this.fire('beekeeper-delete', detail);
+      },
+
+      _handleError: function (event) {
+        var detail = {
+          error: true,
+          message: 'Failed to delete beekeeper'
+        };
+
+        this.fire('beekeeper-delete', detail);
+      }
+    });
+  })();
+</script>
+
