@@ -1,0 +1,47 @@
+<dom-module id="hive-show-request">
+  <template>
+    <iron-ajax
+      id="client"
+      method="GET"
+      on-response="_handleSuccess"
+      on-error="_handleError">
+    </iron-ajax>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'hive-show-request',
+      behaviors: [HivelifeBehaviors.RequestBehavior],
+      properties: {
+        authenticationToken: String,
+        apiaryId: Number,
+        hiveId: Number
+      },
+
+      send: function () {
+        this._setAuthorization();
+        this.$.client.url = 'v1/api/apiaries/' + this.apiaryId + '/hives/' + this.hiveId;;
+        this.$.client.generateRequest();
+      },
+
+      _handleSuccess: function (event) {
+        var detail = {
+          error: false,
+          hive: event.detail.response
+        };
+
+        this.fire('data-load', detail);
+      },
+
+      _handleError: function (event) {
+        var detail = {
+          error: true,
+          message: 'Failed to load hive'
+        };
+        this.fire('data-load', detail);
+      }
+    });
+  })();
+</script>

@@ -2,32 +2,24 @@ class HivesController < ApplicationController
   respond_to :json
 
   before_action :authenticate
-  # around_action :user_time_zone
+  before_action :set_apiary, only: [:create]
+  before_action :set_and_authorize_hive, only: [:show]
 
   def index
     @hives = Hive.where(apiary_id: params[:apiary_id])
   end
 
   def show
-    @hive = Hive.includes(:apiary, :inspections, :harvests).find(params[:id])
-    authorize(@hive)
   end
 
   def create
-    params[:hive][:apiary_id] = params[:apiary_id]
-
-    @hive = Hive.new(hive_params)
+    @hive = @apiary.hives.new(hive_params)
     authorize(@hive)
 
-    @apiary = Apiary.find(params[:apiary_id])
-    respond_to do |format|
-      if @hive.save
-        format.html { redirect_to [@apiary, @hive], notice: 'Hive was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @hive }
-      else
-        format.html { render action: 'new' }
-        format.json { render json: @hive.errors, status: :unprocessable_entity }
-      end
+    if @hive.save
+      render action: 'show', status: :created, location: @hive
+    else
+      render json: @hive.errors, status: :unprocessable_entity
     end
   end
 
@@ -57,32 +49,29 @@ class HivesController < ApplicationController
   	end
   end
 
-private
+  private
 
-  def set_hive
-    @hive = Hive.find(params[:id])
+  def set_and_authorize_hive
+    @hive = Hive.includes(:apiary, :inspections, :harvests).find(params[:id])
+    authorize(@hive)
+  end
+
+  def set_apiary
+    @apiary = Apiary.find(params[:apiary_id])
   end
 
   def hive_params
     params.require(:hive).permit(
       :name,
       :hive_type,
-      :street_address,
-      :city,
-      :zip_code,
-      :state,
       :latitude,
       :longitude,
-      :photo_url,
-      :ventilated,
-      :entrance_reducer,
-      :entrance_reducer_size,
-      :queen_excluder,
       :orientation,
       :breed,
-      :public,
-      :fine_location_sharing,
-      :apiary_id
+      :comments,
+      :source,
+      :data_sharing,
+      :exact_location_sharing
     )
   end
 

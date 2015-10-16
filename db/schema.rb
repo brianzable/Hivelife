@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150818022615) do
+ActiveRecord::Schema.define(version: 20151010015548) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,26 +71,18 @@ ActiveRecord::Schema.define(version: 20150818022615) do
 
   create_table "hives", force: :cascade do |t|
     t.integer  "apiary_id"
-    t.string   "name",                  limit: 255,                           default: "",                                 null: false
-    t.string   "breed",                 limit: 255
-    t.string   "hive_type",             limit: 255
-    t.string   "photo_url",             limit: 255,                           default: "defaults/beehive_placeholder.png", null: false
-    t.string   "flight_pattern",        limit: 255
-    t.boolean  "fine_location_sharing",                                       default: false,                              null: false
-    t.boolean  "public",                                                      default: false,                              null: false
-    t.boolean  "ventilated"
-    t.boolean  "queen_excluder"
-    t.boolean  "entrance_reducer"
-    t.string   "entrance_reducer_size", limit: 255
+    t.string   "name",                   limit: 255,                           default: "",    null: false
+    t.string   "breed",                  limit: 255
+    t.string   "hive_type",              limit: 255
+    t.boolean  "exact_location_sharing",                                       default: false, null: false
+    t.boolean  "data_sharing",                                                 default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.decimal  "latitude",                          precision: 18, scale: 15
-    t.decimal  "longitude",                         precision: 18, scale: 15
-    t.string   "street_address",        limit: 255
-    t.string   "city",                  limit: 255
-    t.string   "state",                 limit: 255
-    t.string   "zip_code",              limit: 255
-    t.string   "orientation",           limit: 255
+    t.decimal  "latitude",                           precision: 18, scale: 15
+    t.decimal  "longitude",                          precision: 18, scale: 15
+    t.string   "orientation",            limit: 255
+    t.string   "comments"
+    t.string   "source"
   end
 
   create_table "honey_supers", force: :cascade do |t|

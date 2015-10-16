@@ -1,6 +1,6 @@
 <dom-module id="inspection-list">
   <template>
-    <iron-list id="list" items="[[data]]" as="item" scrollTarget="{{scrollTarget}}">
+  <iron-list id="list" items="{{inspections}}" as="item" scrollTarget="{{scrollTarget}}">
       <template>
         <a href="{{_inspectionUrl(item)}}" style="text-decoration: none; color: inherit;">
           <inspection-list-item>
@@ -12,12 +12,6 @@
         </a>
       </template>
     </iron-list>
-
-    <!-- <iron-ajax -->
-    <!--   id="client" -->
-    <!--   method="get" -->
-    <!--   on-response="handleResponse" -->
-    <!--   on-error="handleError"></iron-ajax> -->
   </template>
 </dom-module>
 
@@ -29,32 +23,7 @@
 
       properties: {
         hiveId: Number,
-        authenticationToken: String,
         scrollTarget: Object
-      },
-
-      ready: function () {
-        this.data = [];
-      },
-
-      loadData: function () {
-        /* var client = this.$.client; */
-
-        /* client.url = 'v1/api/hives/' + this.hiveId + '/inspections'; */
-        /* client.contentType = 'application/json'; */
-        /* client.headers = { */
-        /*   'Authorization': 'Token token=' + this.authenticationToken, */
-        /*   'Accept': 'application/json' */
-        /* }; */
-        client.generateRequest();
-      },
-
-      handleResponse: function (event) {
-        this.data = event.detail.response;
-      },
-
-      handleError: function (event) {
-        console.log(event.detail);
       },
 
       _inspectionUrl: function (item) {

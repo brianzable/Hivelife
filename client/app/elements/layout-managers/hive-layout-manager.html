@@ -9,7 +9,13 @@
           <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
         </a>
         <span class="flex"></span>
-        <paper-icon-button icon="more-vert"></paper-icon-button>
+        <paper-menu-button vertical-align="top" horizontal-align="right">
+          <paper-icon-button icon="menu" class="dropdown-trigger"></paper-icon-button>
+          <paper-menu class="dropdown-content">
+            <a class="no-link" href="{{editPath}}"><paper-item>Edit Hive</paper-item></a>
+            <a class="no-link" href="/logout"><paper-item>Logout</paper-item></a>
+          </paper-menu>
+        </paper-menu-button>
 
         <div class="middle paper-font-display2 app-name">{{name}}</div>
 
@@ -26,13 +32,13 @@
         <iron-pages selected="{{selected}}">
           <section>
             <paper-material elevation="1">
-              <inspection-list id="inspectionList" authentication-token="{{authenticationToken}}" hive-id="{{hiveId}}"></inspection-list>
+              <inspection-list id="inspectionList" inspections="{{inspections}}" hive-id="{{hiveId}}"></inspection-list>
             </paper-material>
           </section>
 
           <section>
             <paper-material elevation="1">
-              <harvest-list id="harvestList" authentication-token="{{authenticationToken}}" hive-id="{{hiveId}}"></harvest-list>
+              <harvest-list id="harvestList" harvests="{{harvests}}" hive-id="{{hiveId}}"></harvest-list>
             </paper-material>
           </section>
 
@@ -43,11 +49,13 @@
       </div>
     </paper-header-panel>
 
-    <iron-ajax
-      id="client"
-      method="get"
-      on-response="handleResponse"
-      on-error="handleError"></iron-ajax>
+    <hive-show-request
+      id="getHiveRequest"
+      apiary-id="{{apiaryId}}"
+      hive-id="{{hiveId}}"
+      authentication-token="{{authenticationToken}}"
+      on-data-load="handleLoad">
+    </hive-show-request>
   </template>
 </dom-module>
 
@@ -59,8 +67,7 @@
       properties: {
         apiaryId: {
           type: Number,
-          notify: true,
-          observer: '_apiaryIdChanged'
+          notify: true
         },
         hiveId: {
           type: Number,
@@ -73,27 +80,16 @@
       },
 
       loadHive: function () {
-        var client = this.$.client;
-
-        client.url = 'v1/api/apiaries/' + this.apiaryId + '/hives/' + this.hiveId;
-        client.contentType = 'application/json';
-        client.headers = {
-          'Authorization': 'Token token=' + this.authenticationToken,
-          'Accept': 'application/json'
-        };
-        client.generateRequest();
-
-        this.$.inspectionList.loadData();
-        this.$.harvestList.loadData();
+        this.editPath = '/apiaries/' + this.apiaryId + '/hives/' + this.hiveId + '/edit';
+        this.backLink = '/apiaries/' + this.apiaryId;
+        this.$.getHiveRequest.send();
       },
 
-      handleResponse: function (event) {
-        var response = event.detail.response;
-        this.name = response.name;
-      },
-
-      _apiaryIdChanged: function (newValue, oldValue) {
-        this.backLink = 'apiaries/' + newValue;
+      handleLoad: function (event) {
+        var hive = event.detail.hive;
+        this.name = hive.name;
+        this.inspections = hive.inspections;
+        this.harvests = hive.harvests;
       }
     });
   })();

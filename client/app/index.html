@@ -84,11 +84,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </section>
 
       <section data-layout-manager="apiary-form">
-      <apiary-form
-        id="apiaryForm"
-        authentication-token="{{authenticationToken}}"
-        apiary-id="{{apiaryId}}">
-      </apiary-form>
+        <apiary-form
+          id="apiaryForm"
+          authentication-token="{{authenticationToken}}"
+          apiary-id="{{apiaryId}}">
+        </apiary-form>
+      </section>
+
+      <section data-layout-manager="hive-form">
+        <hive-form
+          id="hiveForm"
+          authentication-token="{{authenticationToken}}"
+          hive-id="{{hiveId}}"
+          apiary-id="{{apiaryId}}">
+        </hive-form>
       </section>
     </iron-pages>
 

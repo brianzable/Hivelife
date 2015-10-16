@@ -54,8 +54,8 @@
       },
 
       _handleBeekeeperDelete: function (event) {
-        console.log(event.detail);
         var result = event.detail.error;
+
         if (result === false) {
           this.loadBeekeepers();
         }

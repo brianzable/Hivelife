@@ -1,0 +1,264 @@
+<dom-module id="hive-form">
+  <link rel="import" type="css" href="form-common.css">
+
+  <template>
+    <paper-header-panel class="fit">
+      <paper-toolbar id="mainToolbar">
+        <a id="backLink" href="{{backLink}}">
+          <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
+        </a>
+        <div>{{pageTitle}}</div>
+        <span class="flex"></span>
+        <paper-icon-button id="formSubmit" icon="check"></paper-icon-button>
+      </paper-toolbar>
+
+      <div class="content">
+        <paper-material elements="1">
+          <h1>Hive Information</h1>
+          <paper-input id="name" label="hive name"></paper-input>
+
+          <paper-dropdown-menu id="type" label="hive type">
+            <paper-menu id="typeMenu" class="dropdown-content">
+              <paper-item>Langstroth</paper-item>
+              <paper-item>Top Bar</paper-item>
+              <paper-item>Warre</paper-item>
+              <paper-item>Other</paper-item>
+            </paper-menu>
+          </paper-dropdown-menu>
+
+          <paper-dropdown-menu id="orientation" label="orientation">
+            <paper-menu id="orientationMenu" class="dropdown-content">
+              <paper-item>North</paper-item>
+              <paper-item>North East</paper-item>
+              <paper-item>East</paper-item>
+              <paper-item>South East</paper-item>
+              <paper-item>South</paper-item>
+              <paper-item>South West</paper-item>
+              <paper-item>West</paper-item>
+              <paper-item>North West</paper-item>
+            </paper-menu>
+          </paper-dropdown-menu>
+
+          <paper-dropdown-menu id="breed" label="bee breed">
+            <paper-menu id="breedMenu" class="dropdown-content">
+              <paper-item>Italian</paper-item>
+              <paper-item>Carniolan</paper-item>
+              <paper-item>Russian</paper-item>
+              <paper-item>Other</paper-item>
+            </paper-menu>
+          </paper-dropdown-menu>
+
+          <paper-dropdown-menu id="source" label="bee source">
+            <paper-menu id="sourceMenu" class="dropdown-content">
+              <paper-item>Package</paper-item>
+              <paper-item>Nuc</paper-item>
+              <paper-item>Swarm</paper-item>
+              <paper-item>Split</paper-item>
+              <paper-item>Other</paper-item>
+            </paper-menu>
+          </paper-dropdown-menu>
+
+          <paper-input id="comments" label="comments"></paper-input>
+
+          <google-map id="hiveLocation" click-events="true" style="height: 300px; width: 400px;">
+            <google-map-marker latitude="{{latitude}}" longitude="{{longitude}}"></google-map-marker>
+          </google-map>
+          <h5>Inspection Sharing</h5>
+          <paper-radio-group id="dataSharing" selected="enabled">
+            <paper-radio-button name="enabled">Enabled</paper-radio-button>
+            <paper-radio-button name="disabled">Disabled</paper-radio-button>
+          <paper-radio-group>
+
+          <h5>Location Sharing</h5>
+          <paper-radio-group id="locationSharing" selected="exact">
+            <paper-radio-button name="exact">Exact</paper-radio-button>
+            <paper-radio-button name="imprecise">City/Region</paper-radio-button>
+          <paper-radio-group>
+        </paper-material>
+      </div>
+    </paper-header-panel>
+
+    <hive-show-request
+      id="getHiveRequest"
+      apiary-id="{{apiaryId}}"
+      hive-id="{{hiveId}}"
+      authentication-token="{{authenticationToken}}"
+      on-data-load="handleLoad">
+    </hive-show-request>
+
+    <hive-create-request
+      id="createHiveRequest"
+      apiary-id="{{apiaryId}}"
+      authentication-token="{{authenticationToken}}"
+      on-data-load="handleCreate">
+    </hive-create-request>
+
+    <hive-update-request
+      id="updateHiveRequest"
+      apiary-id="{{apiaryId}}"
+      hive-id="{{hiveId}}"
+      authentication-token="{{authenticationToken}}"
+      on-data-load="handleUpdate">
+    </hive-update-request>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'hive-form',
+
+      listeners: {
+        'formSubmit.click': '_submitForm',
+        'hiveLocation.google-map-click': '_placeMarker'
+      },
+
+      _placeMarker: function (event) {
+        var latLng = event.detail.latLng;
+
+        this.latitude = latLng.lat();
+        this.longitude = latLng.lng();
+      },
+
+      _submitForm: function () {
+        var payload = {
+          hive: {
+            name: this.$.name.value,
+            hive_type: this.$.type.selectedItemLabel,
+            orientation: this.$.orientation.selectedItemLabel,
+            breed: this.$.breed.selectedItemLabel,
+            source: this.$.source.selectedItemLabel,
+            comments: this.$.comments.value,
+            latitude: this.latitude,
+            longitude: this.longitude,
+            data_sharing: this.$.dataSharing.selected === 'enabled',
+            exact_location_sharing: this.$.locationSharing.selected === 'exact'
+          }
+        };
+
+        var request = this._requestForSubmit();
+        request.payload = payload;
+        request.send();
+      },
+
+      _requestForSubmit: function () {
+        if (this.mode === 'new') {
+          return this.$.createHiveRequest;
+        } else {
+          return this.$.updateHiveRequest;
+        }
+      },
+
+      setup: function () {
+        this.backLink = '/apiaries/' + this.apiaryId;
+
+        if (this.mode === 'new') {
+          this.pageTitle = 'New Hive';
+          this.clearFields();
+        } else {
+          this.pageTitle = 'Edit Hive';
+          this.$.getHiveRequest.send();
+        }
+      },
+
+      handleLoad: function (event) {
+        var hive = event.detail.hive;
+
+        this.$.name.value = hive.name;
+        this.$.typeMenu.selected = this._typeSelection(hive.hive_type);
+        this.$.orientationMenu.selected = this._orientationSelection(hive.orientation);
+        this.$.breedMenu.selected = this._breedSelection(hive.breed);
+        this.$.sourceMenu.selected = this._sourceSelection(hive.source);
+        this.$.comments.value = hive.comments;
+        this.latitude = hive.latitude;
+        this.longitude = hive.longitude;
+        this.$.dataSharing.selected = this._dataSharingSelection(hive.data_sharing);
+        this.$.locationSharing.selected = this._locationSharingSelection(hive.exact_location_sharing);
+      },
+
+      clearFields: function () {
+        this.$.name.value = '';
+        this.$.typeMenu.selected = null;
+        this.$.orientationMenu.selected = null;
+        this.$.breedMenu.selected = null;
+        this.$.sourceMenu.selected = null;
+        this.$.comments.value = '';
+        this.latitude = null;
+        this.longitude = null;
+        this.$.dataSharing.selected = 'enabled';
+        this.$.locationSharing.selected = 'exact';
+      },
+
+      handleCreate: function (event) {
+        var hive = event.detail.hive;
+
+        this.fire('app-message', { message: 'Apiary successfully created!' });
+        this.fire('page-redirect', { path: '/apiaries/' + hive.apiary_id + '/hives/' + hive.id  });
+      },
+
+      handleUpdate: function (event) {
+        var hive = event.detail.hive;
+
+        this.fire('app-message', { message: 'Hive sucessfully updated!' });
+        this.fire('page-redirect', { path: '/apiaries/' + hive.apiary_id + '/hives/' + hive.id  });
+      },
+
+      _typeSelection: function (selection) {
+        var TYPES = {
+          'Langstroth': 0,
+          'Top Bar': 1,
+          'Warre': 2,
+          'Other': 3
+        };
+
+        return TYPES[selection];
+      },
+
+      _orientationSelection: function (selection) {
+        var ORIENTATIONS = {
+          'North': 0,
+          'North East': 1,
+          'East': 2,
+          'South East': 3,
+          'South': 4,
+          'South West': 5,
+          'West': 6,
+          'North West': 7
+        };
+
+        return ORIENTATIONS[selection];
+      },
+
+      _breedSelection: function (selection) {
+        var BREEDS = {
+          'Italian': 0,
+          'Carniolan': 1,
+          'Russian': 2,
+          'Other': 3
+        };
+
+        return BREEDS[selection];
+      },
+
+      _sourceSelection: function (selection) {
+        var SOURCES = {
+          'Package': 0,
+          'Nuc': 1,
+          'Swarm': 2,
+          'Split': 3,
+          'Other': 4
+        };
+
+        return SOURCES[selection];
+      },
+
+      _dataSharingSelection: function (dataSharingEnabled) {
+        return dataSharingEnabled ? 'enabled': 'disabled';
+      },
+
+      _locationSharingSelection: function (exactSharingEnabled) {
+        return exactSharingEnabled ? 'exact': 'imprecise';
+      }
+    });
+  })();
+</script>

@@ -33,7 +33,9 @@
             <paper-material elevation="1">
               <hive-list id="hiveList" authentication-token="{{authenticationToken}}" apiary-id="{{apiaryId}}"></hive-list>
             </paper-material>
-            <paper-fab icon="add"></paper-fab>
+            <a href="{{newHivePath}}">
+              <paper-fab icon="add"></paper-fab>
+            </a>
           </section>
 
           <section>
@@ -89,6 +91,7 @@
 
       loadApiary: function () {
         this.editPath = '/apiaries/' + this.apiaryId  + '/edit';
+        this.newHivePath = '/apiaries/' + this.apiaryId + '/hives/new';
 
         this.$.getApiaryRequest.send();
         this.$.hiveList.loadHives();
