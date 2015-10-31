@@ -79,6 +79,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.route = 'hive-show';
     });
 
+    page('/hives/:hiveId/inspections/new', function (data) {
+      app.hiveId = data.params.hiveId;
+      app.layoutManager = 'inspection-form';
+      app.route = 'inspection-new';
+      app.$.inspectionForm.mode = 'new';
+      app.$.inspectionForm.setup();
+    });
+
+    page('/hives/:hiveId/inspections/:id', function (data) {
+      app.hiveId = data.params.hiveId;
+      app.inspectionId = data.params.id;
+      app.layoutManager = 'inspection-form';
+      app.route = 'inspection-edit';
+      app.$.inspectionForm.mode = 'edit';
+      app.$.inspectionForm.setup();
+    });
+
     page('/profile', function () {
       app.layoutManager = 'root';
       app.route = 'my-profile';

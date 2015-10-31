@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151010015548) do
+ActiveRecord::Schema.define(version: 20151025234706) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 20151010015548) do
     t.string   "treatment",     limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "notes"
   end
 
   create_table "harvests", force: :cascade do |t|
@@ -95,21 +96,29 @@ ActiveRecord::Schema.define(version: 20151010015548) do
   end
 
   create_table "inspections", force: :cascade do |t|
-    t.decimal  "temperature",                       precision: 10
-    t.string   "weather_conditions",    limit: 255
-    t.string   "weather_notes",         limit: 255
-    t.string   "notes",                 limit: 255
+    t.decimal  "temperature",                           precision: 10
+    t.string   "weather_conditions",        limit: 255
+    t.string   "weather_notes",             limit: 255
+    t.string   "notes",                     limit: 255
     t.boolean  "ventilated"
-    t.boolean  "entrance_reducer"
-    t.string   "entrance_reducer_size", limit: 255
+    t.string   "entrance_reducer",          limit: 255
     t.boolean  "queen_excluder"
-    t.string   "hive_orientation",      limit: 255
-    t.string   "flight_pattern",        limit: 255
-    t.string   "health",                limit: 255
+    t.string   "hive_orientation",          limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "inspected_at"
     t.integer  "hive_id"
+    t.integer  "health"
+    t.string   "brood_pattern"
+    t.boolean  "eggs_sighted"
+    t.boolean  "queen_sighted"
+    t.boolean  "queen_cells_sighted"
+    t.boolean  "swarm_cells_capped"
+    t.boolean  "honey_sighted"
+    t.boolean  "pollen_sighted"
+    t.boolean  "swarm_cells_sighted"
+    t.boolean  "supersedure_cells_sighted"
+    t.string   "hive_temperament"
   end
 
   create_table "users", force: :cascade do |t|

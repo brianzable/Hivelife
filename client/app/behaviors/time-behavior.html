@@ -1,6 +1,18 @@
 <script>
   var HivelifeBehaviors = HivelifeBehaviors || {};
   HivelifeBehaviors.TimeBehavior = {
+    _formattedTimestamp: function (date, time) {
+      return date + ' ' + time;
+    },
+
+    _timeRegex: function () {
+      return '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]\s?[am|pm|AM|PM]*$';
+    },
+
+    _dateRegex: function () {
+      return '^([0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])';
+    },
+
     _monthFromTimestamp: function (timestamp) {
       var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
       var month = new Date(timestamp).getMonth();
@@ -10,6 +22,25 @@
 
     _dayFromTimestamp: function (timestamp) {
       return new Date(timestamp).getDate();
+    },
+
+    _timeFromTimestamp: function (timestamp) {
+      var date = new Date(timestamp);
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+
+      return hours + ':' + minutes;
+    },
+
+    _dateFromTimestamp: function (timestamp) {
+      var date = new Date(timestamp);
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var day = date.getUTCDate();
+
+      return year + '-' + month + '-' + day;
     }
   };
 </script>

@@ -1,0 +1,49 @@
+<dom-module id="inspection-create-request">
+  <template>
+    <iron-ajax
+      id="client"
+      method="POST"
+      on-response="_handleSuccess"
+      on-error="_handleError">
+    </iron-ajax>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'inspection-create-request',
+      behaviors: [HivelifeBehaviors.RequestBehavior],
+      properties: {
+        authenticationToken: String,
+        hiveId: Number,
+        payload: Object
+      },
+
+      send: function () {
+        this._setAuthorization();
+        this.$.client.url = 'v1/api/hives/' + this.hiveId + '/inspections';
+        this.$.client.body = this.payload;
+        this.$.client.generateRequest();
+      },
+
+      _handleSuccess: function (event) {
+        var detail = {
+          error: false,
+          inspection: event.detail.response
+        };
+
+        this.fire('data-load', detail);
+      },
+
+      _handleError: function (event) {
+        var detail = {
+          error: true,
+          message: 'Failed to create inspection'
+        };
+
+        this.fire('data-load', detail);
+      }
+    });
+  })();
+</script>

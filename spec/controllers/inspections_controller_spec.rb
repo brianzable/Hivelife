@@ -1,32 +1,22 @@
 require 'rails_helper'
 
-describe InspectionsController, type: :controller do
-  render_views
+describe InspectionsController, type: :request do
 
-  before(:each) do
-    pending('TODO: Add time zone field back to User model')
-    @user = create_logged_in_user
-    @apiary = FactoryGirl.create(:apiary_with_hives)
-    @beekeeper = FactoryGirl.create(
-      :beekeeper,
-      user: @user,
-      apiary: @apiary,
-    )
-    @hive = FactoryGirl.create(
-      :hive,
-      apiary: @apiary,
-    )
-  end
+  let!(:user) { create_logged_in_user }
+  let!(:apiary) { FactoryGirl.create(:apiary) }
+  let!(:beekeeper) { FactoryGirl.create(:beekeeper,user: user, apiary: apiary) }
+  let!(:hive) { FactoryGirl.create(:hive, apiary: apiary) }
+  let!(:inspection) { FactoryGirl.create(:inspection) }
+  let(:headers) { { 'Authorization' => "Token token=#{user.authentication_token}" } }
 
   describe '#show' do
     it 'returns all data associated with an inspection, including brood boxes, honey supers, and diseases' do
-      inspection = FactoryGirl.create(
-        :complete_inspection,
-        hive: @hive
-      )
+      inspected_at = Time.now
+      inspection.update_attribute(:inspected_at, inspected_at)
+      FactoryGirl.create(:disease, inspection: inspection)
 
-      get :show, hive_id: @hive.id, id: inspection.id, format: :json
-      expect(response.code).to eq('200')
+      get hive_inspection_path(hive, inspection), { format: :json }, headers
+      expect(response.status).to eq(200)
 
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['id']).to eq(inspection.id)
@@ -36,682 +26,396 @@ describe InspectionsController, type: :controller do
       expect(parsed_body['notes']).to eq(inspection.notes)
       expect(parsed_body['ventilated']).to eq(inspection.ventilated)
       expect(parsed_body['entrance_reducer']).to eq(inspection.entrance_reducer)
-      expect(parsed_body['entrance_reducer_size']).to eq(inspection.entrance_reducer_size)
       expect(parsed_body['queen_excluder']).to eq(inspection.queen_excluder)
       expect(parsed_body['hive_orientation']).to eq(inspection.hive_orientation)
-      expect(parsed_body['flight_pattern']).to eq(inspection.flight_pattern)
-      expect(parsed_body['health']).to eq(inspection.health.to_s)
-      expect(parsed_body['inspected_at']).to eq('2014-06-15T08:30:00.000Z')
+      expect(parsed_body['health']).to eq(inspection.health)
+      expect(parsed_body['hive_temperament']).to eq(inspection.hive_temperament)
+      expect(parsed_body['inspected_at']).to_not be_nil
       expect(parsed_body['hive_id']).to eq(inspection.hive_id)
+      expect(parsed_body['brood_pattern']).to eq(inspection.brood_pattern)
+      expect(parsed_body['eggs_sighted']).to eq(inspection.eggs_sighted)
+      expect(parsed_body['queen_sighted']).to eq(inspection.queen_sighted)
+      expect(parsed_body['queen_cells_sighted']).to eq(inspection.queen_cells_sighted)
+      expect(parsed_body['swarm_cells_capped']).to eq(inspection.swarm_cells_capped)
+      expect(parsed_body['honey_sighted']).to eq(inspection.honey_sighted)
+      expect(parsed_body['pollen_sighted']).to eq(inspection.pollen_sighted)
+      expect(parsed_body['swarm_cells_sighted']).to eq(inspection.swarm_cells_sighted)
+      expect(parsed_body['supersedure_cells_sighted']).to eq(inspection.supersedure_cells_sighted)
 
-      parsed_brood_boxes = parsed_body['brood_boxes']
-      expect(parsed_brood_boxes.count).to be(2)
-
-      brood_box = inspection.brood_boxes.first
-      parsed_brood_box = parsed_brood_boxes.first
-      expect(parsed_brood_box['pattern']).to eq(brood_box.pattern)
-      expect(parsed_brood_box['eggs_sighted']).to eq(brood_box.eggs_sighted)
-      expect(parsed_brood_box['queen_sighted']).to eq(brood_box.queen_sighted)
-      expect(parsed_brood_box['queen_cells_sighted']).to eq(brood_box.queen_cells_sighted)
-      expect(parsed_brood_box['swarm_cells_capped']).to eq(brood_box.swarm_cells_capped)
-      expect(parsed_brood_box['honey_sighted']).to eq(brood_box.honey_sighted)
-      expect(parsed_brood_box['pollen_sighted']).to eq(brood_box.pollen_sighted)
-      expect(parsed_brood_box['swarm_cells_sighted']).to eq(brood_box.swarm_cells_sighted)
-      expect(parsed_brood_box['supersedure_cells_sighted']).to eq(brood_box.supersedure_cells_sighted)
-      expect(parsed_brood_box['inspection_id']).to eq(brood_box.inspection_id)
-
-      parsed_honey_supers = parsed_body['honey_supers']
-      expect(parsed_honey_supers.count).to be(2)
-
-      honey_super = inspection.honey_supers.first
-      parsed_honey_super = parsed_honey_supers.first
-      expect(parsed_honey_super['inspection_id']).to eq(honey_super.inspection_id)
-      expect(parsed_honey_super['full']).to eq(honey_super.full)
-      expect(parsed_honey_super['capped']).to eq(honey_super.capped)
-      expect(parsed_honey_super['ready_for_harvest']).to eq(honey_super.ready_for_harvest)
+      disease = parsed_body['diseases'].first
+      expect(disease['disease_type']).to eq('Varroa')
+      expect(disease['treatment']).to eq('MAQS')
+      expect(disease['notes']).to eq('')
     end
 
     it 'allows beekeepers with read permissions to view an inspection' do
-      @beekeeper.permission = 'Read'
-      @beekeeper.save!
+      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.save!
 
-      inspection = FactoryGirl.create(
-        :complete_inspection,
-        hive: @hive
-      )
-
-      get :show, hive_id: @hive.id, id: inspection.id, format: :json
-      expect(response.code).to eq('200')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['id']).to eq(inspection.id)
-
-      parsed_brood_boxes = parsed_body['brood_boxes']
-      expect(parsed_brood_boxes.count).to be(2)
-
-      parsed_honey_supers = parsed_body['honey_supers']
-      expect(parsed_honey_supers.count).to be(2)
+      get hive_inspection_path(hive, inspection), { format: :json }, headers
+      expect(response.status).to eq(200)
     end
 
     it 'allows beekeepers with write permissions to view an inspection' do
-      @beekeeper.permission = 'Write'
-      @beekeeper.save!
+      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.save!
 
-      inspection = FactoryGirl.create(
-        :complete_inspection,
-        hive: @hive
-      )
-
-      get :show, hive_id: @hive.id, id: inspection.id, format: :json
-      expect(response.code).to eq('200')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['id']).to eq(inspection.id)
-
-      parsed_brood_boxes = parsed_body['brood_boxes']
-      expect(parsed_brood_boxes.count).to be(2)
-
-      parsed_honey_supers = parsed_body['honey_supers']
-      expect(parsed_honey_supers.count).to be(2)
+      get hive_inspection_path(hive, inspection), { format: :json }, headers
+      expect(response.status).to eq(200)
     end
 
     it 'allows beekeepers with admin permissions to view an inspection' do
-      inspection = FactoryGirl.create(
-        :complete_inspection,
-        hive: @hive
-      )
+      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.save!
 
-      get :show, hive_id: @hive.id, id: inspection.id, format: :json
-      expect(response.code).to eq('200')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['id']).to eq(inspection.id)
-
-      parsed_brood_boxes = parsed_body['brood_boxes']
-      expect(parsed_brood_boxes.count).to be(2)
-
-      parsed_honey_supers = parsed_body['honey_supers']
-      expect(parsed_honey_supers.count).to be(2)
+      get hive_inspection_path(hive, inspection), { format: :json }, headers
+      expect(response.status).to eq(200)
     end
 
     it 'does not allow users who are not memebers of the apiary to view an inspection' do
-      inspection = FactoryGirl.create(
-        :complete_inspection,
-        hive: @hive
-      )
-
       unauthorized_user = create_logged_in_user(email: 'another_user@example.com')
+      headers = { 'Authorization' => "Token token=#{unauthorized_user.authentication_token}" }
 
-      get :show, hive_id: @hive.id, id: inspection.id, format: :json
-      expect(response.code).to eq('401')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+      get hive_inspection_path(hive, inspection), { format: :json }, headers
+      expect(response.status).to eq(401)
     end
   end
 
   describe '#create' do
     it 'allows an inspection to be created without brood boxes, honey supers, or diseases' do
       payload = {
-        hive_id: @hive.id,
         inspection: {
-          day: 15,
-          month: 6,
-          year: 2014,
-          hour: 11,
-          minute: 00,
-          ampm: 'AM'
+          temperature: 85,
+          weather_conditions: 'Clear',
+          weather_notes: 'Very nice day outside.',
+          notes: 'Hive is doing great.',
+          ventilated: true,
+          entrance_reducer: 'Small',
+          queen_excluder: false,
+          hive_orientation: 'North',
+          health: 90,
+          inspected_at: Time.now,
+          brood_pattern: 'Good',
+          eggs_sighted: true,
+          queen_sighted: false,
+          queen_cells_sighted: false,
+          swarm_cells_capped: false,
+          swarm_cells_sighted: false,
+          supersedure_cells_sighted: false,
+          honey_sighted: true,
+          pollen_sighted: true
         },
         format: :json
       }
 
       expect do
-        post :create, payload
+        post hive_inspections_path(hive), payload, headers
       end.to change { Inspection.count }
 
-      expect(response.code).to eq('201')
+      expect(response.status).to eq(201)
 
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['id']).to_not be_nil
-      expect(parsed_body['temperature']).to be_nil
-      expect(parsed_body['weather_conditions']).to be_nil
-      expect(parsed_body['weather_notes']).to be_nil
-      expect(parsed_body['notes']).to be_nil
-      expect(parsed_body['ventilated']).to be_nil
-      expect(parsed_body['entrance_reducer']).to be_nil
-      expect(parsed_body['entrance_reducer_size']).to be_nil
-      expect(parsed_body['queen_excluder']).to be_nil
-      expect(parsed_body['hive_orientation']).to be_nil
-      expect(parsed_body['flight_pattern']).to be_nil
-      expect(parsed_body['health']).to be_nil
-      expect(parsed_body['inspected_at']).to eq('2014-06-15T11:00:00.000Z')
-      expect(parsed_body['hive_id']).to eq(@hive.id)
-
-      parsed_brood_boxes = parsed_body['brood_boxes']
-      expect(parsed_brood_boxes.count).to be(0)
-
-      parsed_honey_supers = parsed_body['honey_supers']
-      expect(parsed_honey_supers.count).to be(0)
-    end
-
-    it 'allows an inspection to be created with brood boxes' do
-      payload = {
-        hive_id: @hive.id,
-        inspection: {
-          day: 15,
-          month: 6,
-          year: 2014,
-          hour: 11,
-          minute: 00,
-          ampm: 'AM',
-          brood_boxes_attributes: [{}, {}]
-        },
-        format: :json
-      }
-
-      expect do
-        post :create, payload
-      end.to change { BroodBox.count }
-
-      expect(response.code).to eq('201')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['id']).to_not be_nil
-      expect(parsed_body['temperature']).to be_nil
-      expect(parsed_body['weather_conditions']).to be_nil
-      expect(parsed_body['weather_notes']).to be_nil
-      expect(parsed_body['notes']).to be_nil
-      expect(parsed_body['ventilated']).to be_nil
-      expect(parsed_body['entrance_reducer']).to be_nil
-      expect(parsed_body['entrance_reducer_size']).to be_nil
-      expect(parsed_body['queen_excluder']).to be_nil
-      expect(parsed_body['hive_orientation']).to be_nil
-      expect(parsed_body['flight_pattern']).to be_nil
-      expect(parsed_body['health']).to be_nil
-      expect(parsed_body['inspected_at']).to eq('2014-06-15T11:00:00.000Z')
-      expect(parsed_body['hive_id']).to eq(@hive.id)
-
-      parsed_brood_boxes = parsed_body['brood_boxes']
-      expect(parsed_brood_boxes.count).to be(2)
-
-      parsed_honey_supers = parsed_body['honey_supers']
-      expect(parsed_honey_supers.count).to be(0)
-    end
-
-    it 'allows an inspection to be created with honey supers' do
-      payload = {
-        hive_id: @hive.id,
-        inspection: {
-          day: 15,
-          month: 6,
-          year: 2014,
-          hour: 11,
-          minute: 00,
-          ampm: 'AM',
-          honey_supers_attributes: [{}, {}]
-        },
-        format: :json
-      }
-
-      expect do
-        post :create, payload
-      end.to change { HoneySuper.count }
-
-      expect(response.code).to eq('201')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['id']).to_not be_nil
-      expect(parsed_body['temperature']).to be_nil
-      expect(parsed_body['weather_conditions']).to be_nil
-      expect(parsed_body['weather_notes']).to be_nil
-      expect(parsed_body['notes']).to be_nil
-      expect(parsed_body['ventilated']).to be_nil
-      expect(parsed_body['entrance_reducer']).to be_nil
-      expect(parsed_body['entrance_reducer_size']).to be_nil
-      expect(parsed_body['queen_excluder']).to be_nil
-      expect(parsed_body['hive_orientation']).to be_nil
-      expect(parsed_body['flight_pattern']).to be_nil
-      expect(parsed_body['health']).to be_nil
-      expect(parsed_body['inspected_at']).to eq('2014-06-15T11:00:00.000Z')
-      expect(parsed_body['hive_id']).to eq(@hive.id)
-
-      parsed_brood_boxes = parsed_body['brood_boxes']
-      expect(parsed_brood_boxes.count).to be(0)
-
-      parsed_honey_supers = parsed_body['honey_supers']
-      expect(parsed_honey_supers.count).to be(2)
+      expect(parsed_body['temperature']).to eq(85)
+      expect(parsed_body['weather_conditions']).to eq('Clear')
+      expect(parsed_body['weather_notes']).to eq('Very nice day outside.')
+      expect(parsed_body['notes']).to eq('Hive is doing great.')
+      expect(parsed_body['ventilated']).to eq(true)
+      expect(parsed_body['entrance_reducer']).to eq('Small')
+      expect(parsed_body['queen_excluder']).to eq(false)
+      expect(parsed_body['hive_orientation']).to eq('North')
+      expect(parsed_body['health']).to eq(90)
+      expect(parsed_body['inspected_at']).to_not be_nil
+      expect(parsed_body['brood_pattern']).to eq('Good')
+      expect(parsed_body['eggs_sighted']).to eq(true)
+      expect(parsed_body['queen_sighted']).to eq(false)
+      expect(parsed_body['queen_cells_sighted']).to eq(false)
+      expect(parsed_body['swarm_cells_capped']).to eq(false)
+      expect(parsed_body['honey_sighted']).to eq(true)
+      expect(parsed_body['pollen_sighted']).to eq(true)
+      expect(parsed_body['swarm_cells_sighted']).to eq(false)
+      expect(parsed_body['supersedure_cells_sighted']).to eq(false)
+      expect(parsed_body['hive_id']).to eq(hive.id)
     end
 
     it 'does not allow beekeepers with read permissions to create an inspection' do
-      @beekeeper.permission = 'Read'
-      @beekeeper.save!
+      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.save!
+
       payload = {
-        hive_id: @hive.id,
         inspection: {
-          day: 15,
-          month: 6,
-          year: 2014,
-          hour: 11,
-          minute: 00,
-          ampm: 'AM'
+          inspected_at: Time.now
         },
         format: :json
       }
 
-      expect do
-        post :create, payload
-      end.to_not change { Inspection.count }
-
-      expect(response.code).to eq('401')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+      post hive_inspections_path(hive), payload, headers
+      expect(response.status).to eq(401)
     end
 
     it 'allows beekeepers with write permission to create an inspection' do
-      @beekeeper.permission = 'Write'
-      @beekeeper.save!
+      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.save!
+
       payload = {
-        hive_id: @hive.id,
         inspection: {
-          day: 15,
-          month: 6,
-          year: 2014,
-          hour: 11,
-          minute: 00,
-          ampm: 'AM'
+          inspected_at: Time.now
         },
         format: :json
       }
 
-      expect do
-        post :create, payload
-      end.to change { Inspection.count }
-
-      expect(response.code).to eq('201')
+      post hive_inspections_path(hive), payload, headers
+      expect(response.status).to eq(201)
     end
 
     it 'allows beekeepers with admin permissions to create an inspection' do
-      @beekeeper.permission = 'Admin'
-      @beekeeper.save!
+      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.save!
+
       payload = {
-        hive_id: @hive.id,
         inspection: {
-          day: 15,
-          month: 6,
-          year: 2014,
-          hour: 11,
-          minute: 00,
-          ampm: 'AM'
+          inspected_at: Time.now
         },
         format: :json
       }
 
-      expect do
-        post :create, payload
-      end.to change { Inspection.count }
-
-      expect(response.code).to eq('201')
+      post hive_inspections_path(hive), payload, headers
+      expect(response.status).to eq(201)
     end
 
     it 'does not allow users who are not memebers of the apiary to create an inspection' do
       unauthorized_user = create_logged_in_user(email: 'another_user@example.com')
+      headers = { 'Authorization' => "Token token=#{unauthorized_user.authentication_token}" }
 
       payload = {
-        hive_id: @hive.id,
         inspection: {
-          day: 15,
-          month: 6,
-          year: 2014,
-          hour: 11,
-          minute: 00,
-          ampm: 'AM'
+          inspected_at: Time.now
         },
         format: :json
       }
 
-      expect do
-        post :create, payload
-      end.to_not change { Inspection.count }
-
-      expect(response.code).to eq('401')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+      post hive_inspections_path(hive), payload, headers
+      expect(response.status).to eq(401)
     end
   end
 
   describe '#update' do
     it 'updates an inspection successfully' do
-      inspection = FactoryGirl.create(
-        :inspection,
-        hive: @hive
-      )
-
       payload = {
-        hive_id: @hive.id,
-        id: inspection.id,
         inspection: {
-          day: 10,
-          month: 6,
-          year: 2014,
-          hour: 11,
-          minute: 00,
-          ampm: 'AM'
+          notes: 'Some new notes.'
         },
         format: :json
       }
 
-      expect do
-        put :update, payload
-      end.to_not change { Inspection.count }
+      put hive_inspection_path(hive, inspection), payload, headers
 
-      expect(response.code).to eq('201')
+      expect(response.status).to eq(201)
 
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['id']).to_not be_nil
-      expect(parsed_body['temperature']).to be_nil
-      expect(parsed_body['weather_conditions']).to_not be_nil
-      expect(parsed_body['weather_notes']).to_not be_nil
-      expect(parsed_body['notes']).to_not be_nil
-      expect(parsed_body['ventilated']).to_not be_nil
-      expect(parsed_body['entrance_reducer']).to_not be_nil
-      expect(parsed_body['entrance_reducer_size']).to be_nil
-      expect(parsed_body['queen_excluder']).to_not be_nil
-      expect(parsed_body['hive_orientation']).to_not be_nil
-      expect(parsed_body['flight_pattern']).to_not be_nil
-      expect(parsed_body['health']).to_not be_nil
-      expect(parsed_body['inspected_at']).to eq('2014-06-10T11:00:00.000Z')
-      expect(parsed_body['hive_id']).to eq(@hive.id)
-
-      parsed_brood_boxes = parsed_body['brood_boxes']
-      expect(parsed_brood_boxes.count).to be(0)
-
-      parsed_honey_supers = parsed_body['honey_supers']
-      expect(parsed_honey_supers.count).to be(0)
+      inspection.reload
+      expect(inspection.notes).to eq('Some new notes.')
     end
 
-    it 'allows brood boxes to be updated successfully' do
-      inspection = FactoryGirl.create(
-        :inspection_with_brood_boxes,
-        hive: @hive
-      )
-
-      brood_boxes = inspection.brood_boxes
-      brood_box1 = brood_boxes[0]
-      brood_box2 = brood_boxes[1]
-
-      expect(brood_box1.queen_sighted).to be(true)
-      expect(brood_box2.queen_sighted).to be(true)
-
+    it 'allows diseases to be added' do
       payload = {
-        hive_id: @hive.id,
-        id: inspection.id,
         inspection: {
-          brood_boxes_attributes: [
-            { id: brood_box1.id, queen_sighted: 0 },
-            { id: brood_box2.id, queen_sighted: 0 }
+          notes: 'Some new notes.',
+          diseases_attributes: [
+            {
+              disease_type: 'Varroa',
+              treatment: 'MAQS',
+              notes: 'Used one dose'
+            }
           ]
         },
         format: :json
       }
 
       expect do
-        put :update, payload
-      end.to_not change { Inspection.count }
+        put hive_inspection_path(hive, inspection), payload, headers
+      end.to change { inspection.diseases.count }
 
-      expect(response.code).to eq('201')
+      expect(response.status).to eq(201)
 
-      parsed_body = JSON.parse(response.body)
-
-      parsed_brood_boxes = parsed_body['brood_boxes']
-      expect(parsed_brood_boxes.count).to be(2)
-
-      parsed_brood_boxes = parsed_body['brood_boxes']
-      parsed_brood_box1 = parsed_brood_boxes[0]
-      expect(parsed_brood_box1['queen_sighted']).to be(false)
-
-      parsed_brood_box2 = parsed_brood_boxes[1]
-      expect(parsed_brood_box2['queen_sighted']).to be(false)
+      disease = inspection.diseases.first
+      expect(disease.disease_type).to eq('Varroa')
+      expect(disease.treatment).to eq('MAQS')
+      expect(disease.notes).to eq('Used one dose')
     end
 
-    it 'allows honey supers to be updated successfully' do
-      inspection = FactoryGirl.create(
-        :inspection_with_honey_supers,
-        hive: @hive
-      )
-
-      honey_supers = inspection.honey_supers
-      honey_super1 = honey_supers[0]
-      honey_super2 = honey_supers[1]
-
-      expect(honey_super1.ready_for_harvest).to be(true)
-      expect(honey_super2.ready_for_harvest).to be(true)
+    it 'allows diseases to be updated' do
+      disease = FactoryGirl.create(:disease, inspection: inspection)
 
       payload = {
-        hive_id: @hive.id,
-        id: inspection.id,
         inspection: {
-          honey_supers_attributes: [
-            { id: honey_super1.id, ready_for_harvest: false },
-            { id: honey_super2.id, ready_for_harvest: false }
+          notes: 'Some new notes.',
+          diseases_attributes: [
+            {
+              id: disease.id,
+              disease_type: 'Nosema',
+              treatment: 'Fumagilin',
+              notes: 'Used one small bottle'
+            }
+          ]
+        },
+        format: :json
+      }
+
+      put hive_inspection_path(hive, inspection), payload, headers
+
+      expect(response.status).to eq(201)
+
+      disease.reload
+      expect(disease.inspection).to eq(inspection)
+      expect(disease.disease_type).to eq('Nosema')
+      expect(disease.treatment).to eq('Fumagilin')
+      expect(disease.notes).to eq('Used one small bottle')
+    end
+
+    it 'allows diseases to be removed' do
+      disease = FactoryGirl.create(:disease, inspection: inspection)
+
+      payload = {
+        inspection: {
+          notes: 'Some new notes.',
+          diseases_attributes: [
+            {
+              id: disease.id,
+              disease_type: 'Nosema',
+              treatment: 'Fumagilin',
+              notes: 'Used one small bottle',
+              _destroy: true
+            }
           ]
         },
         format: :json
       }
 
       expect do
-        put :update, payload
-      end.to_not change { Inspection.count }
+        put hive_inspection_path(hive, inspection), payload, headers
+      end.to change { inspection.diseases.count }
 
-      expect(response.code).to eq('201')
+      expect(response.status).to eq(201)
 
-      parsed_body = JSON.parse(response.body)
-
-      parsed_honey_supers = parsed_body['honey_supers']
-      expect(parsed_honey_supers.count).to be(2)
-
-      parsed_honey_super1 = parsed_honey_supers[0]
-      expect(parsed_honey_super1['ready_for_harvest']).to be(false)
-
-      parsed_honey_super2 = parsed_honey_supers[1]
-      expect(parsed_honey_super2['ready_for_harvest']).to be(false)
+      expect { disease.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'does not allow users with read permission to update an inspection' do
-      @beekeeper.permission = 'Read'
-      @beekeeper.save
-
-      inspection = FactoryGirl.create(
-        :inspection,
-        hive: @hive
-      )
+      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.save
 
       payload = {
-        hive_id: @hive.id,
-        id: inspection.id,
         inspection: {
-          day: 10,
-          month: 6,
-          year: 2014,
-          hour: 11,
-          minute: 00,
-          ampm: 'AM'
+          notes: 'Some new notes.'
         },
         format: :json
       }
 
-      put :update, payload
-      expect(response.code).to eq('401')
+      put hive_inspection_path(hive, inspection), payload, headers
+      expect(response.status).to eq(401)
 
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+      inspection.reload
+      expect(inspection.notes).to_not eq('Some new notes.')
     end
 
     it 'allows users with write permissions to update an inspection' do
-      @beekeeper.permission = 'Write'
-      @beekeeper.save
-
-      inspection = FactoryGirl.create(
-        :inspection,
-        hive: @hive
-      )
+      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.save
 
       payload = {
-        hive_id: @hive.id,
-        id: inspection.id,
         inspection: {
-          day: 10,
-          month: 6,
-          year: 2014,
-          hour: 11,
-          minute: 00,
-          ampm: 'AM'
+          notes: 'Some new notes.'
         },
         format: :json
       }
 
-      put :update, payload
-      expect(response.code).to eq('201')
+      put hive_inspection_path(hive, inspection), payload, headers
+      expect(response.status).to eq(201)
 
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['inspected_at']).to eq('2014-06-10T11:00:00.000Z')
+      inspection.reload
+      expect(inspection.notes).to eq('Some new notes.')
     end
 
     it 'allows users with admin permissions to update an inspection' do
-      inspection = FactoryGirl.create(
-        :inspection,
-        hive: @hive
-      )
+      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.save
 
       payload = {
-        hive_id: @hive.id,
-        id: inspection.id,
         inspection: {
-          day: 10,
-          month: 6,
-          year: 2014,
-          hour: 11,
-          minute: 00,
-          ampm: 'AM'
+          notes: 'Some new notes.'
         },
         format: :json
       }
 
-      put :update, payload
-      expect(response.code).to eq('201')
+      put hive_inspection_path(hive, inspection), payload, headers
+      expect(response.status).to eq(201)
 
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['inspected_at']).to eq('2014-06-10T11:00:00.000Z')
+      inspection.reload
+      expect(inspection.notes).to eq('Some new notes.')
     end
 
     it 'does not allow users who are not members of the apiary to create an inspection' do
-      inspection = FactoryGirl.create(
-        :inspection,
-        hive: @hive
-      )
+      unauthorized_user = create_logged_in_user(email: 'another_user@example.com')
+      headers = { 'Authorization' => "Token token=#{unauthorized_user.authentication_token}" }
 
       payload = {
-        hive_id: @hive.id,
-        id: inspection.id,
         inspection: {
-          day: 10,
-          month: 6,
-          year: 2014,
-          hour: 11,
-          minute: 00,
-          ampm: 'AM'
+          notes: 'Some new notes.'
         },
         format: :json
       }
 
-      unauthorized_user = create_logged_in_user(email: 'another_user@example.com')
+      put hive_inspection_path(hive, inspection), payload, headers
+      expect(response.status).to eq(401)
 
-      put :update, payload
-      expect(response.code).to eq('401')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+      inspection.reload
+      expect(inspection.notes).to_not eq('Some new notes.')
     end
   end
 
   describe '#destroy' do
     it 'allows users with admin permissions to delete an inspection' do
-      @beekeeper.permission = 'Admin'
-      @beekeeper.save
-
-      inspection = FactoryGirl.create(
-        :inspection,
-        hive: @hive
-      )
+      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.save
 
       expect do
-        delete :destroy, hive_id: @hive.id, id: inspection, format: :json
-      end.to change { Inspection.count }
+        delete hive_inspection_path(hive, inspection), { format: :json }, headers
+      end.to change { Inspection.count }.by(-1)
 
-      expect(response.code).to eq('200')
+      expect(response.status).to eq(200)
     end
 
     it 'allows users with write permissions to delete an inspection' do
-      @beekeeper.permission = 'Write'
-      @beekeeper.save
-
-      inspection = FactoryGirl.create(:inspection, hive: @hive)
+      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.save
 
       expect do
-        delete :destroy, hive_id: @hive.id, id: inspection, format: :json
-      end.to change { Inspection.count }
+        delete hive_inspection_path(hive, inspection), { format: :json }, headers
+      end.to change { Inspection.count }.by(-1)
 
-      expect(response.code).to eq('200')
+      expect(response.status).to eq(200)
     end
 
     it 'does not allow users with read permissions to delete an inspection' do
-      @beekeeper.permission = 'Read'
-      @beekeeper.save
-
-      inspection = FactoryGirl.create(:inspection, hive: @hive)
+      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.save
 
       expect do
-        delete :destroy, hive_id: @hive.id, id: inspection, format: :json
+        delete hive_inspection_path(hive, inspection), { format: :json }, headers
       end.to_not change { Inspection.count }
 
-      expect(response.code).to eq('401')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
-    end
-
-    it 'removes all brood boxes associated with the inspection' do
-      inspection = FactoryGirl.create(:inspection_with_brood_boxes, hive: @hive)
-
-      expect do
-        delete :destroy, hive_id: @hive.id, id: inspection, format: :json
-      end.to change { BroodBox.count }.by(-2)
-
-      expect(response.code).to eq('200')
-    end
-
-    it 'removes all honey supers associated with the inspection' do
-      inspection = FactoryGirl.create(:inspection_with_honey_supers, hive: @hive)
-
-      expect do
-        delete :destroy, hive_id: @hive.id, id: inspection, format: :json
-      end.to change { HoneySuper.count }.by(-2)
-
-      expect(response.code).to eq('200')
+      expect(response.status).to eq(401)
     end
 
     it 'does not allow users who are not members at the apiary to delete an inspection' do
-      inspection = FactoryGirl.create(:inspection, hive: @hive)
-
       unauthorized_user = create_logged_in_user(email: 'another_user@example.com')
+      headers = { 'Authorization' => "Token token=#{unauthorized_user.authentication_token}" }
 
-      delete :destroy, hive_id: @hive.id, id: inspection, format: :json
+      expect do
+        delete hive_inspection_path(hive, inspection), { format: :json }, headers
+      end.to_not change { Inspection.count }
 
-      expect(response.code).to eq('401')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+      expect(response.status).to eq(401)
     end
   end
 end

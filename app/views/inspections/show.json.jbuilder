@@ -1,17 +1,11 @@
 json.extract! @inspection, :id, :weather_conditions, :weather_notes, :ventilated, :entrance_reducer,
-                           :entrance_reducer_size, :queen_excluder, :hive_orientation, :flight_pattern,
-                           :health, :inspected_at, :hive_id, :notes
+                           :queen_excluder, :hive_orientation, :health, :hive_temperament,
+                           :inspected_at, :hive_id, :notes, :brood_pattern, :eggs_sighted, :queen_sighted,
+                           :queen_cells_sighted, :swarm_cells_sighted, :swarm_cells_capped, :honey_sighted,
+                           :supersedure_cells_sighted, :temperature, :pollen_sighted, :hive_id
 
-json.brood_boxes do
-  json.array!(@inspection.brood_boxes) do |brood_box|
-    json.extract! brood_box, :eggs_sighted, :queen_sighted, :queen_cells_sighted, :swarm_cells_capped,
-                             :honey_sighted, :pollen_sighted, :swarm_cells_sighted, :supersedure_cells_sighted,
-                             :inspection_id, :pattern 
-  end
-end
-
-json.honey_supers do
-  json.array!(@inspection.honey_supers) do |honey_super|
-    json.extract! honey_super, :full, :capped, :ready_for_harvest, :inspection_id
+json.diseases do
+  json.array!(@inspection.diseases) do |disease|
+    json.extract! disease, :id, :disease_type, :treatment, :notes
   end
 end
