@@ -49,7 +49,6 @@ private
     params.require(:apiary).permit(
       :name,
       :zip_code,
-      :photo_url,
       :city,
       :state,
       :street_address

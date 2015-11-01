@@ -10,7 +10,7 @@ describe InspectionsController, type: :request do
   let(:headers) { { 'Authorization' => "Token token=#{user.authentication_token}" } }
 
   describe '#show' do
-    it 'returns all data associated with an inspection, including brood boxes, honey supers, and diseases' do
+    it 'returns all data associated with an inspection, including diseases' do
       inspected_at = Time.now
       inspection.update_attribute(:inspected_at, inspected_at)
       FactoryGirl.create(:disease, inspection: inspection)

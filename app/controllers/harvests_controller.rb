@@ -1,57 +1,43 @@
 class HarvestsController < ApplicationController
   before_action :authenticate
-  before_action :set_harvest, only: [:update, :destroy]
-  # before_action :set_hive, only: [:edit, :update, :create]
-  # around_action :user_time_zone
+  before_action :set_harvest, only: [:show, :update, :destroy]
+  before_action :set_hive, only: [:update, :create]
 
   def index
     @harvests = Harvest.where(hive_id: params[:hive_id])
   end
 
   def show
-    @harvest = Harvest.find(params[:id])
     authorize(@harvest)
   end
 
   def create
-    @harvest = Harvest.new(harvest_params)
-    @hive = Hive.find(params[:hive_id])
+    @harvest = @hive.harvests.new(harvest_params)
     authorize(@harvest)
-    respond_to do |format|
-      if @harvest.save
-        format.html { redirect_to apiary_hive_path(@hive.apiary, @hive), notice: 'Harvest was successfully created.' }
-        format.json { render action: 'show', status: :created, location: [@hive, @harvest] }
-      else
-        format.html { render action: 'new' }
-        format.json { render json: @harvest.errors, status: :unprocessable_entity }
-      end
+
+    if @harvest.save
+      render action: 'show', status: :created, location: [@hive, @harvest]
+    else
+      render json: @harvest.errors, status: :unprocessable_entity
     end
   end
 
   def update
     authorize(@harvest)
-    respond_to do |format|
-      if @harvest.update(harvest_params)
-        format.html { redirect_to apiary_hive_path(@hive.apiary, @hive), notice: 'Harvest was successfully updated.' }
-        format.json { render action: 'show', status: :created, location: [@hive, @harvest] }
-      else
-        format.html { render action: 'edit' }
-        format.json { render json: @harvest.errors, status: :unprocessable_entity }
-      end
+    if @harvest.update(harvest_params)
+      render action: 'show', status: :created, location: [@hive, @harvest]
+    else
+      render json: @harvest.errors, status: :unprocessable_entity
     end
   end
 
   def destroy
     authorize(@harvest)
     @harvest.destroy
-    @hive = Hive.includes(:apiary).find(params[:hive_id])
-    respond_to do |format|
-      format.html { redirect_to apiary_hive_path(@hive, @hive.apiary)}
-      format.json { render json: { head: :no_content } }
-    end
+    render json: { head: :no_content }
   end
 
-private
+  private
 
   def set_harvest
     @harvest = Harvest.find(params[:id])
@@ -62,25 +48,11 @@ private
   end
 
   def harvest_params
-    params[:harvest][:hive_id] = params[:hive_id]
-    params.require(:harvest).permit(
-      :month,
-      :day,
-      :year,
-      :hour,
-      :minute,
-      :ampm,
-      :honey_weight,
-      :wax_weight,
-      :harvested_at,
-      :notes,
-      :hive_id,
-      :user_id
-    )
+    params.require(:harvest).permit(:honey_weight, :wax_weight, :harvested_at, :notes)
   end
 
   def pundit_user
     apiary_id = Hive.includes(:apiary).find(params[:hive_id]).apiary.id
-    Beekeeper.where(user_id: current_user.id, apiary_id: apiary_id).first
+    Beekeeper.where(user_id: @user.id, apiary_id: apiary_id).first
   end
 end

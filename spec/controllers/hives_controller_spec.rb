@@ -5,12 +5,8 @@ describe HivesController, type: :request do
   let!(:user) { create_logged_in_user }
   let!(:apiary) { FactoryGirl.create(:apiary_with_hives) }
   let!(:beekeeper) { FactoryGirl.create(:beekeeper,user: user, apiary: apiary) }
-  let(:hive) { FactoryGirl.create(:hive, apiary: apiary) }
+  let!(:hive) { FactoryGirl.create(:hive, apiary: apiary) }
   let(:headers) { { 'Authorization' => "Token token=#{user.authentication_token}" } }
-
-  describe '#index' do
-
-  end
 
   describe '#show' do
     it 'returns a json object with hive information and a list of inspections associated with the hive' do
@@ -37,14 +33,12 @@ describe HivesController, type: :request do
 
       inspection_json = inspections.first
       expect(inspection_json['id']).to be(inspection.id)
-      expect(inspection_json['inspected_at']).to eq('2014-06-15T08:30:00.000Z')
 
       harvests = parsed_body['harvests']
       expect(harvests.count).to be(1)
 
       harvest_json = harvests.first
       expect(harvest_json['id']).to be(harvest.id)
-      expect(harvest_json['harvested_at']).to eq('2014-06-15T08:30:00.000Z')
     end
 
     it 'allows users with read permission to view hive information' do
@@ -204,175 +198,126 @@ describe HivesController, type: :request do
   describe '#update' do
     it 'returns hive information open successful update' do
       payload = {
-        apiary_id: @apiary.id,
-        id: @hive.id,
         hive: {
           hive_type: 'Langstroth',
         },
         format: :json
       }
 
-      put :update, payload
-      expect(response.code).to eq('201')
+      put apiary_hive_path(apiary, hive), payload, headers
+      expect(response.status).to eq(201)
 
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['id']).to_not be_nil
       expect(parsed_body['name']).to_not be_nil
-      expect(parsed_body['apiary_id']).to eq(@apiary.id)
+      expect(parsed_body['apiary_id']).to eq(apiary.id)
       expect(parsed_body['hive_type']).to eq('Langstroth')
     end
 
     it 'allows users with write permission to edit hive information' do
-      @beekeeper.permission = 'Write'
-      @beekeeper.save!
+      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.save!
 
       payload = {
-        apiary_id: @apiary.id,
-        id: @hive.id,
-        hive: {
-          hive_type: 'Warre',
-        },
-        format: :json
-      }
-
-      put :update, payload
-      expect(response.code).to eq('201')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['id']).to eq(@hive.id)
-    end
-
-    it 'allows users with admin permission to edit hive information' do
-      payload = {
-        apiary_id: @apiary.id,
-        id: @hive.id,
-        hive: {
-          hive_type: 'Warre',
-        },
-        format: :json
-      }
-
-      put :update, payload
-      expect(response.code).to eq('201')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['id']).to eq(@hive.id)
-    end
-
-    it 'does not allow users with read permission to edit hive information' do
-      @beekeeper.permission = 'Read'
-      @beekeeper.save!
-
-      payload = {
-        apiary_id: @apiary.id,
-        id: @hive.id,
-        hive: {
-          hive_type: 'Warre',
-        },
-        format: :json
-      }
-
-      put :update, payload
-      expect(response.code).to eq('401')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
-    end
-
-    it 'does not allow random users to edit hive information' do
-      unauthorized_user = create_logged_in_user(email: 'another_user@example.com')
-
-      payload = {
-        apiary_id: @apiary.id,
-        id: @hive.id,
         hive: {
           hive_type: 'Langstroth',
         },
         format: :json
       }
 
-      put :update, payload
-      expect(response.code).to eq('401')
+      put apiary_hive_path(apiary, hive), payload, headers
+      expect(response.status).to eq(201)
+    end
 
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+    it 'allows users with admin permission to edit hive information' do
+      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.save!
+
+      payload = {
+        hive: {
+          hive_type: 'Langstroth',
+        },
+        format: :json
+      }
+
+      put apiary_hive_path(apiary, hive), payload, headers
+      expect(response.status).to eq(201)
+    end
+
+    it 'does not allow users with read permission to edit hive information' do
+      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.save!
+
+      payload = {
+        hive: {
+          hive_type: 'Langstroth',
+        },
+        format: :json
+      }
+
+      put apiary_hive_path(apiary, hive), payload, headers
+      expect(response.status).to eq(401)
+    end
+
+    it 'does not allow random users to edit hive information' do
+      unauthorized_user = create_logged_in_user(email: 'another_user@example.com')
+      headers = { 'Authorization' => "Token token=#{unauthorized_user.authentication_token}" }
+
+      payload = {
+        hive: {
+          hive_type: 'Langstroth',
+        },
+        format: :json
+      }
+
+      put apiary_hive_path(apiary, hive), payload, headers
+      expect(response.status).to eq(401)
     end
   end
 
   describe '#destroy' do
     it 'allows admins to delete a hive from an apiary' do
-      expect do
-        delete :destroy, apiary_id: @apiary.id, id: @hive.id, format: :json
-      end.to change { Hive.count }
+      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.save!
 
-      expect(response.code).to eq('200')
+      expect do
+        delete apiary_hive_path(apiary, hive), { format: :json }, headers
+      end.to change { apiary.hives.count }.by(-1)
+
+      expect(response.status).to eq(200)
     end
 
     it 'does not allow write users to delete a hive from an apiary' do
-      @beekeeper.permission = 'Write'
-      @beekeeper.save!
+      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.save!
 
       expect do
-        delete :destroy, apiary_id: @apiary.id, id: @hive.id, format: :json
-      end.to_not change { Hive.count }
+        delete apiary_hive_path(apiary, hive), { format: :json }, headers
+      end.to_not change { apiary.hives.count }
 
-      expect(response.code).to eq('401')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+      expect(response.status).to eq(401)
     end
 
     it 'does not allow read users to delete a hive from an apiary' do
-      @beekeeper.permission = 'Read'
-      @beekeeper.save!
+      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.save!
 
       expect do
-        delete :destroy, apiary_id: @apiary.id, id: @hive.id, format: :json
-      end.to_not change { Hive.count }
+        delete apiary_hive_path(apiary, hive), { format: :json }, headers
+      end.to_not change { apiary.hives.count }
 
-      expect(response.code).to eq('401')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
+      expect(response.status).to eq(401)
     end
 
     it 'does not allow random users to delete a hive from an apiary' do
       unauthorized_user = create_logged_in_user(email: 'another_user@example.com')
+      headers = { 'Authorization' => "Token token=#{unauthorized_user.authentication_token}" }
 
       expect do
-        delete :destroy, apiary_id: @apiary.id, id: @hive.id, format: :json
-      end.to_not change { Hive.count }
+        delete apiary_hive_path(apiary, hive), { format: :json }, headers
+      end.to_not change { apiary.hives.count }
 
-      expect(response.code).to eq('401')
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
-    end
-
-    it 'removes all harvests associated with a hive' do
-      inspection = FactoryGirl.create(
-        :inspection,
-        hive: @hive
-      )
-
-      expect do
-        delete :destroy, apiary_id: @apiary.id, id: @hive.id, format: :json
-      end.to change { Inspection.count }
-
-      expect(response.code).to eq('200')
-    end
-
-    it 'removes all inspection data associated with a hive' do
-      harvest = FactoryGirl.create(
-        :harvest,
-        hive: @hive
-      )
-
-      expect do
-        delete :destroy, apiary_id: @apiary.id, id: @hive.id, format: :json
-      end.to change { Harvest.count }
-
-      expect(response.code).to eq('200')
+      expect(response.status).to eq(401)
     end
   end
 end
