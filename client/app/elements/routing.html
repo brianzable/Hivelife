@@ -96,6 +96,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.$.inspectionForm.setup();
     });
 
+    page('/hives/:hiveId/harvests/new', function (data) {
+      app.hiveId = data.params.hiveId;
+      app.layoutManager = 'harvest-form';
+      app.route = 'harvest-new';
+      app.$.harvestForm.mode = 'new';
+      app.$.harvestForm.setup();
+    });
+
+    page('/hives/:hiveId/harvests/:id', function (data) {
+      app.hiveId = data.params.hiveId;
+      app.harvestId = data.params.id;
+      app.layoutManager = 'harvest-form';
+      app.route = 'harvest-edit';
+      app.$.harvestForm.mode = 'edit';
+      app.$.harvestForm.setup();
+    });
+
     page('/profile', function () {
       app.layoutManager = 'root';
       app.route = 'my-profile';

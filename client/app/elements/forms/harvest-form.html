@@ -1,0 +1,154 @@
+<dom-module id="harvest-form">
+  <link rel="import" type="css" href="form-common.css">
+
+  <template>
+    <paper-header-panel class="fit">
+      <paper-toolbar id="mainToolbar">
+        <a id="backLink" href="">
+          <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
+        </a>
+        <div>{{pageTitle}}</div>
+        <span class="flex"></span>
+        <paper-icon-button id="formSubmit" icon="check"></paper-icon-button>
+      </paper-toolbar>
+
+      <div class="content">
+        <paper-material elements="1">
+          <h4>Time & Date</h4>
+          <div class="layout horizontal">
+            <paper-input
+              id="date"
+              label="date"
+              auto-validate
+              required
+              error-message="please enter a date formatted yyyy-mm-dd"
+              pattern="{{_dateRegex()}}"></paper-input>
+          </div>
+
+          <h4>Honey Weight</h4>
+          <div class="layout horizontal">
+            <paper-input id="honeyWeight" label="honey weight"></paper-input>
+          </div>
+
+          <h4>Wax Weight</h4>
+          <div class="layout horizontal">
+            <paper-input id="waxWeight" label="wax weight"></paper-input>
+          </div>
+
+          <h4>Harvest Notes</h4>
+          <div>
+            <paper-input id="notes" label="notes"></paper-input>
+          </div>
+        </paper-material>
+      </div>
+    </paper-header-panel>
+
+    <harvest-show-request
+      id="getHarvestRequest"
+      harvest-id="{{harvestId}}"
+      hive-id="{{hiveId}}"
+      authentication-token="{{authenticationToken}}"
+      on-data-load="_handleLoad">
+    </harvest-show-request>
+
+    <harvest-create-request
+      id="createHarvestRequest"
+      hive-id="{{hiveId}}"
+      authentication-token="{{authenticationToken}}"
+      on-data-load="handleCreate">
+    </harvest-create-request>
+
+    <harvest-update-request
+      id="updateHarvestRequest"
+      hive-id="{{hiveId}}"
+      harvest-id="{{harvestId}}"
+      authentication-token="{{authenticationToken}}"
+      on-data-load="handleUpdate">
+    </harvest-update-request>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'harvest-form',
+
+      behaviors: [HivelifeBehaviors.TimeBehavior],
+
+      listeners: {
+        'formSubmit.click': '_submitForm'
+      },
+
+      setup: function () {
+        if (this.mode === 'new') {
+          this.pageTitle = 'New Harvest';
+          this.clearFields();
+        } else {
+          this.pageTitle = 'Edit Harvest';
+          this.$.getHarvestRequest.send();
+        }
+      },
+
+      clearFields: function () {
+        this.$.date.value = '';
+        this.$.honeyWeight.value = '';
+        this.$.waxWeight.value = '';
+        this.$.notes.value = '';
+      },
+
+      _handleLoad: function (event) {
+        var harvest = event.detail.harvest;
+
+        this.$.date.value = this._dateFromTimestamp(harvest.harvested_at);
+        this.$.honeyWeight.value = harvest.honey_weight;
+        this.$.waxWeight.value = harvest.wax_weight;
+        this.$.notes.value = harvest.notes;
+      },
+
+      _formValid: function () {
+        return this.$.date.validate();
+      },
+
+      _submitForm: function () {
+        if (!this._formValid()) {
+          return;
+        }
+
+        var payload = {
+          harvest: {
+            harvested_at: this.$.date.value,
+            honey_weight: this.$.honeyWeight.value,
+            wax_weight: this.$.waxWeight.value,
+            notes: this.$.notes.value
+          }
+        };
+
+        var request = this._requestForSubmit();
+        request.payload = payload;
+        request.send();
+      },
+
+      _requestForSubmit: function () {
+        if (this.mode === 'new') {
+          return this.$.createHarvestRequest;
+        } else {
+          return this.$.updateHarvestRequest;
+        }
+      },
+
+      handleCreate: function (event) {
+        var harvest = event.detail.harvest;
+
+        this.fire('app-message', { message: 'Harvest successfully created!' });
+        this.fire('page-redirect', { path: '/hives/' + this.hiveId + '/harvests/' + harvest.id });
+      },
+
+      handleUpdate: function (event) {
+        var harvest = event.detail.harvest;
+
+        this.fire('app-message', { message: 'Harvest successfully updated!' });
+        this.fire('page-redirect', { path: '/hives/' + this.hiveId + '/harvests/' + harvest.id });
+      },
+    });
+  })();
+</script>
