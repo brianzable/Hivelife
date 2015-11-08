@@ -1,11 +1,9 @@
 <dom-module id="hive-layout-manager">
-  <link rel="import" type="css" href="layout-manager-shared.css">
-
   <template>
-    <paper-header-panel main mode="waterfall-tall" class="fit">
-
-      <paper-toolbar id="mainToolbar">
-        <a id="backLink" href="{{backLink}}">
+    <style include="shared-styles"></style>
+    <paper-header-panel class="fit">
+      <paper-toolbar class="tall">
+        <a id="backLink" href="{{backLink}}" class="no-link">
           <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
         </a>
         <span class="flex"></span>
@@ -19,13 +17,11 @@
 
         <div class="middle paper-font-display2 app-name">{{name}}</div>
 
-        <div class="bottom">
-          <paper-tabs selected="{{selected}}">
-            <paper-tab>INSPECTIONS</paper-tab>
-            <paper-tab>HARVESTS</paper-tab>
-            <paper-tab>MAP</paper-tab>
-          </paper-tabs>
-        </div>
+        <paper-tabs selected="{{selected}}" class="bottom fit">
+          <paper-tab>INSPECTIONS</paper-tab>
+          <paper-tab>HARVESTS</paper-tab>
+          <paper-tab>MAP</paper-tab>
+        </paper-tabs>
       </paper-toolbar>
 
       <div class="content">

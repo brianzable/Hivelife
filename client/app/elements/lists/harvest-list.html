@@ -1,5 +1,6 @@
 <dom-module id="harvest-list">
   <template>
+    <style include="list-styles"></style>
     <iron-list id="list" items="{{harvests}}" as="item" scrollTarget="{{scrollTarget}}">
       <template>
         <a href="{{_harvestUrl(item)}}" style="text-decoration: none; color: inherit;">

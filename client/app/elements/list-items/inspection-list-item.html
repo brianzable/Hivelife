@@ -1,8 +1,13 @@
 <dom-module id="inspection-list-item">
-  <link rel="import" type="css" href="list-item-shared.css">
-  <link rel="import" type="css" href="inspection-list-item.css">
-
   <template>
+    <style include="list-item-styles"></style>
+    <style>
+      .notes {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    </style>
     <div class="layout horizontal">
       <div id="count" class="layout vertical">
         <div class="main-text layout vertical center">

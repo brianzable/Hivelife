@@ -1,6 +1,7 @@
 <dom-module id="inspection-list">
   <template>
-  <iron-list id="list" items="{{inspections}}" as="item" scrollTarget="{{scrollTarget}}">
+    <style include="list-styles"></style>
+    <iron-list id="list" items="{{inspections}}" as="item" scrollTarget="{{scrollTarget}}">
       <template>
         <a href="{{_inspectionUrl(item)}}" style="text-decoration: none; color: inherit;">
           <inspection-list-item>
