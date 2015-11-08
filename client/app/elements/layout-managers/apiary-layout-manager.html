@@ -1,11 +1,9 @@
 <dom-module id="apiary-layout-manager">
-  <link rel="import" type="css" href="apiary-layout-manager.css">
-  <link rel="import" type="css" href="layout-manager-shared.css">
-
   <template>
-    <paper-header-panel main mode="waterfall-tall" class="fit">
-      <paper-toolbar id="mainToolbar">
-        <a id="backLink" href="/apiaries">
+    <style include="shared-styles"></style>
+    <paper-header-panel class="fit">
+      <paper-toolbar class="tall">
+        <a id="backLink" class="no-link" href="/apiaries">
           <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
         </a>
         <span class="flex"></span>
@@ -19,14 +17,11 @@
 
         <div class="middle paper-font-display2 app-name">{{name}}</div>
 
-        <div class="bottom">
-          <paper-tabs selected="{{selected}}">
-            <paper-tab>HIVES</paper-tab>
-            <paper-tab>BEEKEEPERS</paper-tab>
-          </paper-tabs>
-        </div>
+        <paper-tabs selected="{{selected}}" class="bottom fit">
+          <paper-tab>HIVES</paper-tab>
+          <paper-tab>BEEKEEPERS</paper-tab>
+        </paper-tabs>
       </paper-toolbar>
-
       <div class="content">
         <iron-pages selected="{{selected}}">
           <section>
@@ -38,20 +33,71 @@
             </a>
           </section>
 
-          <section>
+          <section class="layout vertical center">
             <paper-material elevation="1">
               <beekeeper-list id="beekeeperList" authentication-token="{{authenticationToken}}" apiary-id="{{apiaryId}}"></beekeeper-list>
+              <paper-fab id="addBeekeeperButton" icon="add"></paper-fab>
             </paper-material>
-            <add-beekeeper-dialog
-              id="addBeekeeperDialog"
-              apiary-id="{{apiaryId}}"
-              authentication-token="{{authenticationToken}}">
-            </add-beekeeper-dialog>
-            <paper-fab id="addBeekeeperButton" icon="add"></paper-fab>
           </section>
         </iron-pages>
+
+        <add-beekeeper-dialog
+          id="addBeekeeperDialog"
+          apiary-id="{{apiaryId}}"
+          authentication-token="{{authenticationToken}}">
+        </add-beekeeper-dialog>
       </div>
     </paper-header-panel>
+    <!-- <paper-header-panel class="tall fit"> -->
+    <!--   <paper-toolbar id="mainToolbar" class="tall"> -->
+    <!--     <a id="backLink" href="/apiaries"> -->
+    <!--       <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button> -->
+    <!--     </a> -->
+    <!--     <span class="flex"></span> -->
+    <!--     <paper-menu-button vertical-align="top" horizontal-align="right"> -->
+    <!--       <paper-icon-button icon="menu" class="dropdown-trigger"></paper-icon-button> -->
+    <!--       <paper-menu class="dropdown-content"> -->
+    <!--         <a class="no-link" href="{{editPath}}"><paper-item>Edit Apiary</paper-item></a> -->
+    <!--         <a class="no-link" href="/logout"><paper-item>Logout</paper-item></a> -->
+    <!--       </paper-menu> -->
+    <!--     </paper-menu-button> -->
+
+    <!--     <div class="middle paper-font-display2 app-name">{{name}}</div> -->
+
+    <!--     <div class="bottom"> -->
+    <!--       <paper-tabs selected="{{selected}}"> -->
+    <!--         <paper-tab>HIVES</paper-tab> -->
+    <!--         <paper-tab>BEEKEEPERS</paper-tab> -->
+    <!--       </paper-tabs> -->
+    <!--     </div> -->
+    <!--   </paper-toolbar> -->
+
+    <!--   <div class="content"> -->
+    <!--     <iron-pages selected="{{selected}}"> -->
+    <!--       <section> -->
+    <!--         <paper-material elevation="1"> -->
+    <!--           <hive-list class="fit" id="hiveList" authentication-token="{{authenticationToken}}" apiary-id="{{apiaryId}}"></hive-list> -->
+    <!--         </paper-material> -->
+    <!--         <a href="{{newHivePath}}"> -->
+    <!--           <paper-fab icon="add"></paper-fab> -->
+    <!--         </a> -->
+    <!--       </section> -->
+
+    <!--       <section> -->
+    <!--         <paper-material elevation="1"> -->
+    <!--           <beekeeper-list id="beekeeperList" authentication-token="{{authenticationToken}}" apiary-id="{{apiaryId}}"></beekeeper-list> -->
+    <!--         </paper-material> -->
+
+    <!--         <add-beekeeper-dialog -->
+    <!--           id="addBeekeeperDialog" -->
+    <!--           apiary-id="{{apiaryId}}" -->
+    <!--           authentication-token="{{authenticationToken}}"> -->
+    <!--         </add-beekeeper-dialog> -->
+    <!--         <paper-fab id="addBeekeeperButton" icon="add"></paper-fab> -->
+    <!--       </section> -->
+    <!--     </iron-pages> -->
+    <!--   </div> -->
+    <!-- </paper-header-panel> -->
 
     <apiary-show-request
       id="getApiaryRequest"
@@ -68,6 +114,7 @@
       is: 'apiary-layout-manager',
 
       listeners: {
+        'addBeekeeperButton.click': '_toggleDialog',
         'addBeekeeperDialog.beekeeper-added': '_reloadBeekeepers'
       },
 
@@ -83,10 +130,7 @@
       },
 
       ready: function () {
-        var dialog = this.$.addBeekeeperDialog;
-        this.$.addBeekeeperButton.addEventListener('click', function () {
-          dialog.toggle();
-        });
+        this.$.hiveList.fire('resize');
       },
 
       loadApiary: function () {
@@ -101,6 +145,10 @@
       handleLoad: function (event) {
         var apiary = event.detail.apiary;
         this.name = apiary.name;
+      },
+
+      _toggleDialog: function () {
+        this.$.addBeekeeperDialog.toggle();
       },
 
       _reloadBeekeepers: function () {

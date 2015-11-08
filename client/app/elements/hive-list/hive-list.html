@@ -1,6 +1,7 @@
 <dom-module id="hive-list">
   <template>
-    <iron-list id="list" items="[[data]]" as="item" scrollTarget="{{scrollTarget}}">
+    <style include="list-styles"></style>
+    <iron-list id="list" items="[[data]]" as="item">
       <template>
         <a href="{{_hiveUrl(item)}}" style="text-decoration: none; color: inherit;">
           <hive-list-item>
@@ -28,10 +29,6 @@
         apiaryId: Number,
         authenticationToken: String,
         scrollTarget: Object
-      },
-
-      ready: function () {
-        this.data = [];
       },
 
       loadHives: function () {

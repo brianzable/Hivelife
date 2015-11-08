@@ -7,9 +7,8 @@ FactoryGirl.define do
     state 'IL'
 
     factory :apiary_with_hives do
-
       after(:create) do |apiary, evaluator|
-        create_list(:hive, 2, apiary: apiary)
+        create_list(:hive, 20, apiary: apiary)
       end
     end
   end

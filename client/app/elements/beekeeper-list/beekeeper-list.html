@@ -1,6 +1,7 @@
 <dom-module id="beekeeper-list">
   <template>
-    <iron-list id="list" items="[[data]]" as="item" scrollTarget="{{scrollTarget}}">
+    <style include="list-styles"></style>
+    <iron-list id="list" items="[[data]]" as="item">
       <template>
         <beekeeper-list-item
           apiary-id="{{apiaryId}}"
