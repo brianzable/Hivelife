@@ -1,8 +1,6 @@
-<dom-module id="apiaries-page">
-  <link rel="stylesheet" href="apiaries-page.css">
-
+<dom-module id="apiary-list">
   <template>
-    <iron-list id="list" items="[[data]]" as="item" scrollTarget="{{scrollTarget}}">
+    <iron-list id="list" items="[[data]]" as="item">
       <template>
         <a href="{{_apiaryUrl(item)}}" style="text-decoration: none; color: inherit;">
           <apiary-list-item apiary-id="{{item.id}}">
@@ -26,7 +24,7 @@
 <script>
   (function () {
     Polymer({
-      is: 'apiaries-page',
+      is: 'apiary-list',
 
       properties: {
         authenticationToken: String,

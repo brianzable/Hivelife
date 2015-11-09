@@ -1,11 +1,9 @@
 <dom-module id="root-layout-manager">
-  <link rel="import" type="css" href="root-layout-manager.css">
-  <link rel="import" type="css" href="layout-manager-shared.css">
-
   <template>
+    <style include="shared-styles"></style>
+
     <paper-drawer-panel id="paperDrawerPanel">
       <div drawer>
-
         <paper-toolbar id="drawerToolbar">
           <span>Menu</span>
         </paper-toolbar>
@@ -20,13 +18,10 @@
         </paper-menu>
       </div>
 
-      <paper-header-panel id="mainPanel" main mode="waterfall-tall">
-        <paper-toolbar id="mainToolbar">
+      <paper-header-panel id="mainPanel" main mode="tall">
+        <paper-toolbar id="mainToolbar" class="tall">
           <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
           <span class="flex"></span>
-
-          <paper-icon-button icon="refresh"></paper-icon-button>
-          <paper-icon-button icon="search"></paper-icon-button>
 
           <div class="middle paper-font-display2 app-name">Hivelife</div>
 
@@ -73,7 +68,7 @@
 
             <section data-route="apiaries">
               <paper-material elevation="1">
-                <apiaries-page id="apiariesPage" scrollTarget="{{this.$.mainPanel.scroller}}" authentication-token="{{authenticationToken}}"></apiaries-page>
+                <apiary-list id="apiariesPage" authentication-token="{{authenticationToken}}"></apiary-list>
                 <a href="/apiaries/new">
                   <paper-fab icon="add"></paper-fab>
                 </a>
