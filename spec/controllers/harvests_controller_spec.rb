@@ -52,7 +52,7 @@ describe HarvestsController, type: :request do
       headers = { 'Authorization' => "Token token=#{unauthorized_user.authentication_token}" }
 
       get hive_harvest_path(hive, harvest), { format: :json }, headers
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
   end
 
@@ -116,7 +116,7 @@ describe HarvestsController, type: :request do
         post hive_harvests_path(hive), payload, headers
       end.to_not change { hive.harvests.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
 
     it 'does not allow users who are not memebers of the apiary to create a harvest' do
@@ -134,7 +134,7 @@ describe HarvestsController, type: :request do
         post hive_harvests_path(hive), payload, headers
       end.to_not change { hive.harvests.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
   end
 
@@ -197,7 +197,7 @@ describe HarvestsController, type: :request do
 
       put hive_harvest_path(hive, harvest), payload, headers
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
 
     it 'does not allow users who are not members of the apiary to update a harvest' do
@@ -213,7 +213,7 @@ describe HarvestsController, type: :request do
 
       put hive_harvest_path(hive, harvest), payload, headers
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
   end
 
@@ -248,7 +248,7 @@ describe HarvestsController, type: :request do
         delete hive_harvest_path(hive, harvest), { format: :json }, headers
       end.to_not change{ hive.harvests.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
 
     it 'does not allow users who are not members at the apiary to delete a harvest' do
@@ -259,7 +259,7 @@ describe HarvestsController, type: :request do
         delete hive_harvest_path(hive, harvest), { format: :json }, headers
       end.to_not change{ hive.harvests.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
   end
 end

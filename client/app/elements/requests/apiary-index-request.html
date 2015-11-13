@@ -1,8 +1,9 @@
-<dom-module id="apiary-show-request">
+<dom-module id="apiary-index-request">
   <template>
     <iron-ajax
       id="client"
       method="GET"
+      url="/v1/api/apiaries"
       on-response="_handleSuccess"
       on-error="_handleError">
     </iron-ajax>
@@ -12,31 +13,32 @@
 <script>
   (function () {
     Polymer({
-      is: 'apiary-show-request',
+      is: 'apiary-index-request',
+
       behaviors: [HivelifeBehaviors.RequestBehavior],
+
       properties: {
         authenticationToken: String,
-        apiaryId: Number
       },
 
       send: function () {
         this._setAuthorization();
-        this.$.client.url = 'v1/api/apiaries/' + this.apiaryId;
         this.$.client.generateRequest();
       },
 
       _handleSuccess: function (event) {
         var detail = {
           error: false,
-          apiary: event.detail.response
+          apiaries: event.detail.response
         };
 
-        this.fire('data-load', detail);
+        this.fire('apiaries-load', detail);
       },
 
       _handleError: function (event) {
-        this._processError(event.detail.request);
+        this.fire('apiaries-load-error', { response: event.detail.request });
       }
     });
   })();
 </script>
+

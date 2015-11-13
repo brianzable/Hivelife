@@ -77,7 +77,7 @@ describe InspectionsController, type: :request do
       headers = { 'Authorization' => "Token token=#{unauthorized_user.authentication_token}" }
 
       get hive_inspection_path(hive, inspection), { format: :json }, headers
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
   end
 
@@ -150,7 +150,7 @@ describe InspectionsController, type: :request do
       }
 
       post hive_inspections_path(hive), payload, headers
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
 
     it 'allows beekeepers with write permission to create an inspection' do
@@ -195,7 +195,7 @@ describe InspectionsController, type: :request do
       }
 
       post hive_inspections_path(hive), payload, headers
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
   end
 
@@ -312,7 +312,7 @@ describe InspectionsController, type: :request do
       }
 
       put hive_inspection_path(hive, inspection), payload, headers
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
 
       inspection.reload
       expect(inspection.notes).to_not eq('Some new notes.')
@@ -366,7 +366,7 @@ describe InspectionsController, type: :request do
       }
 
       put hive_inspection_path(hive, inspection), payload, headers
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
 
       inspection.reload
       expect(inspection.notes).to_not eq('Some new notes.')
@@ -404,7 +404,7 @@ describe InspectionsController, type: :request do
         delete hive_inspection_path(hive, inspection), { format: :json }, headers
       end.to_not change { Inspection.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
 
     it 'does not allow users who are not members at the apiary to delete an inspection' do
@@ -415,7 +415,7 @@ describe InspectionsController, type: :request do
         delete hive_inspection_path(hive, inspection), { format: :json }, headers
       end.to_not change { Inspection.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
   end
 end

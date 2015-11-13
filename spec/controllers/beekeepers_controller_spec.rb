@@ -43,7 +43,7 @@ RSpec.describe BeekeepersController, type: :request do
 
       get apiary_beekeepers_path(another_apiary), { format: :json }, headers
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
   end
 
@@ -72,7 +72,7 @@ RSpec.describe BeekeepersController, type: :request do
       )
 
       get apiary_beekeeper_path(another_apiary, another_beekeeper), { format: :json }, headers
-      expect(response.status).to be(401)
+      expect(response.status).to be(404)
     end
   end
 
@@ -140,7 +140,7 @@ RSpec.describe BeekeepersController, type: :request do
         post apiary_beekeepers_path(apiary), payload, headers
       end.to_not change { Beekeeper.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
 
     it 'will not allow users with read access to create beekeepers' do
@@ -168,7 +168,7 @@ RSpec.describe BeekeepersController, type: :request do
         post apiary_beekeepers_path(apiary), payload, headers
       end.to_not change { Beekeeper.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
 
     it 'will not allow random users to create beekeepers at different apiaries' do
@@ -190,7 +190,7 @@ RSpec.describe BeekeepersController, type: :request do
         post apiary_beekeepers_path(an_apiary), payload, headers
       end.to_not change { Beekeeper.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
   end
 
@@ -243,7 +243,7 @@ RSpec.describe BeekeepersController, type: :request do
       another_beekeeper.reload
       expect(another_beekeeper.permission).to eq(Beekeeper::Roles::Viewer)
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
 
     it 'will not allow users with read access to update beekeepers' do
@@ -273,7 +273,7 @@ RSpec.describe BeekeepersController, type: :request do
 
       put apiary_beekeeper_path(apiary, another_beekeeper), payload, headers
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
       expect(another_beekeeper.reload.permission).to eq(Beekeeper::Roles::Viewer)
     end
 
@@ -296,7 +296,7 @@ RSpec.describe BeekeepersController, type: :request do
 
       put apiary_beekeeper_path(different_apiary, a_beekeeper), payload, headers
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
       expect(a_beekeeper.reload.permission).to eq(Beekeeper::Roles::Viewer)
     end
 
@@ -318,7 +318,7 @@ RSpec.describe BeekeepersController, type: :request do
 
       put apiary_beekeeper_path(apiary, another_admin), payload, headers
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
       expect(another_admin.reload.permission).to eq(Beekeeper::Roles::Admin)
     end
   end
@@ -357,7 +357,7 @@ RSpec.describe BeekeepersController, type: :request do
         delete apiary_beekeeper_path(different_apiary, a_beekeeper), nil, headers
       end.to_not change { Beekeeper.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
       expect { a_beekeeper.reload }.not_to raise_error
     end
 
@@ -383,7 +383,7 @@ RSpec.describe BeekeepersController, type: :request do
         delete apiary_beekeeper_path(apiary, read_beekeeper), nil, headers
       end.to_not change { Beekeeper.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
       expect { read_beekeeper.reload }.not_to raise_error
     end
 
@@ -409,7 +409,7 @@ RSpec.describe BeekeepersController, type: :request do
         delete apiary_beekeeper_path(apiary, another_read_beekeeper), nil, headers
       end.to_not change { Beekeeper.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
       expect { another_read_beekeeper.reload }.not_to raise_error
     end
 
@@ -435,7 +435,7 @@ RSpec.describe BeekeepersController, type: :request do
         delete apiary_beekeeper_path(apiary, another_admin), nil, headers
       end.to_not change { Beekeeper.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
       expect { another_admin.reload }.not_to raise_error
     end
   end

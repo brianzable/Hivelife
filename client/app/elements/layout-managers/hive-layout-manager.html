@@ -28,7 +28,12 @@
         <iron-pages selected="{{selected}}">
           <section>
             <paper-material elevation="1">
-              <inspection-list id="inspectionList" inspections="{{inspections}}" hive-id="{{hiveId}}"></inspection-list>
+              <template is="dom-if" if="{{inspections.length > 0}}">
+                <inspection-list id="inspectionList" inspections="{{inspections}}" hive-id="{{hiveId}}"></inspection-list>
+              </template>
+              <template is="dom-if" if="{{inspections.length === 0}}">
+                <h1>No hives here yet!</h1>
+              </template>
             </paper-material>
           </section>
 
@@ -85,6 +90,7 @@
         var hive = event.detail.hive;
         this.name = hive.name;
         this.inspections = hive.inspections;
+        console.log(this.inspections.length);
         this.harvests = hive.harvests;
       }
     });

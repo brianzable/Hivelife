@@ -1,0 +1,31 @@
+<script>
+  var HivelifeBehaviors = HivelifeBehaviors || {};
+  HivelifeBehaviors.PageBehavior = {
+    _processError: function (response) {
+      var status = response.status;
+
+      if (status === 404) {
+        this._handle404();
+      }
+      else if (status === 401) {
+        this._handle401();
+      }
+      else {
+        this._handleGeneralError();
+      }
+    },
+
+    _handle404: function () {
+      this.fire('page-redirect', { path: '/404' });
+    },
+
+    _handle401: function () {
+      this.fire('page-redirect', { path: '/logout' });
+    },
+
+    _handleGeneralError: function () {
+      this.fire('page-redirect', { path: '/error' });
+    }
+  };
+</script>
+

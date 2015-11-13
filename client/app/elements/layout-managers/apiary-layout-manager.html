@@ -26,7 +26,12 @@
         <iron-pages selected="{{selected}}">
           <section>
             <paper-material elevation="1">
-              <hive-list id="hiveList" authentication-token="{{authenticationToken}}" apiary-id="{{apiaryId}}"></hive-list>
+              <template is="dom-if" if="{{showHives}}">
+                <hive-list id="hiveList" authentication-token="{{authenticationToken}}" apiary-id="{{apiaryId}}"></hive-list>
+              </template>
+              <template is="dom-if" if="{{!showHives}}">
+                <h1>Add a hive to get your apiary off the ground!</h1>
+              </template>
             </paper-material>
             <a href="{{newHivePath}}">
               <paper-fab icon="add"></paper-fab>
@@ -48,56 +53,6 @@
         </add-beekeeper-dialog>
       </div>
     </paper-header-panel>
-    <!-- <paper-header-panel class="tall fit"> -->
-    <!--   <paper-toolbar id="mainToolbar" class="tall"> -->
-    <!--     <a id="backLink" href="/apiaries"> -->
-    <!--       <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button> -->
-    <!--     </a> -->
-    <!--     <span class="flex"></span> -->
-    <!--     <paper-menu-button vertical-align="top" horizontal-align="right"> -->
-    <!--       <paper-icon-button icon="menu" class="dropdown-trigger"></paper-icon-button> -->
-    <!--       <paper-menu class="dropdown-content"> -->
-    <!--         <a class="no-link" href="{{editPath}}"><paper-item>Edit Apiary</paper-item></a> -->
-    <!--         <a class="no-link" href="/logout"><paper-item>Logout</paper-item></a> -->
-    <!--       </paper-menu> -->
-    <!--     </paper-menu-button> -->
-
-    <!--     <div class="middle paper-font-display2 app-name">{{name}}</div> -->
-
-    <!--     <div class="bottom"> -->
-    <!--       <paper-tabs selected="{{selected}}"> -->
-    <!--         <paper-tab>HIVES</paper-tab> -->
-    <!--         <paper-tab>BEEKEEPERS</paper-tab> -->
-    <!--       </paper-tabs> -->
-    <!--     </div> -->
-    <!--   </paper-toolbar> -->
-
-    <!--   <div class="content"> -->
-    <!--     <iron-pages selected="{{selected}}"> -->
-    <!--       <section> -->
-    <!--         <paper-material elevation="1"> -->
-    <!--           <hive-list class="fit" id="hiveList" authentication-token="{{authenticationToken}}" apiary-id="{{apiaryId}}"></hive-list> -->
-    <!--         </paper-material> -->
-    <!--         <a href="{{newHivePath}}"> -->
-    <!--           <paper-fab icon="add"></paper-fab> -->
-    <!--         </a> -->
-    <!--       </section> -->
-
-    <!--       <section> -->
-    <!--         <paper-material elevation="1"> -->
-    <!--           <beekeeper-list id="beekeeperList" authentication-token="{{authenticationToken}}" apiary-id="{{apiaryId}}"></beekeeper-list> -->
-    <!--         </paper-material> -->
-
-    <!--         <add-beekeeper-dialog -->
-    <!--           id="addBeekeeperDialog" -->
-    <!--           apiary-id="{{apiaryId}}" -->
-    <!--           authentication-token="{{authenticationToken}}"> -->
-    <!--         </add-beekeeper-dialog> -->
-    <!--         <paper-fab id="addBeekeeperButton" icon="add"></paper-fab> -->
-    <!--       </section> -->
-    <!--     </iron-pages> -->
-    <!--   </div> -->
-    <!-- </paper-header-panel> -->
 
     <apiary-show-request
       id="getApiaryRequest"
@@ -129,16 +84,11 @@
         }
       },
 
-      ready: function () {
-        this.$.hiveList.fire('resize');
-      },
-
       loadApiary: function () {
         this.editPath = '/apiaries/' + this.apiaryId  + '/edit';
         this.newHivePath = '/apiaries/' + this.apiaryId + '/hives/new';
 
         this.$.getApiaryRequest.send();
-        this.$.hiveList.loadHives();
         this.$.beekeeperList.loadBeekeepers();
       },
 

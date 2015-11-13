@@ -30,7 +30,7 @@ RSpec.describe UsersController, type: :controller do
 
       get :show, id: another_user.id, format: :json
 
-      expect(response.code).to eq('401')
+      expect(response.status).to eq(404)
     end
   end
 
@@ -131,7 +131,7 @@ RSpec.describe UsersController, type: :controller do
 
       put :update, payload
 
-      expect(response.code).to eq('401')
+      expect(response.status).to eq(404)
     end
   end
 
@@ -157,10 +157,7 @@ RSpec.describe UsersController, type: :controller do
         delete :destroy, id: user.id, format: :json
       end.to_not change { User.count }
 
-      expect(response.code).to eq("401")
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action')
+      expect(response.status).to eq(401)
     end
 
     it 'does not allow users to delete random accounts' do
@@ -173,10 +170,7 @@ RSpec.describe UsersController, type: :controller do
         delete :destroy, id: random_user.id, format: :json
       end.to_not change { User.count }
 
-      expect(response.code).to eq("401")
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action')
+      expect(response.status).to eq(404)
     end
   end
 

@@ -73,10 +73,19 @@ RSpec.describe ApiariesController, type: :request do
       headers = { 'Authorization' => "Token token=#{unauthorized_user.authentication_token}" }
 
       get apiary_path(apiary), { format: :json }, headers
+      expect(response.status).to eq(404)
+
+      parsed_body = JSON.parse(response.body)
+    end
+
+    it 'returns a 401 when using an invalid authentication token' do
+      headers = { 'Authorization' => 'Token token=tokenthatdoesntexist' }
+
+      get apiary_path(apiary), { format: :json }, headers
       expect(response.status).to eq(401)
 
       parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action')
+      expect(parsed_body['error']).to eq('You are not authorized to perform this action.')
     end
   end
 
@@ -162,7 +171,7 @@ RSpec.describe ApiariesController, type: :request do
       }
 
       put apiary_path(apiary), payload, headers
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
 
       apiary.reload
       expect(apiary.city).to eq('My City')
@@ -180,7 +189,7 @@ RSpec.describe ApiariesController, type: :request do
       }
 
       put apiary_path(apiary), payload, headers
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
 
       apiary.reload
       expect(apiary.city).to eq('My City')
@@ -198,7 +207,7 @@ RSpec.describe ApiariesController, type: :request do
       }
 
       put apiary_path(apiary), payload, headers
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
 
       apiary.reload
       expect(apiary.city).to eq('My City')
@@ -250,7 +259,7 @@ RSpec.describe ApiariesController, type: :request do
         delete apiary_path(apiary), { format: :json }, headers
       end.to_not change{ Apiary.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
 
     it 'does not allow users with write permissions to destroy an apiary' do
@@ -261,7 +270,7 @@ RSpec.describe ApiariesController, type: :request do
         delete apiary_path(apiary), { format: :json }, headers
       end.to_not change{ Apiary.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
 
     it 'does not allow users to destroy random apiaries' do
@@ -272,7 +281,7 @@ RSpec.describe ApiariesController, type: :request do
         delete apiary_path(apiary), { format: :json }, headers
       end.to_not change{ Apiary.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
   end
 end

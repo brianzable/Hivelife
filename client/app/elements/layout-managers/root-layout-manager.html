@@ -66,9 +66,22 @@
               </paper-material>
             </section>
 
-            <section data-route="apiaries">
+            <section data-route="error">
               <paper-material elevation="1">
-                <apiary-list id="apiariesPage" authentication-token="{{authenticationToken}}"></apiary-list>
+                <error-page></error-page>
+              </paper-material>
+            </section>
+
+            <section data-route="not-found">
+              <paper-material elevation="1">
+                <not-found></not-found>
+              </paper-material>
+            </section>
+
+            <section data-route="apiaries">
+              <loading-page class="fit" id="apiariesSpinner"></loading-page>
+              <paper-material elevation="1" id="apiariesPage">
+                <apiary-list id="apiariesPage" apiaries="{{apiaries}}" authentication-token="{{authenticationToken}}"></apiary-list>
                 <a href="/apiaries/new">
                   <paper-fab icon="add"></paper-fab>
                 </a>
@@ -78,6 +91,8 @@
         </div>
       </paper-header-panel>
     </paper-drawer-panel>
+
+    <apiary-index-request id="indexRequest" authentication-token="{{authenticationToken}}"></apiary-index-request>
   </template>
 </dom-module>
 
@@ -85,6 +100,8 @@
   (function () {
     Polymer({
       is: 'root-layout-manager',
+
+      behaviors: [HivelifeBehaviors.PageBehavior],
 
       properties: {
         route: {
@@ -99,6 +116,11 @@
           type: Object,
           notify: true
         }
+      },
+
+      listeners: {
+        'indexRequest.apiaries-load': '_handleResponse',
+        'indexRequest.apiaries-load-error': '_handleError'
       },
 
       ready: function () {
@@ -129,7 +151,27 @@
       },
 
       loadApiaries: function () {
-        this.$.apiariesPage.loadData();
+        this._showSpinner();
+        this.$.indexRequest.send();
+      },
+
+      _showSpinner: function () {
+        this.$.apiariesPage.style.display = 'none';
+        this.$.apiariesSpinner.style.display = 'block';
+      },
+
+      _hideSpinner: function () {
+        this.$.apiariesPage.style.display = 'block';
+        this.$.apiariesSpinner.style.display = 'none';
+      },
+
+      _handleResponse: function (event) {
+        this.apiaries = event.detail.apiaries;
+        this._hideSpinner();
+      },
+
+      _handleError: function (event) {
+        this._processError(event.detail.response);
       }
     });
   })();

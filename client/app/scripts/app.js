@@ -31,9 +31,4 @@
       app.$.appToast.show();
     });
   });
-
-  // See https://github.com/Polymer/polymer/issues/1381
-  window.addEventListener('WebComponentsReady', function() {
-
-  });
 })(document);

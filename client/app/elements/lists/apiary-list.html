@@ -1,6 +1,6 @@
 <dom-module id="apiary-list">
   <template>
-    <iron-list id="list" items="[[data]]" as="item">
+    <iron-list id="list" items="[[apiaries]]" as="item">
       <template>
         <a href="{{_apiaryUrl(item)}}" style="text-decoration: none; color: inherit;">
           <apiary-list-item apiary-id="{{item.id}}">
@@ -11,13 +11,6 @@
         </a>
       </template>
     </iron-list>
-
-    <iron-ajax
-      id="client"
-      url="/v1/api/apiaries"
-      method="get"
-      on-response="handleResponse"
-      on-error="handleError"></iron-ajax>
   </template>
 </dom-module>
 
@@ -28,30 +21,7 @@
 
       properties: {
         authenticationToken: String,
-        scrollTarget: Object
-      },
-
-      ready: function () {
-        this.data = [];
-      },
-
-      loadData: function () {
-        var client = this.$.client;
-
-        client.headers = {
-          'Authorization': 'Token token=' + this.authenticationToken,
-          'Accept': 'application/json'
-        };
-        client.contentType = 'application/json';
-        client.generateRequest();
-      },
-
-      handleResponse: function (event) {
-        this.data = event.detail.response;
-      },
-
-      handleError: function (event) {
-        console.log(event.detail);
+        apiaries: Array
       },
 
       _apiaryUrl: function (item) {

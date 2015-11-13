@@ -76,10 +76,9 @@ describe HivesController, type: :request do
       headers = { 'Authorization' => "Token token=#{unauthorized_user.authentication_token}" }
 
       get apiary_hive_path(apiary, hive), { format: :json }, headers
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
 
       parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action')
     end
   end
 
@@ -165,10 +164,7 @@ describe HivesController, type: :request do
       }
 
       post apiary_hives_path(apiary), payload, headers
-      expect(response.status).to eq(401)
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action')
+      expect(response.status).to eq(404)
     end
 
     it 'does not allow random users to add a hive to an apiary' do
@@ -188,10 +184,7 @@ describe HivesController, type: :request do
       }
 
       post apiary_hives_path(apiary), payload, headers
-      expect(response.status).to eq(401)
-
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body['error']).to eq('You are not authorized to perform this action')
+      expect(response.status).to eq(404)
     end
   end
 
@@ -256,7 +249,7 @@ describe HivesController, type: :request do
       }
 
       put apiary_hive_path(apiary, hive), payload, headers
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
 
     it 'does not allow random users to edit hive information' do
@@ -271,7 +264,7 @@ describe HivesController, type: :request do
       }
 
       put apiary_hive_path(apiary, hive), payload, headers
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
   end
 
@@ -295,7 +288,7 @@ describe HivesController, type: :request do
         delete apiary_hive_path(apiary, hive), { format: :json }, headers
       end.to_not change { apiary.hives.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
 
     it 'does not allow read users to delete a hive from an apiary' do
@@ -306,7 +299,7 @@ describe HivesController, type: :request do
         delete apiary_hive_path(apiary, hive), { format: :json }, headers
       end.to_not change { apiary.hives.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
 
     it 'does not allow random users to delete a hive from an apiary' do
@@ -317,7 +310,7 @@ describe HivesController, type: :request do
         delete apiary_hive_path(apiary, hive), { format: :json }, headers
       end.to_not change { apiary.hives.count }
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(404)
     end
   end
 end

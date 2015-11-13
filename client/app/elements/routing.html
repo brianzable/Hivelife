@@ -123,6 +123,16 @@
       app.route = 'data-portal';
     });
 
+    page('/error', function () {
+      app.layoutManager = 'root';
+      app.route = 'error';
+    });
+
+    page('*', function () {
+      app.layoutManager = 'root';
+      app.route = 'not-found';
+    });
+
     page({
       hashbang: true
     });
