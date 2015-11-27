@@ -59,7 +59,7 @@ namespace :db do
       :beekeeper,
       apiary: main_apiary,
       user: user,
-      permission: 'Admin'
+      permission: Beekeeper::Roles::Admin
     )
 
     other_users.each do |u|
@@ -67,7 +67,7 @@ namespace :db do
         :beekeeper,
         apiary: main_apiary,
         user: u,
-        permission: 'Read'
+        permission: Beekeeper::Roles::Viewer
       )
     end
   end

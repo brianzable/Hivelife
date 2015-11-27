@@ -24,13 +24,6 @@
         </div>
       </template>
     </div>
-
-    <beekeeper-delete-request
-      id="deleteBeekeeperRequest"
-      apiary-id="{{apiaryId}}"
-      beekeeper-id="{{beekeeperId}}"
-      authentication-token="{{authenticationToken}}">
-    </beekeeper-delete-request>
   </template>
 </dom-module>
 
@@ -40,14 +33,12 @@
       is: 'beekeeper-list-item',
 
       properties: {
-        apiaryId: Number,
         beekeeperId: Number,
-        authenticationToken: String,
         editable: Boolean
       },
 
       _deleteBeekeeper: function () {
-        this.$.deleteBeekeeperRequest.send();
+        this.fire('delete-beekeeper', { id: this.beekeeperId })
       }
     });
   })();

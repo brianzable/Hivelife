@@ -34,9 +34,7 @@ class ApiariesController < ApplicationController
 
   def destroy
     @apiary.destroy
-    respond_to do |format|
-      format.json { render json: { head: :no_content } }
-    end
+    render json: { head: :no_content }
   end
 
 private

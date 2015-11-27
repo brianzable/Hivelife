@@ -23,7 +23,7 @@
     });
 
     app.$.pages.addEventListener('page-redirect', function (event) {
-      page.redirect(event.detail.path);
+      page.show(event.detail.path);
     });
 
     app.$.pages.addEventListener('app-message', function (event) {

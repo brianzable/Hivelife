@@ -1,22 +1,16 @@
 <dom-module id="hive-list">
   <template>
     <style include="list-styles"></style>
-    <iron-list id="list" items="[[data]]" as="item">
+    <iron-list id="list" items="[[hives]]" as="hive">
       <template>
-        <a href="{{_hiveUrl(item)}}" style="text-decoration: none; color: inherit;">
+        <a href="{{_hiveUrl(hive)}}" style="text-decoration: none; color: inherit;">
           <hive-list-item>
-            <span class="count">1</span>
-            <span class="name">{{item.name}}</span>
+            <span class="count">{{hive.inspection_count}}</span>
+            <span class="name">{{hive.name}}</span>
           </hive-list-item>
         </a>
       </template>
     </iron-list>
-
-    <iron-ajax
-      id="client"
-      method="get"
-      on-response="handleResponse"
-      on-error="handleError"></iron-ajax>
   </template>
 </dom-module>
 
@@ -27,32 +21,6 @@
 
       properties: {
         apiaryId: Number,
-        authenticationToken: String,
-        scrollTarget: Object
-      },
-
-      loadHives: function () {
-        var client = this.$.client;
-
-        client.url = 'v1/api/apiaries/' + this.apiaryId + '/hives';
-        client.contentType = 'application/json';
-        client.headers = {
-          'Authorization': 'Token token=' + this.authenticationToken,
-          'Accept': 'application/json'
-        };
-        client.generateRequest();
-      },
-
-      handleResponse: function (event) {
-        this.data = event.detail.response;
-      },
-
-      handleError: function (event) {
-        console.log(event.detail);
-      },
-
-      _hivesPath: function () {
-        return 'apiaries/' + this.apiaryId + '/hives';
       },
 
       _hiveUrl: function (item) {

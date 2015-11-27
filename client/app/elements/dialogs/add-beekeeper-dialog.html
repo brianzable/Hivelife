@@ -1,49 +1,39 @@
 <dom-module id="add-beekeeper-dialog">
   <style>
-    paper-dialog {
-      background: white;
-      width: 500px;
-      height: 200px;
-    }
-
-    paper-button {
-      margin-top: 15px;
+    paper-input {
+      width: 100%;
     }
 
     paper-dropdown-menu {
-      width: 100px;
-    }
-
-    #errorMessage {
-      color: red;
+      width: 100%;
     }
   </style>
-  <template>
-    <paper-dialog id="addBeekeeperDialog">
-      <div class="layout vertical">
-        <div class="layout horizontal center">
-          <paper-input id="email" class="flex" label="email address"></paper-input>
-          <paper-dropdown-menu id="permission" label="role">
-            <paper-menu class="dropdown-content">
-              <paper-item>Read</paper-item>
-              <paper-item>Write</paper-item>
-              <paper-item>Admin</paper-item>
-            </paper-menu>
-          </paper-dropdown-menu>
-          <paper-button id="formSubmit" raised role="button">Add</paper-button>
-        </div>
 
-        <div id="errorMessage" style="display: none;">
-          <iron-icon icon="icons:error-outline"></iron-icon>
-          <span id="errorMessageText">Succesfully added so and so.</span>
-        </div>
-      </div>
-    </paper-dialog>
+  <template>
+    <style include="paper-dialog-shared-styles"></style>
+    <h2>Add Beekeeper</h2>
+    <div class="layout vertical center">
+      <paper-input id="email" class="flex" label="email address"></paper-input>
+      <paper-dropdown-menu id="permission" class="flex" label="role">
+        <paper-menu id="permissionMenu" class="dropdown-content">
+          <paper-item>Viewer</paper-item>
+          <paper-item>Inspector</paper-item>
+          <paper-item>Admin</paper-item>
+        </paper-menu>
+      </paper-dropdown-menu>
+    </div>
+
+    <span>* Adding a new Admin cannot be undone.</span>
+
+    <div class="buttons">
+      <paper-button dialog-dismiss>Cancel</paper-button>
+      <paper-button id="addButton" dialog-confirm autofocus>Add</paper-button>
+    </div>
 
     <beekeeper-create-request
       id="createBeekeeperRequest"
       apiary-id="{{apiaryId}}"
-      authentication-token="{{authenticationToken}}"
+      authentication-token="{{authenticationToken}}">
     </beekeeper-create-request>
   </template>
 </dom-module>
@@ -53,13 +43,14 @@
     Polymer({
       is: 'add-beekeeper-dialog',
 
-      listeners: {
-        'formSubmit.click': '_submitForm',
-        'createBeekeeperRequest.data-load': '_handleCreate'
-      },
+      behaviors: [
+        Polymer.PaperDialogBehavior
+      ],
 
-      toggle: function () {
-        this.$.addBeekeeperDialog.toggle();
+      listeners: {
+        'addButton.click': '_submitForm',
+        'createBeekeeperRequest.beekeeper-create': '_handleCreateSuccess',
+        'createBeekeeperRequest.beekeeper-create-error': '_handleCreateError'
       },
 
       _submitForm: function () {
@@ -75,17 +66,17 @@
         this.$.createBeekeeperRequest.send();
       },
 
-      _handleCreate: function (event) {
-        this.$.errorMessage.style.display = 'none';
+      _handleCreateSuccess: function (event) {
         this.$.email.value = '';
-        this.toggle();
+        this.$.permissionMenu.selected = null;
+        this.fire('app-message', { message: 'Beekeeper successfully added!' });
         this.fire('beekeeper-added');
       },
 
-      _handleError: function (event) {
-        var errorMessage = event.target.lastRequest.xhr.response.errors[0];
-        this.$.errorMessage.style.display = 'block';
-        this.$.errorMessageText.innerHTML = errorMessage;
+      _handleCreateError: function (event) {
+        this.$.email.value = '';
+        this.$.permissionMenu.selected = null;
+        this.fire('app-message', { message: event.detail.message });
       }
     });
   })();

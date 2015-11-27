@@ -31,11 +31,11 @@
           apiary: event.detail.response
         };
 
-        this.fire('data-load', detail);
+        this.fire('apiary-load', detail);
       },
 
       _handleError: function (event) {
-        this._processError(event.detail.request);
+        this.fire('apiary-load-error', { response: event.detail.request });
       }
     });
   })();

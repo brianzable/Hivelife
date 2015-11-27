@@ -1,25 +1,15 @@
 <dom-module id="beekeeper-list">
   <template>
     <style include="list-styles"></style>
-    <iron-list id="list" items="[[data]]" as="item">
+    <iron-list id="list" items="[[beekeepers]]" as="beekeeper">
       <template>
-        <beekeeper-list-item
-          apiary-id="{{apiaryId}}"
-          beekeeper-id="{{item.id}}"
-          editable="{{item.editable}}"
-          authentication-token="{{authenticationToken}}">
-          <iron-image class="photo" style="height: 60px; width: 60px; border-radius: 50%;" src="{{item.photo_url}}" sizing="cover"></iron-image>
-          <span class="name">{{item.name}}</span>
-          <span class="role">{{item.role}}</span>
+        <beekeeper-list-item beekeeper-id="{{beekeeper.id}}" editable="{{beekeeper.editable}}">
+          <iron-image class="photo" style="height: 60px; width: 60px; border-radius: 50%;" src="{{beekeeper.photo_url}}" sizing="cover"></iron-image>
+          <span class="name">{{beekeeper.name}}</span>
+          <span class="role">{{beekeeper.role}}</span>
         </beekeeper-list-item>
       </template>
     </iron-list>
-
-    <iron-ajax
-      id="client"
-      method="get"
-      on-response="handleResponse"
-      on-error="handleError"></iron-ajax>
   </template>
 </dom-module>
 
@@ -30,45 +20,8 @@
 
       properties: {
         apiaryId: Number,
-        authenticationToken: String,
-        scrollTarget: Object
-      },
-
-      listeners: {
-        'list.beekeeper-delete': '_handleBeekeeperDelete'
-      },
-
-      ready: function () {
-        this.data = [];
-      },
-
-      loadBeekeepers: function () {
-        var client = this.$.client;
-
-        client.url = 'v1/api/apiaries/' + this.apiaryId + '/beekeepers';
-        client.contentType = 'application/json';
-        client.headers = {
-          'Authorization': 'Token token=' + this.authenticationToken,
-          'Accept': 'application/json'
-        };
-        client.generateRequest();
-      },
-
-      _handleBeekeeperDelete: function (event) {
-        var result = event.detail.error;
-
-        if (result === false) {
-          this.loadBeekeepers();
-        }
-      },
-
-      handleResponse: function (event) {
-        this.data = event.detail.response;
-      },
-
-      handleError: function (event) {
-        console.log(event.detail);
-      },
+        beekeepers: Array
+      }
     });
   })();
 </script>

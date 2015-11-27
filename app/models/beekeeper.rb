@@ -1,13 +1,11 @@
 class Beekeeper < ActiveRecord::Base
   module Roles
-    Viewer = 'Read'
-    Inspector = 'Write'
+    Viewer = 'Viewer'
+    Inspector = 'Inspector'
     Admin = 'Admin'
   end
 
-	PERMISSIONS = [["Can View", "Read"],
-								 ["Can Edit", "Write"],
-								 ["Admin", "Admin"]]
+  VALID_ROLES = [Roles::Viewer, Roles::Inspector, Roles::Admin]
 
 	attr_accessor :email
 
@@ -15,12 +13,10 @@ class Beekeeper < ActiveRecord::Base
 	belongs_to :user
 
 	validates :user_id,
-						presence: {message: 'User could not be found'},
-						uniqueness: {scope: :apiary_id,
-												 message: "User is already a beekeeper at this apiary."}
+    presence: { message: 'could not be found' },
+		uniqueness: { scope: :apiary_id, message: "is already a beekeeper at this apiary." }
 
-	validates :permission,
-						inclusion: PERMISSIONS.map{ |key, value| value }
+	validates :permission, inclusion: VALID_ROLES
 
 	validates :apiary_id, presence: true
 

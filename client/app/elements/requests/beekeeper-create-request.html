@@ -32,16 +32,17 @@
           beekeeper: event.detail.response
         };
 
-        this.fire('data-load', detail);
+        this.fire('beekeeper-create', detail);
       },
 
       _handleError: function (event) {
+        var errorMessage = event.target.lastRequest.xhr.response.errors[0];
         var detail = {
           error: true,
-          message: 'Failed to create beekeeper'
+          message: errorMessage
         };
 
-        this.fire('data-load', detail);
+        this.fire('beekeeper-create-error', detail);
       }
     });
   })();
