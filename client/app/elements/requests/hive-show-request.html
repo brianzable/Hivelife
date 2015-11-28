@@ -32,15 +32,11 @@
           hive: event.detail.response
         };
 
-        this.fire('data-load', detail);
+        this.fire('hive-load', detail);
       },
 
       _handleError: function (event) {
-        var detail = {
-          error: true,
-          message: 'Failed to load hive'
-        };
-        this.fire('data-load', detail);
+        this.fire('hive-load-error', { response: event.detail.request });
       }
     });
   })();

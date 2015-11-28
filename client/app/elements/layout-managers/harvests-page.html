@@ -1,0 +1,66 @@
+<dom-module id="harvests-page">
+  <template>
+    <style include="shared-styles"></style>
+    <iron-pages attr-for-selected="state" selected="{{state}}">
+      <section state="loading">
+        <loading-page id="spinner"></loading-page>
+      </section>
+
+      <section state="loaded">
+        <paper-material elevation="1">
+          <harvest-list id="harvestList" harvests="{{harvests}}" hive-id="{{hiveId}}"></harvest-list>
+        </paper-material>
+      </section>
+
+      <section state="empty">
+        <h1>Go add some harvests</h1>
+      </section>
+    </iron-pages>
+
+    <paper-fab id="addInspectionButton" icon="add"></paper-fab>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'harvests-page',
+
+      listeners: {
+        'addInspectionButton.click': '_createNewInspection'
+      },
+
+      properties: {
+        state: {
+          type: String,
+          value: 'loading'
+        },
+        harvests: {
+          type: Array,
+          observer: '_harvestsChanged'
+        },
+        hiveId: {
+          type: Number,
+          value: null
+        }
+      },
+
+      _harvestsChanged: function (newValue, oldValue) {
+        var harvests = newValue;
+        if (typeof harvests === undefined || harvests === null) {
+          this.state = 'loading';
+        }
+        else if (harvests.length === 0) {
+          this.state = 'empty';
+        }
+        else {
+          this.state = 'loaded';
+        }
+      },
+
+      _createNewInspection: function () {
+        this.fire('page-redirect', { path: '/hives/' + this.hiveId + '/harvests/new' });
+      }
+    });
+  })();
+</script>

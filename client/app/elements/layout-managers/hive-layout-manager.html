@@ -27,20 +27,11 @@
       <div class="content">
         <iron-pages selected="{{selected}}">
           <section>
-            <paper-material elevation="1">
-              <template is="dom-if" if="{{inspections.length > 0}}">
-                <inspection-list id="inspectionList" inspections="{{inspections}}" hive-id="{{hiveId}}"></inspection-list>
-              </template>
-              <template is="dom-if" if="{{inspections.length === 0}}">
-                <h1>No hives here yet!</h1>
-              </template>
-            </paper-material>
+            <inspections-page inspections="{{inspections}}" hive-id="{{hiveId}}" class="fit"></inspections-page>
           </section>
 
           <section>
-            <paper-material elevation="1">
-              <harvest-list id="harvestList" harvests="{{harvests}}" hive-id="{{hiveId}}"></harvest-list>
-            </paper-material>
+            <harvests-page harvests="{{harvests}}" hive-id="{{hiveId}}" class="fit"></harvests-page>
           </section>
 
           <section>
@@ -54,8 +45,7 @@
       id="getHiveRequest"
       apiary-id="{{apiaryId}}"
       hive-id="{{hiveId}}"
-      authentication-token="{{authenticationToken}}"
-      on-data-load="handleLoad">
+      authentication-token="{{authenticationToken}}">
     </hive-show-request>
   </template>
 </dom-module>
@@ -64,6 +54,8 @@
   (function () {
     Polymer({
       is: 'hive-layout-manager',
+
+      behaviors: [HivelifeBehaviors.PageBehavior],
 
       properties: {
         apiaryId: {
@@ -80,18 +72,29 @@
         }
       },
 
+      listeners: {
+        'getHiveRequest.hive-load': '_handleLoad',
+        'getHiveRequest.hive-load-error': '_handleError'
+      },
+
       loadHive: function () {
         this.editPath = '/apiaries/' + this.apiaryId + '/hives/' + this.hiveId + '/edit';
         this.backLink = '/apiaries/' + this.apiaryId;
+        this.inspections = null;
+        this.harvests = null;
         this.$.getHiveRequest.send();
       },
 
-      handleLoad: function (event) {
+      _handleLoad: function (event) {
         var hive = event.detail.hive;
         this.name = hive.name;
         this.inspections = hive.inspections;
-        console.log(this.inspections.length);
         this.harvests = hive.harvests;
+      },
+
+
+      _handleError: function (event) {
+        this._processError(event.detail.response);
       }
     });
   })();
