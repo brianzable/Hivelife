@@ -79,13 +79,7 @@
             </section>
 
             <section data-route="apiaries">
-              <loading-page class="fit" id="apiariesSpinner"></loading-page>
-              <paper-material elevation="1" id="apiariesPage">
-                <apiary-list id="apiariesPage" apiaries="{{apiaries}}" authentication-token="{{authenticationToken}}"></apiary-list>
-                <a href="/apiaries/new">
-                  <paper-fab icon="add"></paper-fab>
-                </a>
-              </paper-material>
+              <apiaries-page apiaries={{apiaries}}></apiaries-page>
             </section>
           </iron-pages>
         </div>
@@ -151,23 +145,12 @@
       },
 
       loadApiaries: function () {
-        this._showSpinner();
+        this.apiaries = null;
         this.$.indexRequest.send();
-      },
-
-      _showSpinner: function () {
-        this.$.apiariesPage.style.display = 'none';
-        this.$.apiariesSpinner.style.display = 'block';
-      },
-
-      _hideSpinner: function () {
-        this.$.apiariesPage.style.display = 'block';
-        this.$.apiariesSpinner.style.display = 'none';
       },
 
       _handleResponse: function (event) {
         this.apiaries = event.detail.apiaries;
-        this._hideSpinner();
       },
 
       _handleError: function (event) {
