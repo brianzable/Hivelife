@@ -79,6 +79,7 @@
       loadApiary: function () {
         this.editPath = '/apiaries/' + this.apiaryId  + '/edit';
 
+        this.hives = null;
         this.$.getApiaryRequest.send();
         this.$.beekeepersPage.loadBeekeepers();
       },

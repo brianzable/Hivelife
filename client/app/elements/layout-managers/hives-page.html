@@ -48,7 +48,7 @@
 
       _hivesChanged: function (newValue, oldValue) {
         var hives = newValue;
-        if (typeof hives === undefined) {
+        if (typeof hives === undefined || hives === null) {
           this.state = 'loading';
         }
         else if (hives.length === 0) {
