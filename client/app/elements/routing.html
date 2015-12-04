@@ -49,8 +49,8 @@
       app.apiaryId = data.params.apiaryId;
       app.hiveId = data.params.id;
       app.layoutManager = 'hive-form';
-      app.$.hiveForm.mode = 'new';
       app.route = 'hive-new';
+      app.$.hiveForm.setup('new');
     });
 
     page('/apiaries/:apiaryId/hives/:id/edit', function (data) {
@@ -58,8 +58,7 @@
       app.hiveId = data.params.id;
       app.layoutManager = 'hive-form';
       app.route = 'hive-edit';
-      app.$.hiveForm.mode = 'edit';
-      app.$.hiveForm.setup();
+      app.$.hiveForm.setup('edit');
     });
 
     page('/apiaries/:apiaryId/hives/:id', function (data) {

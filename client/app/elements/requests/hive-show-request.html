@@ -27,11 +27,7 @@
       },
 
       _handleSuccess: function (event) {
-        var detail = {
-          error: false,
-          hive: event.detail.response
-        };
-
+        var detail = { hive: event.detail.response };
         this.fire('hive-load', detail);
       },
 

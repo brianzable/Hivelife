@@ -5,6 +5,10 @@
         padding: 8px;
       }
 
+      paper-dropdown-menu {
+        padding: 8px;
+      }
+
       .form-container {
         padding: 10px;
       }
@@ -19,6 +23,8 @@
       /* Tablet+ */
       @media (min-width: 601px) {
         .form-content {
+          @apply(--layout-vertical);
+          @apply(--layout-center);
           padding: 48px 62px;
         }
 
@@ -28,6 +34,7 @@
 
         .form-row {
           @apply(--layout-horizontal);
+          @apply(--layout-center);
         }
       }
     </style>
