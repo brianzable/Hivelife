@@ -1,0 +1,35 @@
+<dom-module id="form-styles">
+  <template>
+    <style>
+      paper-input {
+        padding: 8px;
+      }
+
+      .form-container {
+        padding: 10px;
+      }
+
+      /* Small */
+      @media (max-width: 600px) {
+        .form-row {
+          @apply(--layout-vertical);
+        }
+      }
+
+      /* Tablet+ */
+      @media (min-width: 601px) {
+        .form-content {
+          padding: 48px 62px;
+        }
+
+        .form-container {
+          max-width: 601px;
+        }
+
+        .form-row {
+          @apply(--layout-horizontal);
+        }
+      }
+    </style>
+  </template>
+</dom-module>

@@ -1,25 +1,31 @@
 <dom-module id="apiary-form">
-  <link rel="import" type="css" href="form-common.css">
-
   <template>
+    <!-- <style include="shared-styles"></style> -->
+    <style include="form-styles"></style>
+
     <paper-header-panel class="fit">
-      <paper-toolbar id="mainToolbar">
-        <a id="backLink" href="/apiaries">
-          <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
-        </a>
+      <paper-toolbar>
+        <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
         <div>{{pageTitle}}</div>
         <span class="flex"></span>
         <paper-icon-button id="formSubmit" icon="check"></paper-icon-button>
       </paper-toolbar>
 
-      <div class="content">
-        <paper-material elements="1">
-          <h1>Apiary Information</h1>
-          <paper-input id="name" label="apiary name"></paper-input>
-          <paper-input id="streetAddress" label="street address"></paper-input>
-          <paper-input id="city" label="city"></paper-input>
-          <paper-input id="state" label="state"></paper-input>
-          <paper-input id="postalCode" label="postal code"></paper-input>
+      <div class="form-content">
+        <paper-material class="form-container" elevation="1">
+          <h4>Apiary Information</h4>
+          <div class="form-row">
+            <paper-input id="name" label="apiary name" class="flex"></paper-input>
+          </div>
+
+          <div class="form-row">
+            <paper-input id="streetAddress" label="street address" class="flex"></paper-input>
+          </div>
+          <div class="form-row">
+            <paper-input id="city" label="city" class="flex"></paper-input>
+            <paper-input id="state" label="state" class="flex"></paper-input>
+            <paper-input id="postalCode" label="postal code" class="flex"></paper-input>
+          </div>
         </paper-material>
       </div>
     </paper-header-panel>
@@ -53,7 +59,12 @@
       is: 'apiary-form',
 
       listeners: {
-        'formSubmit.click': '_submitForm'
+        'formSubmit.click': '_submitForm',
+        'backButton.click': '_backButtonClick'
+      },
+
+      _backButtonClick: function () {
+        this.fire('page-redirect', { path: '/apiaries' });
       },
 
       _submitForm: function () {
