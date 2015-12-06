@@ -13,7 +13,6 @@
 
     page('/logout', function () {
       app.session = null;
-      console.log('nulled out the session');
       page.redirect('/login');
     });
 

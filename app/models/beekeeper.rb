@@ -21,15 +21,15 @@ class Beekeeper < ActiveRecord::Base
 	validates :apiary_id, presence: true
 
 	def admin?
-		self.permission == 'Admin'
+		permission == Roles::Admin
 	end
 
 	def read?
-		(self.permission == 'Read') || self.write?
+		(permission == Roles::Viewer) || write?
 	end
 
 	def write?
-		(self.permission == 'Write') || self.admin?
+		(permission == Roles::Inspector) || admin?
 	end
 
 	def self.for_apiary(apiary_id)

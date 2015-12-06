@@ -1,52 +1,64 @@
 <dom-module id="inspection-form">
-  <link rel="import" type="css" href="form-common.css">
+  <style>
+    #addDisease {
+      cursor: pointer;
+    }
+  </style>
 
   <template>
+    <style include="form-styles"></style>
+
     <paper-header-panel class="fit">
       <paper-toolbar id="mainToolbar">
-        <a id="backLink" href="">
-          <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
-        </a>
+        <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
+
         <div>{{pageTitle}}</div>
+
         <span class="flex"></span>
         <paper-icon-button id="formSubmit" icon="check"></paper-icon-button>
       </paper-toolbar>
 
-      <div class="content">
-        <paper-material elements="1">
+      <div class="form-content">
+        <paper-material class="form-container" elements="1">
           <h4>Time & Date</h4>
-          <div class="layout horizontal">
+          <div class="form-row">
             <paper-input
               id="time"
+              class="flex"
               label="time"
               auto-validate
               required
               error-message="try something like 11:30am"
-              pattern="{{_timeRegex()}}"></paper-input>
-              <paper-input
-                id="date"
-                label="date"
-                auto-validate
-                required
-                error-message="please enter a date formatted yyyy-mm-dd"
-                pattern="{{_dateRegex()}}"></paper-input>
+              pattern="{{_timeRegex()}}">
+            </paper-input>
+            <paper-input
+              id="date"
+              class="flex"
+              label="date"
+              auto-validate
+              required
+              error-message="please enter a date formatted yyyy-mm-dd"
+              pattern="{{_dateRegex()}}">
+            </paper-input>
           </div>
 
           <h4>Weather</h4>
-          <div class="layout horizontal">
-            <paper-input id="temperature" label="temperature"></paper-input>
-            <paper-dropdown-menu id="weatherConditions" label="weather conditions">
+          <div class="form-row">
+            <paper-input id="temperature" class="flex" label="temperature"></paper-input>
+
+            <paper-dropdown-menu id="weatherConditions" class="flex" label="weather conditions">
               <paper-menu id="weatherConditionsMenu" class="dropdown-content">
                 <template is="dom-repeat" items="[[weatherConditions]]">
                   <paper-item>{{item}}</paper-item>
                 </template>
               </paper-menu>
             </paper-dropdown-menu>
-            <paper-input id="weatherNotes" label="weather notes"></paper-input>
+
+            <paper-input id="weatherNotes" id="flex" label="weather notes"></paper-input>
           </div>
 
           <h4>Brood Pattern</h4>
-          <div>
+          <div class="form-row">
             <paper-radio-group id="broodPattern" selected="n/a">
               <paper-radio-button name="Good">Good</paper-radio-button>
               <paper-radio-button name="Fair">Fair</paper-radio-button>
@@ -56,7 +68,7 @@
           </div>
 
           <h4>Sightings</h4>
-          <div class="layout horizontal">
+          <div class="form-row">
             <paper-checkbox id="eggsSighted">Eggs</paper-checkbox>
             <paper-checkbox id="queenSighted">Queen</paper-checkbox>
             <paper-checkbox id="honeySighted">Honey</paper-checkbox>
@@ -65,7 +77,7 @@
           </div>
 
           <h4>Queen Cell Sightings</h4>
-          <div class="layout horizontal">
+          <div class="form-row">
             <paper-checkbox id="supersedureCellsSighted">Supersedure Cells</paper-checkbox>
             <paper-checkbox id="swarmCellsSighted">Swarm Cells</paper-checkbox>
             <paper-checkbox id="swarmCellsCapped">Swarm Cells Capped?</paper-checkbox>
@@ -78,7 +90,7 @@
           </div>
 
           <h4>Hive Information</h4>
-          <div class="layout horizontal">
+          <div class="form-row">
             <paper-checkbox id="ventilated">Ventilated</paper-checkbox>
             <paper-checkbox id="queenExcluder">Queen Excluder</paper-checkbox>
           </div>
@@ -93,8 +105,8 @@
           </div>
 
           <h4>Hive Health</h4>
-          <div>
-            Poor<paper-slider id="hiveHealth" min="0" max="100" value="0" immediateValue="0"></paper-slider>Healthy
+          <div class="horizontal-form-row">
+            Poor<paper-slider id="hiveHealth" class="flex" min="0" max="100" value="0" immediateValue="0"></paper-slider>Healthy
           </div>
 
           <h4>Hive Temperament</h4>
@@ -114,6 +126,12 @@
         </paper-material>
       </div>
     </paper-header-panel>
+
+    <inspection-defaults-request
+      id="inspectionDefaultsRequest"
+      hive-id="{{hiveId}}"
+      authentication-token="{{authenticationToken}}">
+    </inspection-defaults-request>
 
     <inspection-show-request
       id="getInspectionRequest"
@@ -148,9 +166,16 @@
       behaviors: [HivelifeBehaviors.TimeBehavior],
 
       listeners: {
+        'backButton.click': '_backButtonClick',
         'formSubmit.click': '_submitForm',
         'addDisease.click': '_insertDisease',
-        'diseaseContainer.disease-removal': '_removeDisease'
+        'diseaseContainer.disease-removal': '_removeDisease',
+        'inspectionDefaultsRequest.inspection-defaults-load': '_handleDefaultsLoad'
+      },
+
+      _handleDefaultsLoad: function (event) {
+        var inspection = event.detail.inspection;
+        this.apiaryId = inspection.apiary_id;
       },
 
       ready: function () {
@@ -162,8 +187,16 @@
         ];
       },
 
+      _setupInspectionDefaults: function (event) {
+        var hive = event.detail.hive;
+        this.apiaryId = hive.apiary_id;
+      },
+
       setup: function () {
+
         if (this.mode === 'new') {
+          console.log('new path');
+          this.$.inspectionDefaultsRequest.send();
           this.pageTitle = 'New Inspection';
           this.clearFields();
         } else {
@@ -196,9 +229,16 @@
         this._clearDiseases();
       },
 
+      _backButtonClick: function () {
+        if (this.apiaryId !== undefined) {
+          this.fire('page-redirect', { path: '/apiaries/' + this.apiaryId + '/hives/' + this.hiveId });
+        }
+      },
+
       _handleLoad: function (event) {
         var inspection = event.detail.inspection;
 
+        this.apiaryId = inspection.apiary_id;
         this.$.time.value = this._timeFromTimestamp(inspection.inspected_at);
         this.$.date.value = this._dateFromTimestamp(inspection.inspected_at);
         this.$.temperature.value = inspection.temperature;

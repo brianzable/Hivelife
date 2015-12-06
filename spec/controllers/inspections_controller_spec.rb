@@ -6,7 +6,7 @@ describe InspectionsController, type: :request do
   let!(:apiary) { FactoryGirl.create(:apiary) }
   let!(:beekeeper) { FactoryGirl.create(:beekeeper,user: user, apiary: apiary) }
   let!(:hive) { FactoryGirl.create(:hive, apiary: apiary) }
-  let!(:inspection) { FactoryGirl.create(:inspection) }
+  let!(:inspection) { FactoryGirl.create(:inspection, hive: hive) }
   let(:headers) { { 'Authorization' => "Token token=#{user.authentication_token}" } }
 
   describe '#show' do
@@ -31,7 +31,8 @@ describe InspectionsController, type: :request do
       expect(parsed_body['health']).to eq(inspection.health)
       expect(parsed_body['hive_temperament']).to eq(inspection.hive_temperament)
       expect(parsed_body['inspected_at']).to_not be_nil
-      expect(parsed_body['hive_id']).to eq(inspection.hive_id)
+      expect(parsed_body['hive_id']).to eq(hive.id)
+      expect(parsed_body['apiary_id']).to eq(apiary.id)
       expect(parsed_body['brood_pattern']).to eq(inspection.brood_pattern)
       expect(parsed_body['eggs_sighted']).to eq(inspection.eggs_sighted)
       expect(parsed_body['queen_sighted']).to eq(inspection.queen_sighted)
@@ -77,6 +78,67 @@ describe InspectionsController, type: :request do
       headers = { 'Authorization' => "Token token=#{unauthorized_user.authentication_token}" }
 
       get hive_inspection_path(hive, inspection), { format: :json }, headers
+      expect(response.status).to eq(404)
+    end
+  end
+
+  describe '#defaults' do
+    it 'returns defaults for the inspection form' do
+      get defaults_hive_inspections_path(hive), { format: :json }, headers
+
+      expect(response.status).to eq(200)
+      parsed_body = JSON.parse(response.body)
+
+      expect(parsed_body['inspection']['apiary_id']).to eq(apiary.id)
+    end
+
+    it 'returns defauls for an inspection when no inspections have been made' do
+      hive.inspections = []
+      hive.save!
+
+      expect do
+        get defaults_hive_inspections_path(hive), { format: :json }, headers
+      end.to_not change { Inspection.count }
+
+      expect(response.status).to eq(200)
+      parsed_body = JSON.parse(response.body)
+
+      expect(parsed_body['inspection']['apiary_id']).to eq(apiary.id)
+    end
+
+    it 'allows beekeepers with read permission to view this route' do
+      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.save!
+
+      get defaults_hive_inspections_path(hive), { format: :json }, headers
+
+      expect(response.status).to eq(200)
+    end
+
+    it 'allows beekeepers with write permission to view this route' do
+      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.save!
+
+      get defaults_hive_inspections_path(hive), { format: :json }, headers
+
+      expect(response.status).to eq(200)
+    end
+
+    it 'allows beekeepers with admin permission to view this route' do
+      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.save!
+
+      get defaults_hive_inspections_path(hive), { format: :json }, headers
+
+      expect(response.status).to eq(200)
+    end
+
+    it 'does not allow beekeepers outside the apiary to view this route' do
+      unauthorized_user = create_logged_in_user(email: 'another_user@example.com')
+      headers = { 'Authorization' => "Token token=#{unauthorized_user.authentication_token}" }
+
+      get defaults_hive_inspections_path(hive), { format: :json }, headers
+
       expect(response.status).to eq(404)
     end
   end

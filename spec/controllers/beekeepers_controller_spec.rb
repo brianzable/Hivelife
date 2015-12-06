@@ -111,7 +111,7 @@ RSpec.describe BeekeepersController, type: :request do
       parsed_response = JSON.parse(response.body)
       expect(parsed_response['id']).to_not be_nil
       expect(parsed_response['apiary_id']).to be(apiary.id)
-      expect(parsed_response['permission']).to eq('Read')
+      expect(parsed_response['permission']).to eq(Beekeeper::Roles::Viewer)
       expect(parsed_response['editable']).to eq(true)
     end
 

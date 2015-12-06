@@ -1,7 +1,7 @@
 class InspectionsController < ApplicationController
   before_action :authenticate
   before_action :set_inspection, only: [:show, :update, :destroy]
-  before_action :set_hive, only: [:create, :update]
+  before_action :set_hive, only: [:defaults, :create, :update]
 
   def index
     @inspections = Inspection.where(hive_id: params[:hive_id])
@@ -9,6 +9,11 @@ class InspectionsController < ApplicationController
 
   def show
     authorize(@inspection)
+  end
+
+  def defaults
+    @inspection = @hive.inspection_with_defaults
+    authorize(@inspection, :show?)
   end
 
   def create
@@ -41,7 +46,7 @@ class InspectionsController < ApplicationController
   private
 
   def set_inspection
-    @inspection = Inspection.find(params[:id])
+    @inspection = Inspection.where(id: params[:id], hive_id: params[:hive_id]).take
   end
 
   def set_hive

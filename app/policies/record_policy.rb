@@ -3,7 +3,7 @@ class RecordPolicy < ApplicationPolicy
     def resolve
       scope
     end
-  end # end scope
+  end
 
   def show?
     beekeeper.read?

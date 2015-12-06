@@ -10,7 +10,9 @@ Bees::Application.routes.draw do
       end
 
       resources :hives do
-        resources :inspections, except: [:new, :edit]
+        resources :inspections, except: [:new, :edit] do
+          get :defaults, on: :collection
+        end
         resources :harvests, except: [:new, :edit]
       end
 

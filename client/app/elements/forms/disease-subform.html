@@ -1,7 +1,9 @@
 <dom-module id="disease-subform">
   <template>
-    <div class="layout horizontal">
-      <paper-dropdown-menu id="disease" label="disease">
+    <style include="form-styles"></style>
+
+    <div class="horizontal-form-row">
+      <paper-dropdown-menu id="disease" class="flex" label="disease">
         <paper-menu id="diseaseMenu" class="dropdown-content">
           <template is="dom-repeat" items="[[diseases]]">
             <paper-item>{{item}}</paper-item>
@@ -9,7 +11,7 @@
         </paper-menu>
       </paper-dropdown-menu>
 
-      <paper-dropdown-menu id="treatment" label="treatment">
+      <paper-dropdown-menu id="treatment" class="flex" label="treatment">
         <paper-menu id="treatmentMenu" class="dropdown-content">
           <template is="dom-repeat" items="[[treatments]]">
             <paper-item>{{item}}</paper-item>
@@ -17,9 +19,15 @@
         </paper-menu>
       </paper-dropdown-menu>
 
-      <paper-input id="notes" label="notes" style="width: 300px;" value="{{notes}}"></paper-input>
+      <paper-input id="notes" class="flex" label="notes" value="{{notes}}"></paper-input>
 
-      <paper-icon-button id="removeDisease" icon="clear" title="clear" role="button"></paper-icon-button>
+      <paper-icon-button
+        id="removeDisease"
+        style="margin-top: 18px;"
+        icon="clear"
+        title="clear"
+        role="button">
+      </paper-icon-button>
     </div>
   </template>
 </dom-module>
