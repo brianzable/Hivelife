@@ -14,7 +14,14 @@
         <paper-material class="form-container" elevation="1">
           <h4>Apiary Information</h4>
           <div class="form-row">
-            <paper-input id="name" label="apiary name" class="flex"></paper-input>
+            <paper-input
+              id="name"
+              label="name"
+              class="flex"
+              auto-validate
+              required
+              error-message="name is required">
+            </paper-input>
           </div>
 
           <div class="form-row">
@@ -24,7 +31,14 @@
           <div class="form-row">
             <paper-input id="city" label="city" class="flex"></paper-input>
             <paper-input id="state" label="state" class="flex"></paper-input>
-            <paper-input id="postalCode" label="postal code" class="flex"></paper-input>
+            <paper-input
+            id="postalCode"
+            label="zip code"
+            class="flex"
+            auto-validate
+            required
+            error-message="zip code is required">
+          </paper-input>
           </div>
         </paper-material>
       </div>
@@ -33,22 +47,19 @@
     <apiary-show-request
       id="getApiaryRequest"
       apiary-id="{{apiaryId}}"
-      authentication-token="{{authenticationToken}}"
-      on-data-load="handleLoad">
+      authentication-token="{{authenticationToken}}">
     </apiary-show-request>
 
     <apiary-create-request
       id="createApiaryRequest"
       apiary-id="{{apiaryId}}"
-      authentication-token="{{authenticationToken}}"
-      on-data-load="handleCreate">
+      authentication-token="{{authenticationToken}}">
     </apiary-create-request>
 
     <apiary-update-request
       id="updateApiaryRequest"
       apiary-id="{{apiaryId}}"
-      authentication-token="{{authenticationToken}}"
-      on-data-load="handleUpdate">
+      authentication-token="{{authenticationToken}}">
     </apiary-update-request>
   </template>
 </dom-module>
@@ -60,14 +71,53 @@
 
       listeners: {
         'formSubmit.click': '_submitForm',
-        'backButton.click': '_backButtonClick'
+        'backButton.click': '_backButtonClick',
+        'getApiaryRequest.apiary-load': '_handleApiaryLoad',
+        'getApiaryRequest.apiary-load-error': '_handleApiaryLoadError',
+        'createApiaryRequest.apiary-create': '_handleCreateSuccess',
+        'createApiaryRequest.apiary-create-error': '_handleCreateError',
+        'updateApiaryRequest.apiary-update': '_handleUpdateSuccess',
+        'updateApiaryRequest.apiary-update-error': '_handleUpdateError'
       },
 
-      _backButtonClick: function () {
-        this.fire('page-redirect', { path: '/apiaries' });
+      setup: function () {
+        if (this.mode === 'new') {
+          this.pageTitle = 'New Apiary';
+          this.clearFields();
+        } else {
+          this.pageTitle = 'Edit Apiary';
+          this.$.getApiaryRequest.send();
+        }
+      },
+
+      clearFields: function () {
+        this.$.name.value = '';
+        this.$.streetAddress.value = '';
+        this.$.city.value = '';
+        this.$.state.value = '';
+        this.$.postalCode.value = '';
+      },
+
+      _requestForSubmit: function () {
+        if (this.mode === 'new') {
+          return this.$.createApiaryRequest;
+        } else {
+          return this.$.updateApiaryRequest;
+        }
+      },
+
+      _formValid: function () {
+        var nameValid = this.$.name.validate();
+        var zipValid = this.$.postalCode.validate();
+
+        return nameValid && zipValid;
       },
 
       _submitForm: function () {
+        if (!this._formValid()) {
+          return;
+        }
+
         var payload = {
           apiary: {
             name: this.$.name.value,
@@ -83,25 +133,11 @@
         request.send();
       },
 
-      _requestForSubmit: function () {
-        if (this.mode === 'new') {
-          return this.$.createApiaryRequest;
-        } else {
-          return this.$.updateApiaryRequest;
-        }
+      _backButtonClick: function () {
+        this.fire('page-redirect', { path: '/apiaries' });
       },
 
-      setup: function () {
-        if (this.mode === 'new') {
-          this.pageTitle = 'New Apiary';
-          this.clearFields();
-        } else {
-          this.pageTitle = 'Edit Apiary';
-          this.$.getApiaryRequest.send();
-        }
-      },
-
-      handleLoad: function (event) {
+      _handleApiaryLoad: function (event) {
         var apiary = event.detail.apiary;
 
         this.$.name.value = apiary.name;
@@ -111,26 +147,33 @@
         this.$.postalCode.value = apiary.zip_code;
       },
 
-      clearFields: function () {
-        this.$.name.value = '';
-        this.$.streetAddress.value = '';
-        this.$.city.value = '';
-        this.$.state.value = '';
-        this.$.postalCode.value = '';
+      _handleApiaryLoadError: function (event) {
+        this.fire('page-redirect', { path: '/error' });
       },
 
-      handleCreate: function (event) {
+      _handleUpdateSuccess: function (event) {
+        var apiary = event.detail.apiary;
+
+        this.fire('app-message', { message: 'Apiary successfully updated!' });
+        this.fire('page-redirect', { path: '/apiaries/' + apiary.id });
+      },
+
+      _handleCreateSuccess: function (event) {
         var apiary = event.detail.apiary;
 
         this.fire('app-message', { message: 'Apiary successfully created!' });
         this.fire('page-redirect', { path: '/apiaries/' + apiary.id });
       },
 
-      handleUpdate: function (event) {
-        var apiary = event.detail.apiary;
+      _handleUpdateError: function (event) {
+        var errors = event.detail.errors;
+        var errorMessage = errors.join(', ');
 
-        this.fire('app-message', { message: 'Apiary sucessfully updated!' });
-        this.fire('page-redirect', { path: '/apiaries/' + apiary.id });
+        this.fire('app-message', { message: errorMessage });
+      },
+
+      _handleCreateError: function (event) {
+        this._handleUpdateError(event);
       }
     });
   })();

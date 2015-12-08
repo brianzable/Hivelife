@@ -28,7 +28,6 @@
 
       _handleSuccess: function (event) {
         var detail = {
-          error: false,
           beekeeper: event.detail.response
         };
 
@@ -38,7 +37,6 @@
       _handleError: function (event) {
         var errorMessage = event.target.lastRequest.xhr.response.errors[0];
         var detail = {
-          error: true,
           message: errorMessage
         };
 

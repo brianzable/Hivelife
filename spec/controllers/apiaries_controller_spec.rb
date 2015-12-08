@@ -138,6 +138,66 @@ RSpec.describe ApiariesController, type: :request do
       expect(beekeeper.permission).to eq(Beekeeper::Roles::Admin)
       expect(beekeeper.apiary).to eq(Apiary.last)
     end
+
+    it 'returns an error when trying to create an apiary with no name' do
+      payload = {
+        apiary: {
+          zip_code: '60000'
+        },
+        format: :json
+      }
+
+      expect do
+        expect do
+          post apiaries_path, payload, headers
+        end.to_not change { Beekeeper.count }
+      end.to_not change { Apiary.count }
+
+      expect(response.status).to eq(422)
+
+      parsed_response = JSON.parse(response.body)
+      expect(parsed_response).to eq(["Name can't be blank"])
+    end
+
+    it 'returns an error when trying to create an apiary with no zip code' do
+      payload = {
+        apiary: {
+          name: 'My New Apiary'
+        },
+        format: :json
+      }
+
+      expect do
+        expect do
+          post apiaries_path, payload, headers
+        end.to_not change { Beekeeper.count }
+      end.to_not change { Apiary.count }
+
+      expect(response.status).to eq(422)
+
+      parsed_response = JSON.parse(response.body)
+      expect(parsed_response).to eq(["Zip code can't be blank"])
+    end
+
+    it 'returns multiple errors when they occur' do
+      payload = {
+        apiary: {
+          city: 'City'
+        },
+        format: :json
+      }
+
+      expect do
+        expect do
+          post apiaries_path, payload, headers
+        end.to_not change { Beekeeper.count }
+      end.to_not change { Apiary.count }
+
+      expect(response.status).to eq(422)
+
+      parsed_response = JSON.parse(response.body)
+      expect(parsed_response).to eq(["Name can't be blank", "Zip code can't be blank"])
+    end
   end
 
   describe '#update' do

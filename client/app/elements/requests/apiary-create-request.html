@@ -28,20 +28,15 @@
 
       _handleSuccess: function (event) {
         var detail = {
-          error: false,
           apiary: event.detail.response
         };
 
-        this.fire('data-load', detail);
+        this.fire('apiary-create', detail);
       },
 
       _handleError: function (event) {
-        var detail = {
-          error: true,
-          message: 'Failed to create apiary'
-        };
-
-        this.fire('data-load', detail);
+        var errors = event.target.lastRequest.xhr.response;
+        this.fire('apiary-create-error', { errors: errors });
       }
     });
   })();

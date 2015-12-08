@@ -20,7 +20,7 @@ class ApiariesController < ApplicationController
       Beekeeper.create(apiary: @apiary, user: @user, permission: 'Admin')
       render action: 'show', status: :created, location: @apiary
     else
-      render json: @apiary.errors, status: :unprocessable_entity
+      render json: @apiary.errors.full_messages, status: :unprocessable_entity
     end
   end
 
@@ -28,7 +28,7 @@ class ApiariesController < ApplicationController
     if @apiary.update(apiary_params)
       render action: 'show', status: :created, location: @apiary
     else
-      render json: @apiary.errors, status: :unprocessable_entity
+      render json: @apiary.errors.full_messages, status: :unprocessable_entity
     end
   end
 
