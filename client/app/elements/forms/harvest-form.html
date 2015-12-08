@@ -1,47 +1,64 @@
 <dom-module id="harvest-form">
-  <link rel="import" type="css" href="form-common.css">
-
   <template>
     <paper-header-panel class="fit">
+      <style include="form-styles"></style>
+
       <paper-toolbar id="mainToolbar">
-        <a id="backLink" href="">
-          <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
-        </a>
+        <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
+
         <div>{{pageTitle}}</div>
         <span class="flex"></span>
         <paper-icon-button id="formSubmit" icon="check"></paper-icon-button>
       </paper-toolbar>
 
-      <div class="content">
-        <paper-material elements="1">
-          <h4>Time & Date</h4>
-          <div class="layout horizontal">
-            <paper-input
-              id="date"
-              label="date"
-              auto-validate
-              required
-              error-message="please enter a date formatted yyyy-mm-dd"
-              pattern="{{_dateRegex()}}"></paper-input>
+      <div class="form-content">
+        <paper-material class="form-container" elements="1">
+          <div class="form-row">
+            <div class="layout vertical flex">
+              <h4>Date</h4>
+              <div class="layout horizontal">
+                <paper-input
+                  id="date"
+                  class="flex"
+                  label="date"
+                  auto-validate
+                  required
+                  error-message="please enter a date formatted yyyy-mm-dd"
+                  pattern="{{_dateRegex()}}">
+                </paper-input>
+              </div>
+            </div>
+
+            <div class="flex"></div>
           </div>
 
-          <h4>Honey Weight</h4>
-          <div class="layout horizontal">
-            <paper-input id="honeyWeight" label="honey weight"></paper-input>
-          </div>
+          <div class="form-row">
+            <div class="layout vertical flex">
+              <h4>Honey Weight</h4>
+              <div class="form-row">
+                <paper-input id="honeyWeight" class="flex" label="honey weight"></paper-input>
+              </div>
+            </div>
 
-          <h4>Wax Weight</h4>
-          <div class="layout horizontal">
-            <paper-input id="waxWeight" label="wax weight"></paper-input>
+            <div class="layout vertical flex">
+              <h4>Wax Weight</h4>
+              <div class="form-row">
+                <paper-input id="waxWeight" class="flex" label="wax weight"></paper-input>
+              </div>
+            </div>
           </div>
 
           <h4>Harvest Notes</h4>
-          <div>
-            <paper-input id="notes" label="notes"></paper-input>
-          </div>
+          <paper-input id="notes" class="flex" label="notes"></paper-input>
         </paper-material>
       </div>
     </paper-header-panel>
+
+    <inspection-defaults-request
+      id="harvestDefaultsRequest"
+      hive-id="{{hiveId}}"
+      authentication-token="{{authenticationToken}}">
+    </inspection-defaults-request>
 
     <harvest-show-request
       id="getHarvestRequest"
@@ -76,13 +93,16 @@
       behaviors: [HivelifeBehaviors.TimeBehavior],
 
       listeners: {
-        'formSubmit.click': '_submitForm'
+        'backButton.click': '_backButtonClick',
+        'formSubmit.click': '_submitForm',
+        'harvestDefaultsRequest.inspection-defaults-load': '_handleDefaultsLoad'
       },
 
       setup: function () {
         if (this.mode === 'new') {
-          this.pageTitle = 'New Harvest';
           this.clearFields();
+          this.$.harvestDefaultsRequest.send();
+          this.pageTitle = 'New Harvest';
         } else {
           this.pageTitle = 'Edit Harvest';
           this.$.getHarvestRequest.send();
@@ -96,13 +116,25 @@
         this.$.notes.value = '';
       },
 
+      _backButtonClick: function () {
+        if (this.apiaryId !== undefined) {
+          this.fire('page-redirect', { path: '/apiaries/' + this.apiaryId + '/hives/' + this.hiveId });
+        }
+      },
+
       _handleLoad: function (event) {
         var harvest = event.detail.harvest;
 
+        this.apiaryId = harvest.apiary_id;
         this.$.date.value = this._dateFromTimestamp(harvest.harvested_at);
         this.$.honeyWeight.value = harvest.honey_weight;
         this.$.waxWeight.value = harvest.wax_weight;
         this.$.notes.value = harvest.notes;
+      },
+
+      _handleDefaultsLoad: function (event) {
+        var harvest = event.detail.inspection;
+        this.apiaryId = harvest.apiary_id;
       },
 
       _formValid: function () {

@@ -193,12 +193,10 @@
       },
 
       setup: function () {
-
         if (this.mode === 'new') {
-          console.log('new path');
+          this.clearFields();
           this.$.inspectionDefaultsRequest.send();
           this.pageTitle = 'New Inspection';
-          this.clearFields();
         } else {
           this.pageTitle = 'Edit Inspection';
           this.$.getInspectionRequest.send();

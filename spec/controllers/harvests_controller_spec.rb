@@ -16,6 +16,8 @@ describe HarvestsController, type: :request do
 
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['id']).to eq(harvest.id)
+      expect(parsed_body['hive_id']).to eq(hive.id)
+      expect(parsed_body['apiary_id']).to eq(apiary.id)
       expect(parsed_body['wax_weight']).to eq(harvest.wax_weight)
       expect(parsed_body['honey_weight']).to eq(harvest.honey_weight)
       expect(parsed_body['weight_units']).to eq(harvest.weight_units)
