@@ -3,7 +3,7 @@ class HivesController < ApplicationController
 
   before_action :authenticate
   before_action :set_apiary, only: [:create]
-  before_action :set_and_authorize_hive, only: [:show]
+  before_action :set_and_authorize_hive, only: [:show, :update, :destroy]
 
   def index
     @hives = Hive.where(apiary_id: params[:apiary_id])
@@ -19,34 +19,25 @@ class HivesController < ApplicationController
     if @hive.save
       render action: 'show', status: :created, location: @hive
     else
-      render json: @hive.errors, status: :unprocessable_entity
+      render json: @hive.errors.full_messages, status: :unprocessable_entity
     end
   end
 
   def update
-  	@hive = Hive.find(params[:id])
     authorize(@hive)
-  	@apiary = Apiary.find(params[:apiary_id])
-    respond_to do |format|
-      if @hive.update(hive_params)
-        format.html { redirect_to [@apiary, @hive], notice: 'Hive was successfully updated.' }
-        format.json { render action: 'show', status: :created, location: [@apiary, @hive] }
-      else
-        format.html { render action: 'edit' }
-        format.json { render json: @hive.errors, status: :unprocessable_entity }
-      end
+
+    if @hive.update(hive_params)
+      render action: 'show', status: :created, location: [@hive.apiary, @hive]
+    else
+      render json: @hive.errors, status: :unprocessable_entity
     end
   end
 
   def destroy
-    @hive = Hive.find(params[:id])
     authorize(@hive)
-    @apiary = Apiary.find(params[:apiary_id])
+
     @hive.destroy
-    respond_to do |format|
-			format.html { redirect_to apiary_url(@apiary) }
-      format.json { render json: { head: :no_content } }
-  	end
+    render json: { head: :no_content }
   end
 
   private

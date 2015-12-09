@@ -110,6 +110,25 @@ describe HivesController, type: :request do
       expect(parsed_body['orientation']).to eq('N')
     end
 
+    it 'renders full error messages when validation errors are present' do
+      payload = {
+        hive: {
+          latitude: 88.8888,
+          longitude: 88.8888
+        },
+        format: :json
+      }
+
+      expect do
+        post apiary_hives_path(apiary), payload, headers
+      end.to_not change { Hive.count }
+
+      expect(response.status).to eq(422)
+
+      parsed_body = JSON.parse(response.body)
+      expect(parsed_body).to eq(["Name can't be blank"])
+    end
+
     it 'allows users with write permission to add a hive to an apiary' do
       beekeeper.permission = Beekeeper::Roles::Inspector
       beekeeper.save!
