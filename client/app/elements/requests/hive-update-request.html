@@ -29,21 +29,16 @@
       },
 
       _handleSuccess: function (event) {
-        var detail = {
-          error: false,
-          hive: event.detail.response
-        };
+        var detail = { hive: event.detail.response };
 
-        this.fire('data-load', detail);
+        this.fire('hive-update', detail);
       },
 
       _handleError: function (event) {
-        var detail = {
-          error: true,
-          message: 'Failed to update hive'
-        };
+        console.log('handling error');
+        var errors = event.target.lastRequest.xhr.response;
 
-        this.fire('data-load', detail);
+        this.fire('hive-update-error', { errors: errors });
       }
     });
   })();

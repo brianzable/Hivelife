@@ -4,6 +4,10 @@
       height: 300px;
       margin: 8px;
     }
+
+    .error-message {
+      text-color: red;
+    }
   </style>
 
   <template>
@@ -21,7 +25,14 @@
         <paper-material class="form-container" elements="1">
           <h4>Hive Information</h4>
           <div class="form-row">
-            <paper-input id="name" label="hive name" class="flex"></paper-input>
+            <paper-input
+              id="name"
+              label="hive name"
+              class="flex"
+              auto-validate
+              required
+              error-message="name is required">
+            </paper-input>
 
             <paper-dropdown-menu id="type" label="hive type" class="flex">
               <paper-menu id="typeMenu" class="dropdown-content">
@@ -70,6 +81,7 @@
           </div>
 
           <h4>Hive Location</h4>
+          <span id="mapError" class="error-message" style="display: none;">Please choose a location on the map</span>
           <google-map id="hiveLocation" click-events="true" class="flex">
             <google-map-marker latitude="{{latitude}}" longitude="{{longitude}}"></google-map-marker>
           </google-map>
@@ -127,6 +139,11 @@
         'hiveLocation.google-map-click': '_placeMarker',
         'backButton.click': '_backButtonClick',
         'getHiveRequest.hive-load': '_handleLoad',
+        'getHiveRequest.hive-load-error': '_handleLoadError',
+        'updateHiveRequest.hive-update': '_handleUpdateSuccess',
+        'updateHiveRequest.hive-update-error': '_handleUpdateError',
+        'createHiveRequest.hive-create': '_handleCreateSuccess',
+        'createHiveRequest.hive-create-error': '_handleCreateError'
       },
 
       setup: function (mode) {
@@ -154,7 +171,25 @@
         this.$.locationSharing.selected = 'exact';
       },
 
+      _formValid: function () {
+        this.$.mapError.style.display = 'none';
+
+        var nameValid = this.$.name.validate();
+        var locationValid = !isNaN(parseFloat(this.latitude))
+
+
+        if (!locationValid) {
+          this.$.mapError.style.display = 'block';
+        }
+
+        return nameValid && locationValid;
+      },
+
       _submitForm: function () {
+        if (!this._formValid()) {
+          return;
+        }
+
         var payload = {
           hive: {
             name: this.$.name.value,
@@ -190,8 +225,39 @@
       _placeMarker: function (event) {
         var latLng = event.detail.latLng;
 
+        this.$.mapError.style.display = 'none';
+
         this.latitude = latLng.lat();
         this.longitude = latLng.lng();
+      },
+
+      _handleCreateSuccess: function (event) {
+        var hive = event.detail.hive;
+
+        this.fire('app-message', { message: 'Hive successfully created!' });
+        this.fire('page-redirect', { path: '/apiaries/' + this.apiaryId + '/hives/' + hive.id });
+      },
+
+      _handleCreateError: function (event) {
+        this._handleUpdateError(event);
+      },
+
+      _handleUpdateSuccess: function (event) {
+        var hive = event.detail.hive;
+
+        this.fire('app-message', { message: 'Hive successfully updated!' });
+        this.fire('page-redirect', { path: '/apiaries/' + this.apiaryId + '/hives/' + hive.id });
+      },
+
+      _handleUpdateError: function (event) {
+        var errors = event.detail.errors;
+        var errorMessage = errors.join(', ');
+
+        this.fire('app-message', { message: errorMessage });
+      },
+
+      _handleLoadError: function () {
+        this.fire('page-redirect', { path: '/error' });
       },
 
       _handleLoad: function (event) {
@@ -207,20 +273,6 @@
         this.longitude = hive.longitude;
         this.$.dataSharing.selected = this._dataSharingSelection(hive.data_sharing);
         this.$.locationSharing.selected = this._locationSharingSelection(hive.exact_location_sharing);
-      },
-
-      _handleCreate: function (event) {
-        var hive = event.detail.hive;
-
-        this.fire('app-message', { message: 'Apiary successfully created!' });
-        this.fire('page-redirect', { path: '/apiaries/' + hive.apiary_id + '/hives/' + hive.id  });
-      },
-
-      _handleUpdate: function (event) {
-        var hive = event.detail.hive;
-
-        this.fire('app-message', { message: 'Hive sucessfully updated!' });
-        this.fire('page-redirect', { path: '/apiaries/' + hive.apiary_id + '/hives/' + hive.id  });
       },
 
       _typeSelection: function (selection) {

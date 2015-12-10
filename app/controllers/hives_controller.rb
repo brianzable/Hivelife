@@ -29,7 +29,7 @@ class HivesController < ApplicationController
     if @hive.update(hive_params)
       render action: 'show', status: :created, location: [@hive.apiary, @hive]
     else
-      render json: @hive.errors, status: :unprocessable_entity
+      render json: @hive.errors.full_messages, status: :unprocessable_entity
     end
   end
 
