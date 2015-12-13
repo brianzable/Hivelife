@@ -13,7 +13,9 @@
   (function () {
     Polymer({
       is: 'inspection-update-request',
+
       behaviors: [HivelifeBehaviors.RequestBehavior],
+
       properties: {
         authenticationToken: String,
         hiveId: Number,
@@ -29,21 +31,15 @@
       },
 
       _handleSuccess: function (event) {
-        var detail = {
-          error: false,
-          inspection: event.detail.response
-        };
+        var detail = { inspection: event.detail.response };
 
-        this.fire('data-load', detail);
+        this.fire('inspection-update', detail);
       },
 
       _handleError: function (event) {
-        var detail = {
-          error: true,
-          message: 'Failed to update inspection'
-        };
+        var errors = event.target.lastRequest.xhr.response;
 
-        this.fire('data-load', detail);
+        this.fire('inspection-update-error', { errors: errors });
       }
     });
   })();

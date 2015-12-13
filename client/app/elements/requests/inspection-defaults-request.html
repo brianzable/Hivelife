@@ -28,15 +28,13 @@
       },
 
       _handleSuccess: function (event) {
-        var detail = {
-          inspection: event.detail.response.inspection
-        };
+        var detail = { inspection: event.detail.response.inspection };
 
         this.fire('inspection-defaults-load', detail);
       },
 
       _handleError: function (event) {
-        this.fire('inspection-default-load-error', { response: event.detail.request });
+        this.fire('inspection-defaults-load-error', { response: event.detail.request });
       }
     });
   })();

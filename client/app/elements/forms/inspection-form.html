@@ -137,23 +137,20 @@
       id="getInspectionRequest"
       inspection-id="{{inspectionId}}"
       hive-id="{{hiveId}}"
-      authentication-token="{{authenticationToken}}"
-      on-data-load="_handleLoad">
+      authentication-token="{{authenticationToken}}">
     </inspection-show-request>
 
     <inspection-create-request
-      id="createInspectionRequest"
+      id="inspectionCreateRequest"
       hive-id="{{hiveId}}"
-      authentication-token="{{authenticationToken}}"
-      on-data-load="handleCreate">
+      authentication-token="{{authenticationToken}}">
     </inspection-create-request>
 
     <inspection-update-request
-      id="updateInspectionRequest"
+      id="inspectionUpdateRequest"
       hive-id="{{hiveId}}"
       inspection-id="{{inspectionId}}"
-      authentication-token="{{authenticationToken}}"
-      on-data-load="handleUpdate">
+      authentication-token="{{authenticationToken}}">
     </inspection-update-request>
   </template>
 </dom-module>
@@ -170,13 +167,16 @@
         'formSubmit.click': '_submitForm',
         'addDisease.click': '_insertDisease',
         'diseaseContainer.disease-removal': '_removeDisease',
-        'inspectionDefaultsRequest.inspection-defaults-load': '_handleDefaultsLoad'
+        'getInspectionRequest.inspection-show': '_handleLoad',
+        'getInspectionRequest.inspection-show-error': '_handleDefaultsLoadError',
+        'inspectionDefaultsRequest.inspection-defaults-load': '_handleDefaultsLoad',
+        'inspectionDefaultsRequest.inspection-defaults-load-error': '_handleDefaultsLoadError',
+        'inspectionCreateRequest.inspection-create': '_handleCreateSuccess',
+        'inspectionCreateRequest.inspection-create-error': '_handleCreateError',
+        'inspectionUpdateRequest.inspection-update': '_handleUpdateSuccess',
+        'inspectionUpdateRequest.inspection-update-error': '_handleUpdateError'
       },
 
-      _handleDefaultsLoad: function (event) {
-        var inspection = event.detail.inspection;
-        this.apiaryId = inspection.apiary_id;
-      },
 
       ready: function () {
         this.weatherConditions = [
@@ -193,9 +193,10 @@
       },
 
       setup: function () {
+        this.$.inspectionDefaultsRequest.send();
+
         if (this.mode === 'new') {
           this.clearFields();
-          this.$.inspectionDefaultsRequest.send();
           this.pageTitle = 'New Inspection';
         } else {
           this.pageTitle = 'Edit Inspection';
@@ -264,6 +265,37 @@
         }
       },
 
+      _handleCreateSuccess: function (event) {
+        var inspection = event.detail.inspection;
+
+        this.fire('app-message', { message: 'Inspection successfully created!' });
+        this.fire('page-redirect', { path: '/hives/' + this.hiveId + '/inspections/' + inspection.id });
+      },
+
+      _handleUpdateSuccess: function (event) {
+        var inspection = event.detail.inspection;
+
+        this.fire('app-message', { message: 'Inspection successfully updated!' });
+        this.fire('page-redirect', { path: '/hives/' + this.hiveId + '/inspections/' + inspection.id });
+      },
+
+      _handleUpdateError: function (event) {
+        this.fire('app-message', { message: "Time/date can't be blank" });
+      },
+
+      _handleCreateError: function (event) {
+        this._handleUpdateError(event);
+      },
+
+      _handleDefaultsLoad: function (event) {
+        var inspection = event.detail.inspection;
+        this.apiaryId = inspection.apiary_id;
+      },
+
+      _handleDefaultsLoadError: function (event) {
+        this.fire('page-redirect', { path: '/error' });
+      },
+
       _formValid: function () {
         var timeValid = this.$.time.validate();
         var dateValid = this.$.date.validate();
@@ -311,28 +343,14 @@
 
       _requestForSubmit: function () {
         if (this.mode === 'new') {
-          return this.$.createInspectionRequest;
+          return this.$.inspectionCreateRequest;
         } else {
-          return this.$.updateInspectionRequest;
+          return this.$.inspectionUpdateRequest;
         }
       },
 
       _selectionForWeatherConditions: function (selection) {
         return this.weatherConditions.indexOf(selection);
-      },
-
-      handleCreate: function (event) {
-        var inspection = event.detail.inspection;
-
-        this.fire('app-message', { message: 'Inspection successfully created!' });
-        this.fire('page-redirect', { path: '/hives/' + this.hiveId + '/inspections/' + inspection.id });
-      },
-
-      handleUpdate: function (event) {
-        var inspection = event.detail.inspection;
-
-        this.fire('app-message', { message: 'Inspection successfully updated!' });
-        this.fire('page-redirect', { path: '/hives/' + this.hiveId + '/inspections/' + inspection.id });
       },
 
       _getDiseases: function () {

@@ -29,9 +29,7 @@
       var hours = date.getHours();
       var minutes = date.getMinutes();
 
-      minutes = minutes < 10 ? '0' + minutes : minutes;
-
-      return hours + ':' + minutes;
+      return hours + ':' + this._padded(minutes);
     },
 
     _dateFromTimestamp: function (timestamp) {
@@ -40,7 +38,11 @@
       var month = date.getMonth() + 1;
       var day = date.getUTCDate();
 
-      return year + '-' + month + '-' + day;
+      return year + '-' + this._padded(month) + '-' + this._padded(day);
+    },
+
+    _padded: function (num) {
+      return num < 10 ? '0' + num : num;
     }
   };
 </script>

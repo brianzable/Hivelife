@@ -23,7 +23,7 @@ class InspectionsController < ApplicationController
     if @inspection.save
       render action: 'show', status: :created, location: [@hive, @inspection]
     else
-      render json: @inspection.errors, status: :unprocessable_entity
+      render json: @inspection.errors.full_messages, status: :unprocessable_entity
     end
   end
 
@@ -32,7 +32,7 @@ class InspectionsController < ApplicationController
     if @inspection.update(inspection_params)
       render action: 'show', status: :created, location: [@hive, @inspection]
     else
-      render json: @inspection.errors, status: :unprocessable_entity
+      render json: @inspection.errors.full_messages, status: :unprocessable_entity
     end
   end
 
