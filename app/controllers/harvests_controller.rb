@@ -18,7 +18,7 @@ class HarvestsController < ApplicationController
     if @harvest.save
       render action: 'show', status: :created, location: [@hive, @harvest]
     else
-      render json: @harvest.errors, status: :unprocessable_entity
+      render json: @harvest.errors.full_messages, status: :unprocessable_entity
     end
   end
 
@@ -27,7 +27,7 @@ class HarvestsController < ApplicationController
     if @harvest.update(harvest_params)
       render action: 'show', status: :created, location: [@hive, @harvest]
     else
-      render json: @harvest.errors, status: :unprocessable_entity
+      render json: @harvest.errors.full_messages, status: :unprocessable_entity
     end
   end
 

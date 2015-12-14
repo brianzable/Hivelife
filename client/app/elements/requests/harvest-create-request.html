@@ -13,7 +13,9 @@
   (function () {
     Polymer({
       is: 'harvest-create-request',
+
       behaviors: [HivelifeBehaviors.RequestBehavior],
+
       properties: {
         authenticationToken: String,
         hiveId: Number,
@@ -28,21 +30,15 @@
       },
 
       _handleSuccess: function (event) {
-        var detail = {
-          error: false,
-          harvest: event.detail.response
-        };
+        var detail = { harvest: event.detail.response };
 
-        this.fire('data-load', detail);
+        this.fire('harvest-create', detail);
       },
 
       _handleError: function (event) {
-        var detail = {
-          error: true,
-          message: 'Failed to create harvest'
-        };
+        var errors = event.target.lastRequest.xhr.response;
 
-        this.fire('data-load', detail);
+        this.fire('harvest-create-error', { errors: errors });
       }
     });
   })();

@@ -61,26 +61,23 @@
     </inspection-defaults-request>
 
     <harvest-show-request
-      id="getHarvestRequest"
+      id="harvestShowRequest"
       harvest-id="{{harvestId}}"
       hive-id="{{hiveId}}"
-      authentication-token="{{authenticationToken}}"
-      on-data-load="_handleLoad">
+      authentication-token="{{authenticationToken}}">
     </harvest-show-request>
 
     <harvest-create-request
-      id="createHarvestRequest"
+      id="harvestCreateRequest"
       hive-id="{{hiveId}}"
-      authentication-token="{{authenticationToken}}"
-      on-data-load="handleCreate">
+      authentication-token="{{authenticationToken}}">
     </harvest-create-request>
 
     <harvest-update-request
-      id="updateHarvestRequest"
+      id="harvestUpdateRequest"
       hive-id="{{hiveId}}"
       harvest-id="{{harvestId}}"
-      authentication-token="{{authenticationToken}}"
-      on-data-load="handleUpdate">
+      authentication-token="{{authenticationToken}}">
     </harvest-update-request>
   </template>
 </dom-module>
@@ -95,7 +92,14 @@
       listeners: {
         'backButton.click': '_backButtonClick',
         'formSubmit.click': '_submitForm',
-        'harvestDefaultsRequest.inspection-defaults-load': '_handleDefaultsLoad'
+        'harvestShowRequest.harvest-show': '_handleLoad',
+        'harvestShowRequest.harvest-show-error': '_handleDefaultsLoadError',
+        'harvestDefaultsRequest.inspection-defaults-load': '_handleDefaultsLoad',
+        'harvestDefaultsRequest.inspection-defaults-load-error': '_handleDefaultsLoadError',
+        'harvestCreateRequest.harvest-create': '_handleCreateSuccess',
+        'harvestCreateRequest.harvest-create-error': '_handleCreateError',
+        'harvestUpdateRequest.harvest-update': '_handleUpdateSuccess',
+        'harvestUpdateRequest.harvest-update-error': '_handleUpdateError'
       },
 
       setup: function () {
@@ -105,7 +109,7 @@
           this.pageTitle = 'New Harvest';
         } else {
           this.pageTitle = 'Edit Harvest';
-          this.$.getHarvestRequest.send();
+          this.$.harvestShowRequest.send();
         }
       },
 
@@ -122,6 +126,37 @@
         }
       },
 
+      _handleCreateSuccess: function (event) {
+        var harvest = event.detail.harvest;
+
+        this.fire('app-message', { message: 'Harvest successfully created!' });
+        this.fire('page-redirect', { path: '/hives/' + this.hiveId + '/harvests/' + harvest.id });
+      },
+
+      _handleCreateError: function (event) {
+        this._handleUpdateError(event);
+      },
+
+      _handleUpdateSuccess: function (event) {
+        var harvest = event.detail.harvest;
+
+        this.fire('app-message', { message: 'Harvest successfully updated!' });
+        this.fire('page-redirect', { path: '/hives/' + this.hiveId + '/harvests/' + harvest.id });
+      },
+
+      _handleUpdateError: function (event) {
+        this.fire('app-message', { message: "Time/date can't be blank" });
+      },
+
+      _handleDefaultsLoad: function (event) {
+        var harvest = event.detail.inspection;
+        this.apiaryId = harvest.apiary_id;
+      },
+
+      _handleDefaultsLoadError: function (event) {
+        this.fire('page-redirect', { path: '/error' });
+      },
+
       _handleLoad: function (event) {
         var harvest = event.detail.harvest;
 
@@ -130,11 +165,6 @@
         this.$.honeyWeight.value = harvest.honey_weight;
         this.$.waxWeight.value = harvest.wax_weight;
         this.$.notes.value = harvest.notes;
-      },
-
-      _handleDefaultsLoad: function (event) {
-        var harvest = event.detail.inspection;
-        this.apiaryId = harvest.apiary_id;
       },
 
       _formValid: function () {
@@ -162,24 +192,10 @@
 
       _requestForSubmit: function () {
         if (this.mode === 'new') {
-          return this.$.createHarvestRequest;
+          return this.$.harvestCreateRequest;
         } else {
-          return this.$.updateHarvestRequest;
+          return this.$.harvestUpdateRequest;
         }
-      },
-
-      handleCreate: function (event) {
-        var harvest = event.detail.harvest;
-
-        this.fire('app-message', { message: 'Harvest successfully created!' });
-        this.fire('page-redirect', { path: '/hives/' + this.hiveId + '/harvests/' + harvest.id });
-      },
-
-      handleUpdate: function (event) {
-        var harvest = event.detail.harvest;
-
-        this.fire('app-message', { message: 'Harvest successfully updated!' });
-        this.fire('page-redirect', { path: '/hives/' + this.hiveId + '/harvests/' + harvest.id });
       },
     });
   })();
