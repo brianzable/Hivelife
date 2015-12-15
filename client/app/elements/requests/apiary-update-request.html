@@ -36,8 +36,13 @@
       },
 
       _handleError: function (event) {
-        var errors = event.target.lastRequest.xhr.response;
+        var status = event.target.lastRequest.xhr.status;
+        if (status === 500 || status === 401) {
+          this._handleServerError();
+          return;
+        }
 
+        var errors = event.target.lastRequest.xhr.response;
         this.fire('apiary-update-error', { errors: errors });
       }
     });

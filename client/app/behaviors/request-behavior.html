@@ -11,6 +11,10 @@
 
     _setAuthorization: function () {
       this.$.client.headers['Authorization'] = 'Token token=' + this.authenticationToken;
+    },
+
+    _handleServerError: function () {
+      this.fire('page-redirect', { path: '/error' });
     }
   };
 </script>
