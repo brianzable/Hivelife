@@ -95,7 +95,6 @@
         beekeepers: {
           type: Array,
           value: [],
-          /* observer: '_beekeepersChanged' */
         },
         apiaryId: {
           type: Number,
@@ -111,17 +110,6 @@
         this.beekeepers = event.detail.beekeepers;
         this.state = 'loaded';
       },
-
-      /* _beekeepersChanged: function (newValue, oldValue) { */
-      /*   var beekeepers = newValue; */
-
-      /*   if (typeof beekeepers === undefined || beekeepers === []) { */
-      /*     this.state = 'loading'; */
-      /*   } */
-      /*   else { */
-      /*     this.state = 'loaded'; */
-      /*   } */
-      /* }, */
 
       _toggleDialog: function () {
         this.$.addBeekeeperDialog.toggle();

@@ -48,6 +48,9 @@ RSpec.describe ApiariesController, type: :request do
       expect(parsed_apiary['city']).to eq(apiary.city)
       expect(parsed_apiary['state']).to eq(apiary.state)
       expect(parsed_apiary['zip_code']).to eq(apiary.zip_code)
+
+      parsed_beekeeper = parsed_apiary['beekeeper']
+      expect(parsed_beekeeper['role']).to eq(Beekeeper::Roles::Viewer)
     end
 
     it 'allows beekeepers with write permissions to view an apiary' do

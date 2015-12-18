@@ -37,7 +37,8 @@ class ApiariesController < ApplicationController
     render json: { head: :no_content }
   end
 
-private
+  private
+
   def set_apiary
     @apiary = Apiary.find(params[:id])
     authorize(@apiary)
@@ -54,6 +55,6 @@ private
   end
 
   def pundit_user
-    Beekeeper.where(user_id: @user.id, apiary_id: params[:id]).take
+    @beekeeper = Beekeeper.where(user_id: @user.id, apiary_id: params[:id]).take
   end
 end
