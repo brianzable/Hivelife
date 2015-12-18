@@ -28,6 +28,9 @@ describe HivesController, type: :request do
       expect(parsed_body['longitude']).to eq(hive.longitude.to_s)
       expect(parsed_body['orientation']).to eq(hive.orientation)
 
+      beekeeper = parsed_body['beekeeper']
+      expect(beekeeper['role']).to eq(Beekeeper::Roles::Admin)
+
       inspections = parsed_body['inspections']
       expect(inspections.count).to be(1)
 

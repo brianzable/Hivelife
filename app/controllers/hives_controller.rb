@@ -67,6 +67,6 @@ class HivesController < ApplicationController
   end
 
   def pundit_user
-    Beekeeper.where(user_id: @user.id, apiary_id: params[:apiary_id]).first
+    @beekeeper = Beekeeper.where(user_id: @user.id, apiary_id: params[:apiary_id]).first
   end
 end

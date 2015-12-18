@@ -7,11 +7,14 @@
           <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
         </a>
         <span class="flex"></span>
-        <paper-menu-button vertical-align="top" horizontal-align="right">
+        <paper-menu-button ignoreSelect="true" vertical-align="top" horizontal-align="right">
           <paper-icon-button icon="menu" class="dropdown-trigger"></paper-icon-button>
           <paper-menu class="dropdown-content">
-            <a class="no-link" href="{{editPath}}"><paper-item>Edit Hive</paper-item></a>
-            <a class="no-link" href="/logout"><paper-item>Logout</paper-item></a>
+            <paper-item>Edit Hive</paper-item>
+            <template is="dom-if" if="{{canDelete}}">
+              <paper-item id="deleteButton" on-click="_deleteHive">Delete Hive</paper-item>
+            </template>
+            <paper-item>Logout</paper-item>
           </paper-menu>
         </paper-menu-button>
 
@@ -41,12 +44,21 @@
       </div>
     </paper-header-panel>
 
+    <delete-hive-dialog id="deleteConfirmation"></delete-hive-dialog>
+
     <hive-show-request
       id="getHiveRequest"
       apiary-id="{{apiaryId}}"
       hive-id="{{hiveId}}"
       authentication-token="{{authenticationToken}}">
     </hive-show-request>
+
+    <hive-delete-request
+      id="deleteHiveRequest"
+      apiary-id="{{apiaryId}}"
+      hive-id="{{hiveId}}"
+      authentication-token="{{authenticationToken}}">
+    </hive-delete-request>
   </template>
 </dom-module>
 
@@ -74,7 +86,10 @@
 
       listeners: {
         'getHiveRequest.hive-load': '_handleLoad',
-        'getHiveRequest.hive-load-error': '_handleError'
+        'getHiveRequest.hive-load-error': '_handleLoadError',
+        'deleteHiveRequest.hive-delete': '_handleDelete',
+        'deleteHiveRequest.hive-delete-error': '_handleDeleteError',
+        'deleteConfirmation.iron-overlay-closed':  '_handleConfirmationClose'
       },
 
       loadHive: function () {
@@ -82,7 +97,18 @@
         this.backLink = '/apiaries/' + this.apiaryId;
         this.inspections = null;
         this.harvests = null;
+        this.canDelete = false;
         this.$.getHiveRequest.send();
+      },
+
+      _deleteHive: function () {
+        this.$.deleteConfirmation.toggle();
+      },
+
+      _handleConfirmationClose: function () {
+        if (this.$.deleteConfirmation.closingReason.confirmed === true) {
+          this.$.deleteHiveRequest.send();
+        }
       },
 
       _handleLoad: function (event) {
@@ -90,11 +116,20 @@
         this.name = hive.name;
         this.inspections = hive.inspections;
         this.harvests = hive.harvests;
+        this.canDelete = hive.beekeeper.role === 'Admin';
       },
 
-
-      _handleError: function (event) {
+      _handleLoadError: function (event) {
         this._processError(event.detail.response);
+      },
+
+      _handleDelete: function (event) {
+        this.fire('app-message', { message: 'Successfully deleted ' + this.name });
+        this.fire('page-redirect', { path: '/apiaries/' + this.apiaryId });
+      },
+
+      _handleDeleteError: function (event) {
+        this.fire('app-message', { message: 'Failed to delete hive. Try again later.' });
       }
     });
   })();

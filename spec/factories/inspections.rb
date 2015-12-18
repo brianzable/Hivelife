@@ -16,5 +16,6 @@ FactoryGirl.define do
     honey_sighted true
     swarm_cells_sighted true
     supersedure_cells_sighted true
+    inspected_at Time.now
   end
 end
