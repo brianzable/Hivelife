@@ -1,36 +1,36 @@
 <script src="../../bower_components/page/page.js"></script>
 <script>
   window.addEventListener('WebComponentsReady', function() {
-    page('/', function () {
+    page('/', app.updateSession, function () {
       app.layoutManager = 'root';
       app.route = 'home';
     });
 
-    page('/login', function () {
+    page('/login', app.updateSession, function () {
       app.layoutManager = 'root';
       app.route = 'login';
     });
 
-    page('/logout', function () {
-      app.session = null;
+    page('/logout', app.updateSession, function () {
+      app.$.sessionStore.value = null;
       page.redirect('/login');
     });
 
-    page('/apiaries/new', function () {
+    page('/apiaries/new', app.updateSession, function () {
       app.route = 'apiary-new';
       app.layoutManager = 'apiary-form';
       app.$.apiaryForm.mode = 'new';
       app.$.apiaryForm.setup();
     });
 
-    page('/apiaries/:id', function (data) {
+    page('/apiaries/:id', app.updateSession, function (data) {
       app.apiaryId = data.params.id;
       app.layoutManager = 'apiary';
       app.route = 'apiary-show';
       app.$.apiaryManager.loadApiary();
     });
 
-    page('/apiaries/:id/edit', function (data) {
+    page('/apiaries/:id/edit', app.updateSession, function (data) {
       app.apiaryId = data.params.id;
       app.layoutManager = 'apiary-form';
       app.route = 'apiary-edit';
@@ -38,13 +38,13 @@
       app.$.apiaryForm.setup();
     });
 
-    page('/apiaries', function () {
+    page('/apiaries', app.updateSession, function () {
       app.layoutManager = 'root';
       app.route = 'apiaries';
       app.$.rootManager.loadApiaries();
     });
 
-    page('/apiaries/:apiaryId/hives/new', function (data) {
+    page('/apiaries/:apiaryId/hives/new', app.updateSession, function (data) {
       app.apiaryId = data.params.apiaryId;
       app.hiveId = data.params.id;
       app.layoutManager = 'hive-form';
@@ -52,7 +52,7 @@
       app.$.hiveForm.setup('new');
     });
 
-    page('/apiaries/:apiaryId/hives/:id/edit', function (data) {
+    page('/apiaries/:apiaryId/hives/:id/edit', app.updateSession, function (data) {
       app.apiaryId = data.params.apiaryId;
       app.hiveId = data.params.id;
       app.layoutManager = 'hive-form';
@@ -60,7 +60,7 @@
       app.$.hiveForm.setup('edit');
     });
 
-    page('/apiaries/:apiaryId/hives/:id', function (data) {
+    page('/apiaries/:apiaryId/hives/:id', app.updateSession, function (data) {
       app.apiaryId = data.params.apiaryId;
       app.hiveId = data.params.id;
       app.layoutManager = 'hive';
@@ -68,7 +68,7 @@
       app.route = 'hive-show';
     });
 
-    page('/hives/:hiveId/inspections/new', function (data) {
+    page('/hives/:hiveId/inspections/new', app.updateSession, function (data) {
       app.hiveId = data.params.hiveId;
       app.layoutManager = 'inspection-form';
       app.route = 'inspection-new';
@@ -76,7 +76,7 @@
       app.$.inspectionForm.setup();
     });
 
-    page('/hives/:hiveId/inspections/:id', function (data) {
+    page('/hives/:hiveId/inspections/:id', app.updateSession, function (data) {
       app.hiveId = data.params.hiveId;
       app.inspectionId = data.params.id;
       app.layoutManager = 'inspection-form';
@@ -85,7 +85,7 @@
       app.$.inspectionForm.setup();
     });
 
-    page('/hives/:hiveId/harvests/new', function (data) {
+    page('/hives/:hiveId/harvests/new', app.updateSession, function (data) {
       app.hiveId = data.params.hiveId;
       app.layoutManager = 'harvest-form';
       app.route = 'harvest-new';
@@ -93,7 +93,7 @@
       app.$.harvestForm.setup();
     });
 
-    page('/hives/:hiveId/harvests/:id', function (data) {
+    page('/hives/:hiveId/harvests/:id', app.updateSession, function (data) {
       app.hiveId = data.params.hiveId;
       app.harvestId = data.params.id;
       app.layoutManager = 'harvest-form';
@@ -102,32 +102,32 @@
       app.$.harvestForm.setup();
     });
 
-    page('/profile', function () {
+    page('/profile', app.updateSession, function () {
       app.layoutManager = 'root';
       app.route = 'my-profile';
     });
 
-    page('/about', function () {
+    page('/about', app.updateSession, function () {
       app.layoutManager = 'root';
       app.route = 'about';
     });
 
-    page('/contact', function () {
+    page('/contact', app.updateSession, function () {
       app.layoutManager = 'root';
       app.route = 'contact';
     });
 
-    page('/data', function () {
+    page('/data', app.updateSession, function () {
       app.layoutManager = 'root';
       app.route = 'data-portal';
     });
 
-    page('/error', function () {
+    page('/error', app.updateSession, function () {
       app.layoutManager = 'root';
       app.route = 'error';
     });
 
-    page('*', function () {
+    page('*', app.updateSession, function () {
       app.layoutManager = 'root';
       app.route = 'not-found';
     });
