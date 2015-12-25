@@ -6,6 +6,11 @@ module SessionHelper
     email = options.fetch(:email, 'user@example.com')
     password = options.fetch(:password, '11111111')
 
-    user = FactoryGirl.create(:user, email: email, password: password)
+    FactoryGirl.create(
+      :user,
+      email: email,
+      password: password,
+      password_confirmation: password
+    )
   end
 end

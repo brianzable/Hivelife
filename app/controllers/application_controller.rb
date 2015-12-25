@@ -2,7 +2,6 @@ class ApplicationController < ActionController::Base
   include Pundit
 
   protect_from_forgery with: :null_session
-
   rescue_from Pundit::NotAuthorizedError, with: :render_not_found
 
   protected
