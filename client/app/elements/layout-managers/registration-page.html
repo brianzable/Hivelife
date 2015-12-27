@@ -1,0 +1,277 @@
+<dom-module id="registration-page">
+  <template>
+    <style include="form-styles"></style>
+
+    <h4>Login Details</h4>
+    <div class="form-row">
+      <paper-input
+        id="emailAddress"
+        class="flex"
+        label="email address"
+        auto-validate
+        required
+        error-message="email address cannot be blank">
+      </paper-input>
+
+      <paper-input
+        id="password"
+        class="flex"
+        label="password"
+        type="password"
+        auto-validate
+        required
+        error-message="password cannot be blank">
+      </paper-input>
+
+      <paper-input
+        id="passwordConfirmation"
+        class="flex"
+        label="password confirmation"
+        type="password"
+        auto-validate
+        required
+        error-message="password confirmation cannot be blank">
+      </paper-input>
+    </div>
+    <h4>Account Information</h4>
+    <div class="form-row">
+      <paper-input
+        id="firstName"
+        class="flex"
+        label="first name"
+        auto-validate
+        required
+        error-message="first name cannot be blank">
+      </paper-input>
+
+      <paper-input
+        id="lastName"
+        class="flex"
+        label="last name"
+        auto-validate
+        required
+        error-message="last name cannot be blank">
+      </paper-input>
+
+      <paper-dropdown-menu id="timezone" class="flex" label="time zone">
+        <paper-menu id="timezoneMenu" class="dropdown-content">
+          <template is="dom-repeat" items="[[timezones()]]">
+            <paper-item>{{item}}</paper-item>
+          </template>
+        </paper-menu>
+      </paper-dropdown-menu>
+    </div>
+
+    <div class="form-row">
+      <paper-button id="formSubmit" raised>Register</paper-button>
+    </div>
+
+    <user-create-request id="userCreateRequest"></user-create-request>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'registration-page',
+
+      listeners: {
+        'formSubmit.click': '_submitForm',
+        'userCreateRequest.user-create': '_handleCreateSuccess',
+        'userCreateRequest.user-create-error': '_handleCreateError'
+      },
+
+      _submitForm: function () {
+        if (!this._formValid()) {
+          return;
+        }
+
+        var payload = {
+          user: {
+            email: this.$.emailAddress.value,
+            password: this.$.password.value,
+            password_confirmation: this.$.passwordConfirmation.value,
+            first_name: this.$.firstName.value,
+            last_name: this.$.lastName.value,
+            timezone: this.$.timezone.selectedItemLabel
+          }
+        };
+
+        console.log(payload);
+        var request = this.$.userCreateRequest;
+        request.payload = payload;
+        request.send();
+      },
+
+      _formValid: function () {
+        return true;
+      },
+
+      _handleCreateSuccess: function (event) {
+        this.fire('app-message', { message: 'A verification email has been sent with instructions to complete the signup process.' });
+        this.fire('page-redirect', { path: '/about' });
+      },
+
+      _handleCreateError: function (event) {
+        var errors = event.detail.errors;
+        var errorMessage = errors.join(', ');
+
+        this.fire('app-message', { message: errorMessage });
+      },
+
+      timezones: function () {
+        return [
+          "Abu Dhabi",
+          "Adelaide",
+          "Alaska",
+          "Almaty",
+          "American Samoa",
+          "Amsterdam",
+          "Arizona",
+          "Astana",
+          "Athens",
+          "Atlantic Time (Canada)",
+          "Auckland",
+          "Azores",
+          "Baghdad",
+          "Baku",
+          "Bangkok",
+          "Beijing",
+          "Belgrade",
+          "Berlin",
+          "Bern",
+          "Bogota",
+          "Brasilia",
+          "Bratislava",
+          "Brisbane",
+          "Brussels",
+          "Bucharest",
+          "Budapest",
+          "Buenos Aires",
+          "Cairo",
+          "Canberra",
+          "Cape Verde Is.",
+          "Caracas",
+          "Casablanca",
+          "Central America",
+          "Central Time (US & Canada)",
+          "Chatham Is.",
+          "Chennai",
+          "Chihuahua",
+          "Chongqing",
+          "Copenhagen",
+          "Darwin",
+          "Dhaka",
+          "Dublin",
+          "Eastern Time (US & Canada)",
+          "Edinburgh",
+          "Ekaterinburg",
+          "Fiji",
+          "Georgetown",
+          "Greenland",
+          "Guadalajara",
+          "Guam",
+          "Hanoi",
+          "Harare",
+          "Hawaii",
+          "Helsinki",
+          "Hobart",
+          "Hong Kong",
+          "Indiana (East)",
+          "International Date Line West",
+          "Irkutsk",
+          "Islamabad",
+          "Istanbul",
+          "Jakarta",
+          "Jerusalem",
+          "Kabul",
+          "Kaliningrad",
+          "Kamchatka",
+          "Karachi",
+          "Kathmandu",
+          "Kolkata",
+          "Krasnoyarsk",
+          "Kuala Lumpur",
+          "Kuwait",
+          "Kyiv",
+          "La Paz",
+          "Lima",
+          "Lisbon",
+          "Ljubljana",
+          "London",
+          "Madrid",
+          "Magadan",
+          "Marshall Is.",
+          "Mazatlan",
+          "Melbourne",
+          "Mexico City",
+          "Mid-Atlantic",
+          "Midway Island",
+          "Minsk",
+          "Monrovia",
+          "Monterrey",
+          "Montevideo",
+          "Moscow",
+          "Mountain Time (US & Canada)",
+          "Mumbai",
+          "Muscat",
+          "Nairobi",
+          "New Caledonia",
+          "New Delhi",
+          "Newfoundland",
+          "Novosibirsk",
+          "Nuku'alofa",
+          "Osaka",
+          "Pacific Time (US & Canada)",
+          "Paris",
+          "Perth",
+          "Port Moresby",
+          "Prague",
+          "Pretoria",
+          "Quito",
+          "Rangoon",
+          "Riga",
+          "Riyadh",
+          "Rome",
+          "Samara",
+          "Samoa",
+          "Santiago",
+          "Sapporo",
+          "Sarajevo",
+          "Saskatchewan",
+          "Seoul",
+          "Singapore",
+          "Skopje",
+          "Sofia",
+          "Solomon Is.",
+          "Srednekolymsk",
+          "Sri Jayawardenepura",
+          "St. Petersburg",
+          "Stockholm",
+          "Sydney",
+          "Taipei",
+          "Tallinn",
+          "Tashkent",
+          "Tbilisi",
+          "Tehran",
+          "Tijuana",
+          "Tokelau Is.",
+          "Tokyo",
+          "UTC",
+          "Ulaanbaatar",
+          "Urumqi",
+          "Vienna",
+          "Vilnius",
+          "Vladivostok",
+          "Volgograd",
+          "Warsaw",
+          "Wellington",
+          "West Central Africa",
+          "Yakutsk",
+          "Yerevan",
+          "Zagreb",
+        ]
+      }
+    });
+  })();
+</script>

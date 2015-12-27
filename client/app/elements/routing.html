@@ -102,6 +102,10 @@
       app.$.harvestForm.setup();
     });
 
+    page('/register', app.updateSession, function() {
+      page.redirect('/home');
+    });
+
     page('/profile', app.updateSession, function () {
       app.layoutManager = 'root';
       app.route = 'my-profile';

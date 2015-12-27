@@ -83,6 +83,25 @@ RSpec.describe UsersController, type: :request do
       expect(email_message.to).to eq(["user229@example.com"])
       expect(body).to include(url)
     end
+
+    it 'requires that password and password confirmation fields match' do
+      payload = {
+        user: {
+          email: 'user229@example.com',
+          password: '22222222',
+          password_confirmation: '11111111'
+        },
+        format: :json
+      }
+
+      expect do
+        post users_path, payload
+      end.to_not change { User.count }
+
+      expect(response.status).to eq(422)
+      parsed_body = JSON.parse(response.body)
+      expect(parsed_body).to eq(["Password confirmation doesn't match Password"])
+    end
   end
 
   describe '#update' do
