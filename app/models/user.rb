@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
 
   validates :email, uniqueness: true
 
-private
+  private
 
   def set_authentication_token
     return if authentication_token.present?

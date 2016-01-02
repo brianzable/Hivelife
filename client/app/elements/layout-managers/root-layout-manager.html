@@ -43,9 +43,7 @@
             </section>
 
             <section data-route="my-profile">
-              <paper-material elevation="1">
-                <h2 class="paper-font-display2">Profile Page</h2>
-              </paper-material>
+              <settings-form id="settingsForm" authentication-token="{{authenticationToken}}"></settings-form>
             </section>
 
             <section data-route="data-portal">
@@ -147,6 +145,10 @@
       loadApiaries: function () {
         this.apiaries = null;
         this.$.indexRequest.send();
+      },
+
+      loadUserDefaults: function () {
+        this.$.settingsForm.setup();
       },
 
       _handleResponse: function (event) {

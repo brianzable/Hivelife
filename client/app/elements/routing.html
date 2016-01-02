@@ -109,6 +109,7 @@
     page('/profile', app.updateSession, function () {
       app.layoutManager = 'root';
       app.route = 'my-profile';
+      app.$.rootManager.loadUserDefaults();
     });
 
     page('/about', app.updateSession, function () {

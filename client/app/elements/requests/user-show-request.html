@@ -1,0 +1,38 @@
+<dom-module id="user-show-request">
+  <template>
+    <iron-ajax
+      id="client"
+      method="GET"
+      on-response="_handleSuccess"
+      on-error="_handleError">
+    </iron-ajax>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'user-show-request',
+      behaviors: [HivelifeBehaviors.RequestBehavior],
+      properties: {
+        authenticationToken: String,
+      },
+
+      send: function () {
+        this._setAuthorization();
+        this.$.client.url = 'v1/api/users/profile';
+        this.$.client.generateRequest();
+      },
+
+      _handleSuccess: function (event) {
+        var detail = { user: event.detail.response };
+
+        this.fire('user-load', detail);
+      },
+
+      _handleError: function (event) {
+        this.fire('user-load-error', { response: event.detail.request });
+      }
+    });
+  })();
+</script>

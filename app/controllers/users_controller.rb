@@ -1,17 +1,19 @@
 class UsersController < ApplicationController
   respond_to :json
 
-  before_action :authenticate, only: [:show, :update, :destroy]
-  before_action :set_and_authorize_user, except: [:create, :activate]
+  before_action :authenticate, only: [:profile, :update, :destroy]
+  before_action :set_and_authorize_user, except: [:profile, :create, :activate]
 
-  def show
+  def profile
+    @requested_user = @user
+    render 'users/show'
   end
 
   def create
     @requested_user = User.new(create_user_params)
 
     if @requested_user.save
-      render action: 'show', status: :created
+      render 'users/show', status: :ok
     else
       render json: @requested_user.errors.full_messages, status: :unprocessable_entity
     end
@@ -19,9 +21,9 @@ class UsersController < ApplicationController
 
   def update
     if @requested_user.update(update_user_params)
-			render action: 'show', status: :ok
+      render 'users/show', status: :ok
 		else
-			render json: { errors: @requested_user.errors }, status: :unprocessable_entity
+      render json: { errors: @requested_user.errors.full_messages }, status: :unprocessable_entity
 		end
   end
 

@@ -7,7 +7,7 @@ RSpec.describe UsersController, type: :request do
 
   describe '#show' do
     it 'returns a json representation of a user' do
-      get user_path(user), { format: :json }, headers
+      get profile_users_path, { format: :json }, headers
 
       expect(response.status).to eq(200)
 
@@ -15,14 +15,6 @@ RSpec.describe UsersController, type: :request do
       expect(parsed_body['id']).to_not be_nil
       expect(parsed_body['email']).to eq('user@example.com')
       expect(parsed_body['authentication_token']).to_not be_nil
-    end
-
-    it 'only allows users to look at their own information' do
-      another_user = FactoryGirl.create(:user)
-
-      get user_path(another_user), { format: :json }, headers
-
-      expect(response.status).to eq(404)
     end
   end
 

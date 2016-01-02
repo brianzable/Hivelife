@@ -17,7 +17,11 @@ Bees::Application.routes.draw do
       end
 
       get '/users/:activation_token/activate', to: 'users#activate', as: :user_activation
-      resources :users, except: [:index, :new, :edit]
+      resources :users, except: [:index, :show, :new, :edit] do
+        collection do
+          get 'profile', as: :profile
+        end
+      end
     end
   end
 end

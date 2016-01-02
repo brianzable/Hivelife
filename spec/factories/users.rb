@@ -4,5 +4,6 @@ FactoryGirl.define do
     password '11111111'
     password_confirmation '11111111'
     activation_state 'active'
+    timezone 'Central Time (US & Canada)'
   end
 end
