@@ -13,7 +13,7 @@ class UsersController < ApplicationController
     @requested_user = User.new(create_user_params)
 
     if @requested_user.save
-      render 'users/show', status: :ok
+      render 'users/show', status: :created
     else
       render json: @requested_user.errors.full_messages, status: :unprocessable_entity
     end

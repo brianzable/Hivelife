@@ -3,11 +3,19 @@ class User < ActiveRecord::Base
 
   before_create :set_authentication_token
 
-  validates :password, length: { minimum: 8 }, allow_blank: true
-  validates :password, confirmation: true, on: :create
-  validates :password_confirmation, presence: true, on: :create
+  validates :password, length: { minimum: 8 }, if: :validate_password?
+  validates :password, confirmation: true, if: :validate_password?
+  validates :password_confirmation, presence: true, if: :validate_password?
 
   validates :email, uniqueness: true
+
+  def validate_password?
+    new_record? || password.present?
+  end
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
 
   private
 

@@ -10,6 +10,11 @@ class UserMailer < ApplicationMailer
     mail to: user.email
   end
 
+  def reset_password_email(user)
+    @user = user
+    mail to: user.email, subject: 'Hivelife Password Reset'
+  end
+
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
   #

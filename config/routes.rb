@@ -4,6 +4,8 @@ Bees::Application.routes.draw do
       get '/data', to: 'static_pages#data'
       post '/sign_in', to: 'sessions#sign_in'
 
+      resources :password_resets, only: [:create, :update]
+
       resources :apiaries do
         resources :hives, except: [:new, :edit]
         resources :beekeepers, except: [:new, :edit]

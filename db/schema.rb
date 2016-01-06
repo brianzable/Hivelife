@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151225160128) do
+ActiveRecord::Schema.define(version: 20160103004838) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -122,23 +122,27 @@ ActiveRecord::Schema.define(version: 20151225160128) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",                       limit: 255, null: false
-    t.string   "crypted_password",            limit: 255
-    t.string   "salt",                        limit: 255
+    t.string   "email",                           limit: 255, null: false
+    t.string   "crypted_password",                limit: 255
+    t.string   "salt",                            limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "authentication_token",        limit: 255
-    t.string   "activation_state",            limit: 255
-    t.string   "activation_token",            limit: 255
+    t.string   "authentication_token",            limit: 255
+    t.string   "activation_state",                limit: 255
+    t.string   "activation_token",                limit: 255
     t.datetime "activation_token_expires_at"
     t.string   "first_name"
     t.string   "last_name"
     t.string   "photo_url"
     t.string   "timezone"
+    t.string   "reset_password_token"
+    t.datetime "reset_password_token_expires_at"
+    t.datetime "reset_password_email_sent_at"
   end
 
   add_index "users", ["activation_token"], name: "index_users_on_activation_token", using: :btree
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", using: :btree
 
 end
