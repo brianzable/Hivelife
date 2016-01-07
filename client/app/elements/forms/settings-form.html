@@ -45,13 +45,9 @@
           </paper-dropdown-menu>
         </div>
 
-        <h4>Password Settings</h4>
-        <div class="form-row">
-          <a href="#">Change Password</a>
-        </div>
-
         <div class="form-row">
           <paper-button id="formSubmit" raised>Save</paper-button>
+          <paper-button id="resetPassword" raised>Reset Password</paper-button>
         </div>
       </paper-material>
     </div>
@@ -66,6 +62,8 @@
       user-id="{{userId}}"
       authentication-token="{{authenticationToken}}">
     </user-update-request>
+
+    <reset-password-request id="resetPasswordRequest"></reset-password-request>
   </template>
 </dom-module>
 
@@ -78,10 +76,12 @@
 
       listeners: {
         'formSubmit.click': '_submitForm',
+        'resetPassword.click': '_resetPassword',
         'getUserRequest.user-load': '_handleLoad',
         'getUserRequest.user-load-error': '_handleLoadError',
         'updateUserRequest.user-update': '_handleUpdateSuccess',
-        'updateUserRequest.user-update-error': '_handleUpdateError'
+        'updateUserRequest.user-update-error': '_handleUpdateError',
+        'resetPasswordRequest.reset-password': '_handlePasswordReset',
       },
 
       setup: function () {
@@ -107,6 +107,14 @@
         request.send();
       },
 
+      _resetPassword: function () {
+        var request = this.$.resetPasswordRequest;
+        request.payload = {
+          email: this.emailAddress
+        };
+        this.$.resetPasswordRequest.send();
+      },
+
       _formValid: function () {
         var firstNameValid = this.$.firstName.validate();
         var lastNameValid = this.$.lastName.validate();
@@ -119,6 +127,7 @@
         var user = event.detail.user;
 
         this.userId = user.id;
+        this.emailAddress = user.email;
         this.$.firstName.value = user.first_name;
         this.$.lastName.value = user.last_name;
         this.$.email.value = user.email;
@@ -139,6 +148,10 @@
         var errorMessage = errors.join(', ');
 
         this.fire('app-message', { message: errorMessage });
+      },
+
+      _handlePasswordReset: function () {
+        this.fire('app-message', { message: 'Password reset instructions have been sent to your email.' });
       },
 
       _selectionForTimezone: function (selection) {
