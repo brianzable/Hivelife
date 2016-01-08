@@ -13,6 +13,7 @@
     </paper-input-container>
 
     <paper-button id="loginButton" raised>login</paper-button>
+    <paper-button id="forgotPasswordButton" raised>Forgot Password</paper-button>
 
     <paper-toast
       id="loginFailed"
@@ -33,6 +34,11 @@
   (function () {
     Polymer({
       is: 'login-page',
+
+      listeners: {
+        'forgotPasswordButton.click': '_redirectToPasswordReset'
+      },
+
       properties: {
         session: {
           type: Object,
@@ -71,6 +77,10 @@
       handleLoginError: function () {
         this.$.loginFailed.show();
       },
+
+      _redirectToPasswordReset: function () {
+        this.fire('page-redirect', { path: '/reset_password' });
+      }
     });
   })();
 </script>

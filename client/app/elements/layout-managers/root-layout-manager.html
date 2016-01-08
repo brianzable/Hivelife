@@ -64,6 +64,14 @@
               </paper-material>
             </section>
 
+            <section data-route="reset-password">
+              <request-password-reset-page></request-password-reset-page>
+            </section>
+
+            <section data-route="change-password">
+              <change-password-page password-reset-token="{{passwordResetToken}}"></change-password-page>
+            </section>
+
             <section data-route="error">
               <paper-material elevation="1">
                 <error-page></error-page>
@@ -99,10 +107,13 @@
         route: {
           type: String,
           value: 'home',
-          notify: true,
+          notify: true
         },
         authenticationToken: {
-          type: String,
+          type: String
+        },
+        passwordResetToken: {
+          type: String
         },
         session: {
           type: Object,

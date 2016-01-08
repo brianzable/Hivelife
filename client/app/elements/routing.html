@@ -132,6 +132,17 @@
       app.route = 'error';
     });
 
+    page('/reset_password/:token', function (data) {
+      app.layoutManager = 'root';
+      app.route = 'change-password';
+      app.passwordResetToken = data.params.token;
+    });
+
+    page('/reset_password', function () {
+      app.layoutManager = 'root';
+      app.route = 'reset-password';
+    });
+
     page('*', app.updateSession, function () {
       app.layoutManager = 'root';
       app.route = 'not-found';
