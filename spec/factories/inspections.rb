@@ -1,5 +1,7 @@
 FactoryGirl.define do
   factory :inspection do
+    temperature 75
+    temperature_units 'F'
     weather_conditions 'Clear'
     weather_notes 'Some notes'
     ventilated false

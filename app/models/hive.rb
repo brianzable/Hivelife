@@ -17,4 +17,8 @@ class Hive < ActiveRecord::Base
   def inspection_with_defaults
     inspections.first || inspections.build
   end
+
+  def harvest_with_defaults
+    harvests.first || harvests.build
+  end
 end

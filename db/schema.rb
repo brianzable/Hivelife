@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160103004838) do
+ActiveRecord::Schema.define(version: 20160108191359) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -63,11 +63,13 @@ ActiveRecord::Schema.define(version: 20160103004838) do
     t.integer  "honey_weight"
     t.integer  "wax_weight"
     t.datetime "harvested_at"
-    t.string   "weight_units", limit: 255
-    t.string   "notes",        limit: 255
+    t.string   "weight_units",       limit: 255
+    t.string   "notes",              limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "hive_id"
+    t.string   "honey_weight_units"
+    t.string   "wax_weight_units"
   end
 
   create_table "hives", force: :cascade do |t|
@@ -119,6 +121,7 @@ ActiveRecord::Schema.define(version: 20160103004838) do
     t.boolean  "swarm_cells_sighted"
     t.boolean  "supersedure_cells_sighted"
     t.string   "hive_temperament"
+    t.string   "temperature_units"
   end
 
   create_table "users", force: :cascade do |t|

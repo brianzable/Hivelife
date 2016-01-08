@@ -19,8 +19,9 @@ describe HarvestsController, type: :request do
       expect(parsed_body['hive_id']).to eq(hive.id)
       expect(parsed_body['apiary_id']).to eq(apiary.id)
       expect(parsed_body['wax_weight']).to eq(harvest.wax_weight)
+      expect(parsed_body['wax_weight_units']).to eq(harvest.wax_weight_units)
       expect(parsed_body['honey_weight']).to eq(harvest.honey_weight)
-      expect(parsed_body['weight_units']).to eq(harvest.weight_units)
+      expect(parsed_body['honey_weight_units']).to eq(harvest.honey_weight_units)
       expect(parsed_body['harvested_at']).to_not be_nil
       expect(parsed_body['notes']).to eq(harvest.notes)
     end
@@ -64,7 +65,9 @@ describe HarvestsController, type: :request do
         harvest: {
           harvested_at: Time.now,
           honey_weight: 60,
+          honey_weight_units: 'LB',
           wax_weight: 2,
+          wax_weight_units: 'OZ',
           notes: 'Notes about my harvest'
         },
         format: :json
@@ -79,8 +82,9 @@ describe HarvestsController, type: :request do
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['id']).to_not be_nil
       expect(parsed_body['wax_weight']).to eq(2)
+      expect(parsed_body['wax_weight_units']).to eq('OZ')
       expect(parsed_body['honey_weight']).to eq(60)
-      expect(parsed_body['weight_units']).to be_nil
+      expect(parsed_body['honey_weight_units']).to eq('LB')
       expect(parsed_body['harvested_at']).to_not be_nil
       expect(parsed_body['notes']).to eq('Notes about my harvest')
     end
@@ -149,7 +153,9 @@ describe HarvestsController, type: :request do
         harvest: {
           harvested_at: Time.now,
           honey_weight: 80,
+          honey_weight_units: 'KG',
           wax_weight: 8,
+          wax_weight_units: 'LB',
           notes: 'Notes about my harvest'
         },
         format: :json
@@ -164,8 +170,9 @@ describe HarvestsController, type: :request do
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['id']).to_not be_nil
       expect(parsed_body['wax_weight']).to eq(8)
+      expect(parsed_body['wax_weight_units']).to eq('LB')
       expect(parsed_body['honey_weight']).to eq(80)
-      expect(parsed_body['weight_units']).to eq('Pounds')
+      expect(parsed_body['honey_weight_units']).to eq('KG')
       expect(parsed_body['harvested_at']).to_not be_nil
       expect(parsed_body['notes']).to eq('Notes about my harvest')
     end

@@ -37,6 +37,14 @@
               <h4>Honey Weight</h4>
               <div class="form-row">
                 <paper-input id="honeyWeight" class="flex" label="honey weight"></paper-input>
+
+                <paper-dropdown-menu id="honeyWeightUnits" class="flex" label="units">
+                  <paper-menu id="honeyWeightUnitsMenu" class="dropdown-content">
+                    <template is="dom-repeat" items="[[weightUnits]]">
+                      <paper-item>{{item}}</paper-item>
+                    </template>
+                  </paper-menu>
+                </paper-dropdown-menu>
               </div>
             </div>
 
@@ -44,6 +52,14 @@
               <h4>Wax Weight</h4>
               <div class="form-row">
                 <paper-input id="waxWeight" class="flex" label="wax weight"></paper-input>
+
+                <paper-dropdown-menu id="waxWeightUnits" class="flex" label="units">
+                  <paper-menu id="waxWeightUnitsMenu" class="dropdown-content">
+                    <template is="dom-repeat" items="[[weightUnits]]">
+                      <paper-item>{{item}}</paper-item>
+                    </template>
+                  </paper-menu>
+                </paper-dropdown-menu>
               </div>
             </div>
           </div>
@@ -102,6 +118,15 @@
         'harvestUpdateRequest.harvest-update-error': '_handleUpdateError'
       },
 
+      ready: function () {
+        this.weightUnits = [
+          'LB',
+          'KG',
+          'OZ',
+          'G'
+        ];
+      },
+
       setup: function () {
         if (this.mode === 'new') {
           this.clearFields();
@@ -151,6 +176,8 @@
       _handleDefaultsLoad: function (event) {
         var harvest = event.detail.inspection;
         this.apiaryId = harvest.apiary_id;
+        this.$.honeyWeightUnitsMenu.selected = this._selectionForWeightUnits(harvest.wax_weight_units);
+        this.$.waxWeightUnitsMenu.selected = this._selectionForWeightUnits(harvest.wax_weight_units);
       },
 
       _handleDefaultsLoadError: function (event) {
@@ -162,6 +189,8 @@
 
         this.apiaryId = harvest.apiary_id;
         this.$.date.value = this._dateFromTimestamp(harvest.harvested_at);
+        this.$.honeyWeightUnitsMenu.selected = this._selectionForWeightUnits(harvest.honey_weight_units);
+        this.$.waxWeightUnitsMenu.selected = this._selectionForWeightUnits(harvest.wax_weight_units);
         this.$.honeyWeight.value = harvest.honey_weight;
         this.$.waxWeight.value = harvest.wax_weight;
         this.$.notes.value = harvest.notes;
@@ -180,7 +209,9 @@
           harvest: {
             harvested_at: this.$.date.value,
             honey_weight: this.$.honeyWeight.value,
+            honey_weight_units: this.$.honeyWeightUnits.selectedItemLabel,
             wax_weight: this.$.waxWeight.value,
+            wax_weight_units: this.$.waxWeightUnits.selectedItemLabel,
             notes: this.$.notes.value
           }
         };
@@ -197,6 +228,10 @@
           return this.$.harvestUpdateRequest;
         }
       },
+
+      _selectionForWeightUnits: function (selection) {
+        return this.weightUnits.indexOf(selection);
+      }
     });
   })();
 </script>

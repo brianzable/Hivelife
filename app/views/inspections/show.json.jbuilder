@@ -1,6 +1,8 @@
 json.id @inspection.id
 json.hive_id @inspection.hive_id
 json.apiary_id @inspection.hive.apiary.id
+json.temperature @inspection.temperature
+json.temperature_units @inspection.temperature_units
 json.weather_conditions @inspection.weather_conditions
 json.weather_notes @inspection.weather_notes
 json.ventilated @inspection.ventilated
@@ -19,7 +21,6 @@ json.swarm_cells_sighted @inspection.swarm_cells_sighted
 json.swarm_cells_capped @inspection.swarm_cells_capped
 json.honey_sighted @inspection.honey_sighted
 json.supersedure_cells_sighted @inspection.supersedure_cells_sighted
-json.temperature @inspection.temperature
 json.pollen_sighted @inspection.pollen_sighted
 
 json.diseases do

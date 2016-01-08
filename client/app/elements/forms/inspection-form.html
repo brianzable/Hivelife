@@ -47,7 +47,15 @@
           <div class="form-row">
             <paper-input id="temperature" class="flex" label="temperature"></paper-input>
 
-            <paper-dropdown-menu id="weatherConditions" class="flex" label="weather conditions">
+            <paper-dropdown-menu id="temperatureUnits" class="flex" label="units">
+              <paper-menu id="temperatureUnitsMenu" class="dropdown-content">
+                <template is="dom-repeat" items="[[temperatureUnits]]">
+                  <paper-item>{{item}}</paper-item>
+                </template>
+              </paper-menu>
+            </paper-dropdown-menu>
+
+            <paper-dropdown-menu id="weatherConditions" class="flex" label="conditions">
               <paper-menu id="weatherConditionsMenu" class="dropdown-content">
                 <template is="dom-repeat" items="[[weatherConditions]]">
                   <paper-item>{{item}}</paper-item>
@@ -185,6 +193,12 @@
           'Sunny',
           'Rain'
         ];
+
+        this.temperatureUnits = [
+          'C',
+          'F',
+          'K'
+        ];
       },
 
       _setupInspectionDefaults: function (event) {
@@ -208,6 +222,7 @@
         this.$.time.value = '';
         this.$.date.value = '';
         this.$.temperature.value = '';
+        this.$.temperatureUnits.selectedItemLabel = null;
         this.$.weatherConditions.selectedItemLabel = null;
         this.$.weatherNotes.value = '';
         this.$.broodPattern.selected = 'na';
@@ -241,6 +256,7 @@
         this.$.time.value = this._timeFromTimestamp(inspection.inspected_at);
         this.$.date.value = this._dateFromTimestamp(inspection.inspected_at);
         this.$.temperature.value = inspection.temperature;
+        this.$.temperatureUnitsMenu.selected = this._selectionForTemperatureUnits(inspection.temperature_units);
         this.$.weatherConditionsMenu.selected = this._selectionForWeatherConditions(inspection.weather_conditions);
         this.$.weatherNotes.value = inspection.weather_notes;
         this.$.broodPattern.selected = inspection.brood_pattern;
@@ -290,6 +306,7 @@
       _handleDefaultsLoad: function (event) {
         var inspection = event.detail.inspection;
         this.apiaryId = inspection.apiary_id;
+        this.$.temperatureUnitsMenu.selected = this._selectionForTemperatureUnits(inspection.temperature_units);
       },
 
       _handleDefaultsLoadError: function (event) {
@@ -315,6 +332,7 @@
           inspection: {
             inspected_at: this._formattedTimestamp(date, time),
             temperature: this.$.temperature.value,
+            temperature_units: this.$.temperatureUnits.selectedItemLabel,
             weather_conditions: this.$.weatherConditions.selectedItemLabel,
             weather_notes: this.$.weatherNotes.value,
             brood_pattern: this.$.broodPattern.selected,
@@ -351,6 +369,10 @@
 
       _selectionForWeatherConditions: function (selection) {
         return this.weatherConditions.indexOf(selection);
+      },
+
+      _selectionForTemperatureUnits: function (selection) {
+        return this.temperatureUnits.indexOf(selection);
       },
 
       _getDiseases: function () {

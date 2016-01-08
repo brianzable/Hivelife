@@ -21,6 +21,7 @@ describe InspectionsController, type: :request do
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['id']).to eq(inspection.id)
       expect(parsed_body['temperature']).to eq(inspection.temperature)
+      expect(parsed_body['temperature_units']).to eq(inspection.temperature_units)
       expect(parsed_body['weather_conditions']).to eq(inspection.weather_conditions)
       expect(parsed_body['weather_notes']).to eq(inspection.weather_notes)
       expect(parsed_body['notes']).to eq(inspection.notes)
@@ -90,9 +91,22 @@ describe InspectionsController, type: :request do
       parsed_body = JSON.parse(response.body)
 
       expect(parsed_body['inspection']['apiary_id']).to eq(apiary.id)
+      expect(parsed_body['inspection']['temperature_units']).to eq('F')
     end
 
-    it 'returns defauls for an inspection when no inspections have been made' do
+    it 'includes defaults for a harvest' do
+      FactoryGirl.create(:harvest, hive: hive)
+      get defaults_hive_inspections_path(hive), { format: :json }, headers
+
+      expect(response.status).to eq(200)
+      parsed_body = JSON.parse(response.body)
+
+      expect(parsed_body['inspection']['apiary_id']).to eq(apiary.id)
+      expect(parsed_body['inspection']['honey_weight_units']).to eq('LB')
+      expect(parsed_body['inspection']['wax_weight_units']).to eq('OZ')
+    end
+
+    it 'returns defaults for an inspection when no inspections have been made' do
       hive.inspections = []
       hive.save!
 
@@ -148,6 +162,7 @@ describe InspectionsController, type: :request do
       payload = {
         inspection: {
           temperature: 85,
+          temperature_units: 'F',
           weather_conditions: 'Clear',
           weather_notes: 'Very nice day outside.',
           notes: 'Hive is doing great.',
@@ -179,6 +194,7 @@ describe InspectionsController, type: :request do
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['id']).to_not be_nil
       expect(parsed_body['temperature']).to eq(85)
+      expect(parsed_body['temperature_units']).to eq('F')
       expect(parsed_body['weather_conditions']).to eq('Clear')
       expect(parsed_body['weather_notes']).to eq('Very nice day outside.')
       expect(parsed_body['notes']).to eq('Hive is doing great.')

@@ -48,7 +48,14 @@ class HarvestsController < ApplicationController
   end
 
   def harvest_params
-    params.require(:harvest).permit(:honey_weight, :wax_weight, :harvested_at, :notes)
+    params.require(:harvest).permit(
+      :honey_weight,
+      :honey_weight_units,
+      :wax_weight,
+      :wax_weight_units,
+      :harvested_at,
+      :notes
+    )
   end
 
   def pundit_user

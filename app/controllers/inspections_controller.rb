@@ -13,6 +13,7 @@ class InspectionsController < ApplicationController
 
   def defaults
     @inspection = @hive.inspection_with_defaults
+    @harvest = @hive.harvest_with_defaults
     authorize(@inspection, :show?)
   end
 
@@ -57,6 +58,7 @@ class InspectionsController < ApplicationController
     params.require(:inspection).permit(
       :inspected_at,
       :temperature,
+      :temperature_units,
       :weather_conditions,
       :weather_notes,
       :notes,
