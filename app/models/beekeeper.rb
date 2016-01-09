@@ -12,6 +12,8 @@ class Beekeeper < ActiveRecord::Base
 	belongs_to :apiary
 	belongs_to :user
 
+  delegate :full_name, to: :user
+
 	validates :user_id,
     presence: { message: 'could not be found' },
 		uniqueness: { scope: :apiary_id, message: "is already a beekeeper at this apiary." }

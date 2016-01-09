@@ -31,6 +31,7 @@ gem 'rspec-rails', group: [:development, :test]
 gem 'capybara', group: [:development, :test]
 gem 'factory_girl_rails', group: [:development, :test]
 gem 'byebug', group: [:development, :test]
+gem 'db-query-matchers', group: [:development, :test]
 
 # Use Pundit for Authorization
 gem 'pundit'

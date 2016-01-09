@@ -4,7 +4,10 @@ class InspectionsController < ApplicationController
   before_action :set_hive, only: [:defaults, :create, :update]
 
   def index
-    @inspections = Inspection.where(hive_id: params[:hive_id])
+    @inspections = Inspection.
+      includes(inspection_edits: { beekeeper: :user }).
+      where(hive_id: params[:hive_id])
+    authorize(@inspections)
   end
 
   def show
@@ -22,6 +25,7 @@ class InspectionsController < ApplicationController
     authorize(@inspection)
 
     if @inspection.save
+      @inspection_edit = @inspection.inspection_edits.create(beekeeper: @beekeeper)
       render action: 'show', status: :created, location: [@hive, @inspection]
     else
       render json: @inspection.errors.full_messages, status: :unprocessable_entity
@@ -31,6 +35,7 @@ class InspectionsController < ApplicationController
   def update
     authorize(@inspection)
     if @inspection.update(inspection_params)
+      @inspection_edit = @inspection.inspection_edits.create(beekeeper: @beekeeper)
       render action: 'show', status: :created, location: [@hive, @inspection]
     else
       render json: @inspection.errors.full_messages, status: :unprocessable_entity
@@ -47,7 +52,10 @@ class InspectionsController < ApplicationController
   private
 
   def set_inspection
-    @inspection = Inspection.where(id: params[:id], hive_id: params[:hive_id]).take
+    @inspection = Inspection.
+      includes(:diseases, inspection_edits: { beekeeper: :user }).
+      where(hive_id: params[:hive_id], id: params[:id]).
+      take
   end
 
   def set_hive
@@ -86,7 +94,7 @@ class InspectionsController < ApplicationController
   end
 
   def pundit_user
-    apiary = Hive.includes(:apiary).find(params[:hive_id]).apiary
-    Beekeeper.where(user: @user, apiary: apiary).first
+    @hive = apiary = Hive.find(params[:hive_id])
+    @beekeeper = Beekeeper.where(user: @user, apiary_id: @hive.apiary_id).take
   end
 end

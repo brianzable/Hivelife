@@ -7,7 +7,36 @@ describe InspectionsController, type: :request do
   let!(:beekeeper) { FactoryGirl.create(:beekeeper,user: user, apiary: apiary) }
   let!(:hive) { FactoryGirl.create(:hive, apiary: apiary) }
   let!(:inspection) { FactoryGirl.create(:inspection, hive: hive) }
+  let!(:inspection_edit) { FactoryGirl.create(:inspection_edit, inspection: inspection, beekeeper: beekeeper) }
   let(:headers) { { 'Authorization' => "Token token=#{user.authentication_token}" } }
+
+  describe '#index' do
+    it 'includes the latest edit information with each inspection' do
+      3.times do
+        existing_inspection = FactoryGirl.create(:inspection, hive: hive)
+        FactoryGirl.create(:inspection_edit, inspection: existing_inspection, beekeeper: beekeeper)
+      end
+
+      get hive_inspections_path(hive), { format: :json }, headers
+
+      expect(response.status).to eq(200)
+
+      parsed_body = JSON.parse(response.body)
+    end
+
+    it 'runs 8 queries' do
+      3.times do
+        existing_inspection = FactoryGirl.create(:inspection, hive: hive)
+        FactoryGirl.create(:inspection_edit, inspection: existing_inspection, beekeeper: beekeeper)
+      end
+
+      expect do
+        get hive_inspections_path(hive), { format: :json }, headers
+      end.to make_database_queries(count: 7..8)
+
+      expect(response.status).to eq(200)
+    end
+  end
 
   describe '#show' do
     it 'returns all data associated with an inspection, including diseases' do
@@ -48,6 +77,18 @@ describe InspectionsController, type: :request do
       expect(disease['disease_type']).to eq('Varroa')
       expect(disease['treatment']).to eq('MAQS')
       expect(disease['notes']).to eq('')
+
+      last_edit = parsed_body['last_edit']
+      expect(last_edit['edited_at']).to_not be_nil
+      expect(last_edit['beekeeper_name']).to eq('John Doe')
+    end
+
+    it 'runs 9 queries' do
+      expect do
+        get hive_inspection_path(hive, inspection), { format: :json }, headers
+      end.to make_database_queries(count: 8..9)
+
+      expect(response.status).to eq(200)
     end
 
     it 'allows beekeepers with read permissions to view an inspection' do
@@ -216,6 +257,28 @@ describe InspectionsController, type: :request do
       expect(parsed_body['hive_id']).to eq(hive.id)
     end
 
+    it 'records the beekeeper who made the edit' do
+      payload = {
+        inspection: {
+          inspected_at: Time.now,
+        },
+        format: :json
+      }
+
+      expect do
+        expect do
+          post hive_inspections_path(hive), payload, headers
+        end.to change { InspectionEdit.count }.by(1)
+      end.to make_database_queries(manipulative: true)
+
+      expect(response.status).to eq(201)
+
+      parsed_body = JSON.parse(response.body)
+      last_edit = parsed_body['last_edit']
+      expect(last_edit['edited_at']).to_not be_nil
+      expect(last_edit['beekeeper_name']).to eq('John Doe')
+    end
+
     it 'does not allow beekeepers with read permissions to create an inspection' do
       beekeeper.permission = Beekeeper::Roles::Viewer
       beekeeper.save!
@@ -292,6 +355,31 @@ describe InspectionsController, type: :request do
 
       inspection.reload
       expect(inspection.notes).to eq('Some new notes.')
+    end
+
+    it 'records the beekeeper who made the edit' do
+      payload = {
+        inspection: {
+          notes: 'Some new notes.'
+        },
+        format: :json
+      }
+
+      expect do
+        expect do
+          put hive_inspection_path(hive, inspection), payload, headers
+        end.to change { InspectionEdit.count }.by(1)
+      end.to make_database_queries(manipulative: true)
+
+      expect(response.status).to eq(201)
+
+      inspection.reload
+      expect(inspection.notes).to eq('Some new notes.')
+
+      parsed_body = JSON.parse(response.body)
+      last_edit = parsed_body['last_edit']
+      expect(last_edit['edited_at']).to_not be_nil
+      expect(last_edit['beekeeper_name']).to eq('John Doe')
     end
 
     it 'allows diseases to be added' do

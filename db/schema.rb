@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160108191359) do
+ActiveRecord::Schema.define(version: 20160108214613) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -96,6 +96,16 @@ ActiveRecord::Schema.define(version: 20160108191359) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "inspection_edits", force: :cascade do |t|
+    t.integer  "inspection_id", null: false
+    t.integer  "beekeeper_id",  null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "inspection_edits", ["beekeeper_id"], name: "index_inspection_edits_on_beekeeper_id", using: :btree
+  add_index "inspection_edits", ["inspection_id"], name: "index_inspection_edits_on_inspection_id", using: :btree
 
   create_table "inspections", force: :cascade do |t|
     t.decimal  "temperature",                           precision: 10

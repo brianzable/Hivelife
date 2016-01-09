@@ -5,6 +5,10 @@ class RecordPolicy < ApplicationPolicy
     end
   end
 
+  def index?
+    show?
+  end
+
   def show?
     beekeeper.read?
   end

@@ -1,6 +1,6 @@
 json.id @inspection.id
-json.hive_id @inspection.hive_id
-json.apiary_id @inspection.hive.apiary.id
+json.hive_id @hive.id
+json.apiary_id @hive.apiary_id
 json.temperature @inspection.temperature
 json.temperature_units @inspection.temperature_units
 json.weather_conditions @inspection.weather_conditions
@@ -22,6 +22,11 @@ json.swarm_cells_capped @inspection.swarm_cells_capped
 json.honey_sighted @inspection.honey_sighted
 json.supersedure_cells_sighted @inspection.supersedure_cells_sighted
 json.pollen_sighted @inspection.pollen_sighted
+
+json.last_edit do
+  json.edited_at @inspection.last_edit.created_at
+  json.beekeeper_name @inspection.last_edit.inspector_name
+end
 
 json.diseases do
   json.array!(@inspection.diseases) do |disease|
