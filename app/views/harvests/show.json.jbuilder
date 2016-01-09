@@ -7,3 +7,4 @@ json.wax_weight @harvest.wax_weight
 json.wax_weight_units @harvest.wax_weight_units
 json.harvested_at @harvest.harvested_at
 json.notes @harvest.notes
+json.last_edit @harvest.updated_at

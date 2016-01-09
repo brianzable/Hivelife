@@ -8,7 +8,7 @@
             <span class="day">{{_dayFromTimestamp(item.inspected_at)}}</span>
             <span class="month">{{_monthFromTimestamp(item.inspected_at)}}</span>
             <span class="notes">{{item.notes}}</span>
-            <span class="beekeeper">{{item.last_edit}}</span>
+            <span class="beekeeper">{{_timeFromTimestamp(item.last_edit)}}</span>
           </inspection-list-item>
         </a>
       </template>
@@ -20,6 +20,7 @@
   (function () {
     Polymer({
       is: 'inspection-list',
+
       behaviors: [HivelifeBehaviors.TimeBehavior],
 
       properties: {

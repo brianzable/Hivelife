@@ -6,12 +6,18 @@ end
 
 json.inspections do
   json.array!(@hive.inspections) do |inspection|
-    json.extract! inspection, :id, :notes, :inspected_at
+    json.id inspection.id
+    json.notes inspection.notes
+    json.inspected_at inspection.inspected_at
+    json.last_edit inspection.updated_at
   end
 end
 
 json.harvests do
   json.array!(@hive.harvests) do |harvest|
-    json.extract! harvest, :id, :notes, :harvested_at
+    json.id harvest.id
+    json.notes harvest.notes
+    json.harvested_at harvest.harvested_at
+    json.last_edit harvest.updated_at
   end
 end

@@ -38,12 +38,25 @@ namespace :db do
 
     main_apiary = FactoryGirl.create(:apiary_with_hives)
 
+    beekeeper = FactoryGirl.create(
+      :beekeeper,
+      apiary: main_apiary,
+      user: user,
+      permission: Beekeeper::Roles::Admin
+    )
+
     main_apiary.hives.each do |hive|
       3.times do
         hive.inspections << FactoryGirl.build(
           :inspection,
           inspected_at: Time.now - 3.hours,
-          notes: 'Everything seems to be well in the hive. Will probably need to add a new honey super next week.'
+          notes: 'Everything seems to be well in the hive. Will probably need to add a new honey super next week.',
+          inspection_edits: [
+            FactoryGirl.build(
+              :inspection_edit,
+              beekeeper: beekeeper
+            )
+          ]
         )
         hive.harvests << FactoryGirl.build(
           :harvest,
@@ -54,13 +67,6 @@ namespace :db do
 
       hive.save
     end
-
-    FactoryGirl.create(
-      :beekeeper,
-      apiary: main_apiary,
-      user: user,
-      permission: Beekeeper::Roles::Admin
-    )
 
     other_users.each do |u|
       FactoryGirl.create(

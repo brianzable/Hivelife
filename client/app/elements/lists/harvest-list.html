@@ -8,7 +8,7 @@
             <span class="day">{{_dayFromTimestamp(item.harvested_at)}}</span>
             <span class="month">{{_monthFromTimestamp(item.harvested_at)}}</span>
             <span class="notes">{{item.notes}}</span>
-            <span class="beekeeper">{{item.last_edit}}</span>
+            <span class="beekeeper">{{_timeFromTimestamp(item.last_edit)}}</span>
           </harvest-list-item>
         </a>
       </template>
