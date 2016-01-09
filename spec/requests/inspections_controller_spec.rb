@@ -22,6 +22,10 @@ describe InspectionsController, type: :request do
       expect(response.status).to eq(200)
 
       parsed_body = JSON.parse(response.body)
+      parsed_body.each do |inspection|
+        expect(inspection['last_edit']['edited_at']).to_not be_nil
+        expect(inspection['last_edit']['beekeeper_name']).to_not be_nil
+      end
     end
 
     it 'runs 8 queries' do
