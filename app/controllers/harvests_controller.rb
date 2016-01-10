@@ -4,7 +4,11 @@ class HarvestsController < ApplicationController
   before_action :set_hive, only: [:update, :create]
 
   def index
-    @harvests = Harvest.where(hive_id: params[:hive_id])
+    @harvests = Harvest.
+        includes(harvest_edits: { beekeeper: :user }).
+        where(hive_id: params[:hive_id])
+
+    authorize(@harvests)
   end
 
   def show
@@ -16,6 +20,7 @@ class HarvestsController < ApplicationController
     authorize(@harvest)
 
     if @harvest.save
+      @harvest.harvest_edits.create(beekeeper: @beekeeper)
       render action: 'show', status: :created, location: [@hive, @harvest]
     else
       render json: @harvest.errors.full_messages, status: :unprocessable_entity
@@ -25,6 +30,7 @@ class HarvestsController < ApplicationController
   def update
     authorize(@harvest)
     if @harvest.update(harvest_params)
+      @harvest.harvest_edits.create(beekeeper: @beekeeper)
       render action: 'show', status: :created, location: [@hive, @harvest]
     else
       render json: @harvest.errors.full_messages, status: :unprocessable_entity
@@ -39,12 +45,15 @@ class HarvestsController < ApplicationController
 
   private
 
-  def set_harvest
-    @harvest = Harvest.find(params[:id])
+  def set_hive
+    @hive = Hive.find(params[:hive_id])
   end
 
-  def set_hive
-    @hive = Hive.includes(:apiary).find(params[:hive_id])
+  def set_harvest
+    @harvest = Harvest.
+      includes(harvest_edits: { beekeeper: :user }).
+      where(hive_id: params[:hive_id], id: params[:id]).
+      take
   end
 
   def harvest_params
@@ -59,7 +68,7 @@ class HarvestsController < ApplicationController
   end
 
   def pundit_user
-    apiary_id = Hive.includes(:apiary).find(params[:hive_id]).apiary.id
-    Beekeeper.where(user_id: @user.id, apiary_id: apiary_id).first
+    @hive = apiary = Hive.find(params[:hive_id])
+    @beekeeper = Beekeeper.where(user: @user, apiary_id: @hive.apiary_id).take
   end
 end

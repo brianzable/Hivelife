@@ -61,7 +61,13 @@ namespace :db do
         hive.harvests << FactoryGirl.build(
           :harvest,
           harvested_at: Time.now - 3.hours,
-          notes: '4 frames, 16 lbs of light, clover honey'
+          notes: '4 frames, 16 lbs of light, clover honey',
+          harvest_edits: [
+            FactoryGirl.build(
+              :harvest_edit,
+              beekeeper: beekeeper
+            )
+          ]
         )
       end
 

@@ -7,7 +7,35 @@ describe HarvestsController, type: :request do
   let!(:beekeeper) { FactoryGirl.create(:beekeeper,user: user, apiary: apiary) }
   let!(:hive) { FactoryGirl.create(:hive, apiary: apiary) }
   let!(:harvest) { FactoryGirl.create(:harvest, hive: hive) }
+  let!(:harvest_edit) { FactoryGirl.create(:harvest_edit, harvest: harvest, beekeeper: beekeeper) }
   let(:headers) { { 'Authorization' => "Token token=#{user.authentication_token}" } }
+
+  describe '#index' do
+    it 'includes the latest edit information with each harvest' do
+      3.times do
+        existing_harvest = FactoryGirl.create(:harvest, hive: hive)
+        FactoryGirl.create(:harvest_edit, harvest: existing_harvest, beekeeper: beekeeper)
+      end
+
+      get hive_harvests_path(hive), { format: :json }, headers
+
+      expect(response.status).to eq(200)
+      parsed_body = JSON.parse(response.body)
+    end
+
+    it 'runs 8 queries' do
+      3.times do
+        existing_harvest = FactoryGirl.create(:harvest, hive: hive)
+        FactoryGirl.create(:harvest_edit, harvest: existing_harvest, beekeeper: beekeeper)
+      end
+
+      expect do
+        get hive_harvests_path(hive), { format: :json }, headers
+      end.to make_database_queries(count: 7..8)
+
+      expect(response.status).to eq(200)
+    end
+  end
 
   describe '#show' do
     it 'returns a JSON representation of a harvest' do
@@ -24,6 +52,18 @@ describe HarvestsController, type: :request do
       expect(parsed_body['honey_weight_units']).to eq(harvest.honey_weight_units)
       expect(parsed_body['harvested_at']).to_not be_nil
       expect(parsed_body['notes']).to eq(harvest.notes)
+
+      last_edit = parsed_body['last_edit']
+      expect(last_edit['edited_at']).to_not be_nil
+      expect(last_edit['beekeeper_name']).to eq('John Doe')
+    end
+
+    it 'runs 8 queries' do
+      expect do
+        get hive_harvest_path(hive, harvest), { format: :json }, headers
+      end.to make_database_queries(count: 7..8)
+
+      expect(response.status).to eq(200)
     end
 
     it 'allows beekeepers with read permissions to view a harvest' do
@@ -87,6 +127,28 @@ describe HarvestsController, type: :request do
       expect(parsed_body['honey_weight_units']).to eq('LB')
       expect(parsed_body['harvested_at']).to_not be_nil
       expect(parsed_body['notes']).to eq('Notes about my harvest')
+    end
+
+    it 'records the beekeeper who created the harvest' do
+      payload = {
+        harvest: {
+          harvested_at: Time.now,
+        },
+        format: :json
+      }
+
+      expect do
+        expect do
+          post hive_harvests_path(hive), payload, headers
+        end.to change { HarvestEdit.count }.by(1)
+      end.to make_database_queries(manipulative: true)
+
+      expect(response.status).to eq(201)
+
+      parsed_body = JSON.parse(response.body)
+      last_edit = parsed_body['last_edit']
+      expect(last_edit['edited_at']).to_not be_nil
+      expect(last_edit['beekeeper_name']).to eq('John Doe')
     end
 
     it 'allows beekeepers with write permission to create a harvest' do
@@ -175,6 +237,31 @@ describe HarvestsController, type: :request do
       expect(parsed_body['honey_weight_units']).to eq('KG')
       expect(parsed_body['harvested_at']).to_not be_nil
       expect(parsed_body['notes']).to eq('Notes about my harvest')
+    end
+
+    it 'records the beekeeper who made the edit' do
+      payload = {
+        harvest: {
+          notes: 'Some new notes.'
+        },
+        format: :json
+      }
+
+      expect do
+        expect do
+          put hive_harvest_path(hive, harvest), payload, headers
+        end.to change { HarvestEdit.count }.by(1)
+      end.to make_database_queries(manipulative: true)
+
+      expect(response.status).to eq(201)
+
+      harvest.reload
+      expect(harvest.notes).to eq('Some new notes.')
+
+      parsed_body = JSON.parse(response.body)
+      last_edit = parsed_body['last_edit']
+      expect(last_edit['edited_at']).to_not be_nil
+      expect(last_edit['beekeeper_name']).to eq('John Doe')
     end
 
     it 'allows users with write permissions to update a harvest' do
