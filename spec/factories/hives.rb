@@ -3,8 +3,8 @@ FactoryGirl.define do
     sequence :name do |n|
       "Hive #{n}"
     end
-    latitude 88.8888888
-    longitude 88.8888888
+    latitude 41.8369
+    longitude -87.623177
     hive_type 'Langstroth'
   end
 end

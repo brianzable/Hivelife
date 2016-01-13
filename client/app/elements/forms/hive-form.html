@@ -82,8 +82,8 @@
 
           <h4>Hive Location</h4>
           <span id="mapError" class="error-message" style="display: none;">Please choose a location on the map</span>
-          <google-map id="hiveLocation" click-events="true" class="flex">
-            <google-map-marker latitude="{{latitude}}" longitude="{{longitude}}"></google-map-marker>
+          <google-map id="hiveLocation" latitude="[[latitude]]" longitude="[[longitude]]" zoom="12" click-events="true" class="flex">
+            <google-map-marker latitude="[[latitude]]" longitude="[[longitude]]"></google-map-marker>
           </google-map>
 
           <div class="form-row">
