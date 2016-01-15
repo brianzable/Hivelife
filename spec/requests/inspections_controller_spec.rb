@@ -44,8 +44,10 @@ describe InspectionsController, type: :request do
 
   describe '#show' do
     it 'returns all data associated with an inspection, including diseases' do
-      inspected_at = Time.now
-      inspection.update_attribute(:inspected_at, inspected_at)
+      Time.use_zone(user.timezone) do
+        inspected_at = Time.new(2016, 7, 31, 13, 30)
+        inspection.update_attribute(:inspected_at, inspected_at)
+      end
       FactoryGirl.create(:disease, inspection: inspection)
 
       get hive_inspection_path(hive, inspection), { format: :json }, headers
@@ -64,7 +66,7 @@ describe InspectionsController, type: :request do
       expect(parsed_body['hive_orientation']).to eq(inspection.hive_orientation)
       expect(parsed_body['health']).to eq(inspection.health)
       expect(parsed_body['hive_temperament']).to eq(inspection.hive_temperament)
-      expect(parsed_body['inspected_at']).to_not be_nil
+      expect(parsed_body['inspected_at']).to eq('2016-07-31T13:30:00.000-05:00')
       expect(parsed_body['hive_id']).to eq(hive.id)
       expect(parsed_body['apiary_id']).to eq(apiary.id)
       expect(parsed_body['brood_pattern']).to eq(inspection.brood_pattern)

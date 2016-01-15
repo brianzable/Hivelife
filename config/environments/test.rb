@@ -33,4 +33,6 @@ Bees::Application.configure do
   config.action_mailer.default_url_options = { :host => 'localhost' }
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
+
+  config.time_zone = 'UTC'
 end

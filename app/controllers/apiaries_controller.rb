@@ -1,6 +1,4 @@
 class ApiariesController < ApplicationController
-  respond_to :json
-
   before_action :authenticate
   before_action :set_apiary, only: [:update, :destroy]
 

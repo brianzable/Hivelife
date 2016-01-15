@@ -31,6 +31,8 @@ Bees::Application.configure do
   config.assets.paths << Rails.root.join('app', 'assets', 'fonts')
 	config.assets.precompile += %w( .svg .eot .woff .ttf)
 
-	# Dont lof assets
+	# Dont log assets
 	config.assets.logger = nil
+
+  config.time_zone = 'UTC'
 end

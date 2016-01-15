@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe HarvestsController, type: :request do
-
   let!(:user) { create_logged_in_user }
   let!(:apiary) { FactoryGirl.create(:apiary) }
   let!(:beekeeper) { FactoryGirl.create(:beekeeper,user: user, apiary: apiary) }
@@ -39,6 +38,11 @@ describe HarvestsController, type: :request do
 
   describe '#show' do
     it 'returns a JSON representation of a harvest' do
+      Time.use_zone(user.timezone) do
+        harvested_at = Time.new(2016, 7, 31, 13, 30)
+        harvest.update_attribute(:harvested_at, harvested_at)
+      end
+
       get hive_harvest_path(hive, harvest), { format: :json }, headers
       expect(response.status).to eq(200)
 
@@ -50,7 +54,7 @@ describe HarvestsController, type: :request do
       expect(parsed_body['wax_weight_units']).to eq(harvest.wax_weight_units)
       expect(parsed_body['honey_weight']).to eq(harvest.honey_weight)
       expect(parsed_body['honey_weight_units']).to eq(harvest.honey_weight_units)
-      expect(parsed_body['harvested_at']).to_not be_nil
+      expect(parsed_body['harvested_at']).to eq('2016-07-31T13:30:00.000-05:00')
       expect(parsed_body['notes']).to eq(harvest.notes)
 
       last_edit = parsed_body['last_edit']

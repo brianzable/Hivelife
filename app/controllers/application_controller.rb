@@ -1,7 +1,10 @@
 class ApplicationController < ActionController::Base
   include Pundit
 
+  respond_to :json
+
   protect_from_forgery with: :null_session
+
   rescue_from Pundit::NotAuthorizedError, with: :render_not_found
 
   protected
@@ -31,7 +34,7 @@ class ApplicationController < ActionController::Base
     render json: { error: 'You are not authorized to perform this action.' }, status: :unauthorized
   end
 
-  def user_time_zone(&block)
-    Time.use_zone(current_user.time_zone, &block)
+  def set_time_zone(&block)
+    Time.use_zone(@user.timezone, &block)
   end
 end

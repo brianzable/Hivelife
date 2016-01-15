@@ -1,6 +1,4 @@
 class BeekeepersController < ApplicationController
-  respond_to :json
-
   before_action :authenticate
   before_action :set_beekeeper_user, only: [:create]
   before_action :set_apiary, only: [:create]

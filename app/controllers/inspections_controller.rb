@@ -2,6 +2,7 @@ class InspectionsController < ApplicationController
   before_action :authenticate
   before_action :set_inspection, only: [:show, :update, :destroy]
   before_action :set_hive, only: [:defaults, :create, :update]
+  around_action :set_time_zone
 
   def index
     @inspections = Inspection.

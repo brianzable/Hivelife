@@ -1,6 +1,4 @@
 class SessionsController < ApplicationController
-  respond_to :json
-
   def sign_in
     @user = login(params[:email], params[:password])
 

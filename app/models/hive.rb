@@ -1,8 +1,8 @@
 class Hive < ActiveRecord::Base
 	belongs_to :apiary
 
-	has_many :inspections, dependent: :destroy
-	has_many :harvests, dependent: :destroy
+	has_many :inspections, -> { order 'inspected_at DESC' }, dependent: :destroy
+	has_many :harvests, -> { order 'harvested_at'}, dependent: :destroy
 
   validates_presence_of :name
 

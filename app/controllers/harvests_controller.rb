@@ -2,6 +2,7 @@ class HarvestsController < ApplicationController
   before_action :authenticate
   before_action :set_harvest, only: [:show, :update, :destroy]
   before_action :set_hive, only: [:update, :create]
+  around_action :set_time_zone
 
   def index
     @harvests = Harvest.

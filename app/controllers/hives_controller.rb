@@ -1,9 +1,8 @@
 class HivesController < ApplicationController
-  respond_to :json
-
   before_action :authenticate
   before_action :set_apiary, only: [:create]
   before_action :set_and_authorize_hive, only: [:show, :update, :destroy]
+  around_action :set_time_zone
 
   def index
     @hives = Hive.where(apiary_id: params[:apiary_id])
