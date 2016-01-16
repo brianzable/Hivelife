@@ -5,7 +5,8 @@ class HivesController < ApplicationController
   around_action :set_time_zone
 
   def index
-    @hives = Hive.where(apiary_id: params[:apiary_id])
+    @hives = Hive.where(apiary_id: params[:apiary_id]).order_by('name ASC')
+    authorize(@hives)
   end
 
   def show

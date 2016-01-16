@@ -15,7 +15,7 @@ class ApiariesController < ApplicationController
     @apiary = Apiary.new(apiary_params)
 
     if @apiary.save
-      Beekeeper.create(apiary: @apiary, user: @user, permission: 'Admin')
+      @beekeeper = Beekeeper.create(apiary: @apiary, user: @user, permission: Beekeeper::Roles::Admin)
       render action: 'show', status: :created, location: @apiary
     else
       render json: @apiary.errors.full_messages, status: :unprocessable_entity

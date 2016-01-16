@@ -6,7 +6,7 @@ class BeekeepersController < ApplicationController
 
   def index
     @beekeepers = Beekeeper.where(apiary_id: params[:apiary_id])
-    authorize(@beekeepers.first)
+    authorize(@beekeepers)
   end
 
   def show
