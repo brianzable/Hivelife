@@ -162,6 +162,10 @@
         this.$.settingsForm.setup();
       },
 
+      closeDrawer: function () {
+        this.$.paperDrawerPanel.closeDrawer();
+      },
+
       _handleResponse: function (event) {
         this.apiaries = event.detail.apiaries;
       },

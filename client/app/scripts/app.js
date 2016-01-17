@@ -7,7 +7,7 @@
     document.querySelector('#caching-complete').show();
   };
 
-  app.updateSession = function (context, next) {
+  app.updateSession = function () {
     if (app.session === null || typeof app.session === undefined) {
       app.authenticationToken = null;
     } else {
@@ -16,7 +16,6 @@
 
     app.$.sessionStore.value = app.session;
     app.$.rootManager.reloadMenu();
-    next();
   };
 
   app.addEventListener('dom-change', function() {
