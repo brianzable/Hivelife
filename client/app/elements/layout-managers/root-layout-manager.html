@@ -25,7 +25,7 @@
 
           <div class="middle paper-font-display2 app-name">Hivelife</div>
 
-          <div class="bottom title"></div>
+          <div class="bottom title">{{title}}</div>
         </paper-toolbar>
 
         <div class="content">
@@ -42,7 +42,7 @@
               </paper-material>
             </section>
 
-            <section data-route="my-profile">
+            <section data-route="my-account">
               <settings-form id="settingsForm" authentication-token="{{authenticationToken}}"></settings-form>
             </section>
 
@@ -107,6 +107,7 @@
         route: {
           type: String,
           value: 'home',
+          observer: '_routeChanged',
           notify: true
         },
         authenticationToken: {
@@ -128,20 +129,20 @@
 
       ready: function () {
         this.loggedInMenuOptions = [
-          { route: 'my-profile',  path: '/profile',  icon: 'info', text: 'My Profile' },
-          { route: 'apiaries',    path: '/apiaries', icon: 'mail', text: 'Apiaries' },
-          { route: 'data-portal', path: '/data',     icon: 'info', text: 'Data Portal' },
-          { route: 'contact',     path: '/contact',  icon: 'info', text: 'Contact Us' },
-          { route: 'about',       path: '/about',    icon: 'info', text: 'About Us' },
-          { route: 'logout',      path: '/logout',   icon: 'mail', text: 'Logout' }
+          { route: 'apiaries',    path: '/apiaries', icon: 'list',          text: 'Apiaries' },
+          { route: 'my-account',  path: '/account',  icon: 'settings',      text: 'My Account' },
+          { route: 'data-portal', path: '/data',     icon: 'file-download', text: 'Data Portal' },
+          { route: 'contact',     path: '/contact',  icon: 'mail',          text: 'Contact Us' },
+          { route: 'about',       path: '/about',    icon: 'info',          text: 'About Us' },
+          { route: 'logout',      path: '/logout',   icon: 'clear',         text: 'Logout' }
         ];
 
         this.loggedOutMenuOptions = [
-          { route: 'home',        path: '/',        icon: 'home', text: 'Home' },
-          { route: 'data-portal', path: '/data',    icon: 'info', text: 'Data Portal' },
-          { route: 'contact',     path: '/contact', icon: 'info', text: 'Contact Us' },
-          { route: 'about',       path: '/about',   icon: 'info', text: 'About Us' },
-          { route: 'login',       path: '/login',   icon: 'home', text: 'Login' }
+          { route: 'home',        path: '/',        icon: 'home',          text: 'Home' },
+          { route: 'data-portal', path: '/data',    icon: 'file-download', text: 'Data Portal' },
+          { route: 'contact',     path: '/contact', icon: 'mail',          text: 'Contact Us' },
+          { route: 'about',       path: '/about',   icon: 'info',          text: 'About Us' },
+          { route: 'login',       path: '/login',   icon: 'fingerprint',   text: 'Login' }
         ];
       },
 
@@ -164,6 +165,31 @@
 
       closeDrawer: function () {
         this.$.paperDrawerPanel.closeDrawer();
+      },
+
+      _routeChanged: function (newValue, oldValue) {
+        switch(newValue) {
+          case 'apiaries':
+            this.title = 'My Apiaries'
+            break;
+          case 'my-account':
+            this.title = 'Settings';
+            break;
+          case 'data-portal':
+            this.title = 'Data Portal';
+            break;
+          case 'contact':
+            this.title = 'Contact Us';
+            break;
+          case 'about':
+            this.title = 'About Us';
+            break;
+          case 'login':
+            this.title = 'Login';
+            break;
+          default:
+            this.title = '';
+        }
       },
 
       _handleResponse: function (event) {

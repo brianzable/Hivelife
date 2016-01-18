@@ -120,9 +120,9 @@
       page.redirect('/home');
     });
 
-    page('/profile', function () {
+    page('/account', function () {
       app.layoutManager = 'root';
-      app.route = 'my-profile';
+      app.route = 'my-account';
       app.$.rootManager.loadUserDefaults();
     });
 
