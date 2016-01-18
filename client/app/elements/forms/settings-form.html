@@ -4,7 +4,7 @@
   <template>
     <div class="form-content">
       <paper-material class="form-container" elevation="1">
-        <h4>Identity</h4>
+        <h4 class="form-header">Identity</h4>
         <div class="form-row">
           <paper-input
             id="firstName"
@@ -34,7 +34,7 @@
           </paper-input>
         </div>
 
-        <h4>Timezone Settings</h4>
+        <h4 class="form-header">Time</h4>
         <div class="form-row">
           <paper-dropdown-menu id="timezone" class="flex" label="time zone">
             <paper-menu id="timezoneMenu" class="dropdown-content">
@@ -45,9 +45,10 @@
           </paper-dropdown-menu>
         </div>
 
-        <div class="form-row">
-          <paper-button id="formSubmit" raised>Save</paper-button>
+        <div class="horizontal-form-row">
+          <div class="flex"></div>
           <paper-button id="resetPassword" raised>Reset Password</paper-button>
+          <paper-button id="formSubmit" raised>Save</paper-button>
         </div>
       </paper-material>
     </div>
