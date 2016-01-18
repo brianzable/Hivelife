@@ -1,10 +1,18 @@
 <dom-module id="beekeeper-list">
+  <style>
+    iron-image {
+      height: 60px;
+      width: 60px;
+      border-radius: 50%;
+    }
+  </style>
+
   <template>
     <style include="list-styles"></style>
     <iron-list id="list" items="[[beekeepers]]" as="beekeeper">
       <template>
         <beekeeper-list-item beekeeper-id="{{beekeeper.id}}" editable="{{beekeeper.editable}}">
-          <iron-image class="photo" style="height: 60px; width: 60px; border-radius: 50%;" src="{{beekeeper.photo_url}}" sizing="cover"></iron-image>
+          <iron-image class="photo" fade src="{{beekeeper.photo_url}}" sizing="cover"></iron-image>
           <span class="name">{{beekeeper.name}}</span>
           <span class="role">{{beekeeper.role}}</span>
         </beekeeper-list-item>
