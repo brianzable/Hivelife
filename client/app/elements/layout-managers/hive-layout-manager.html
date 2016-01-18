@@ -3,18 +3,16 @@
     <style include="shared-styles"></style>
     <paper-header-panel class="fit">
       <paper-toolbar class="tall">
-        <a id="backLink" href="{{backLink}}" class="no-link">
-          <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
-        </a>
-        <span class="flex"></span>
-        <paper-menu-button ignoreSelect="true" vertical-align="top" horizontal-align="right">
-          <paper-icon-button icon="menu" class="dropdown-trigger"></paper-icon-button>
+        <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
+        <div class="flex"></div>
+        <paper-menu-button ignoreSelect="true" vertical-align="top" horizontal-align="right" style="padding-right: 0; margin-right: 0;">
+          <paper-icon-button icon="menu" class="dropdown-trigger" style="padding-right: 0; margin-right: 0;"></paper-icon-button>
           <paper-menu class="dropdown-content">
-            <paper-item>Edit Hive</paper-item>
+            <paper-item on-click="_editHive">Edit Hive</paper-item>
             <template is="dom-if" if="{{canDelete}}">
               <paper-item id="deleteButton" on-click="_deleteHive">Delete Hive</paper-item>
             </template>
-            <paper-item>Logout</paper-item>
+            <paper-item on-click="_logout">Logout</paper-item>
           </paper-menu>
         </paper-menu-button>
 
@@ -87,6 +85,7 @@
       },
 
       listeners: {
+        'backButton.click': '_handleBackLinkClick',
         'getHiveRequest.hive-load': '_handleLoad',
         'getHiveRequest.hive-load-error': '_handleLoadError',
         'deleteHiveRequest.hive-delete': '_handleDelete',
@@ -105,6 +104,14 @@
 
       _deleteHive: function () {
         this.$.deleteConfirmation.toggle();
+      },
+
+      _editHive: function () {
+        this.fire('page-redirect', { path: this.editPath });
+      },
+
+      _handleBackLinkClick: function () {
+        this.fire('page-redirect', { path: this.backLink });
       },
 
       _handleConfirmationClose: function () {

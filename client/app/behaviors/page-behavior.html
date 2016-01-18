@@ -27,6 +27,10 @@
       this.fire('page-redirect', { path: '/error' });
     },
 
+    _logout: function () {
+      this.fire('page-redirect', { path: '/logout' });
+    },
+
     _timezones: function () {
       return [
         "Abu Dhabi",

@@ -2,10 +2,30 @@
   <template>
     <style include="list-item-styles"></style>
     <style>
-      .notes {
+      ::content .notes {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        word-break: break-all;
+        word-wrap: break-word;
+      }
+
+      @media (min-width: 400px) {
+        ::content .notes {
+          width: 300px;
+        }
+      }
+
+      @media (min-width: 500px) {
+        ::content .notes {
+          width: 400px;
+        }
+      }
+
+      @media (min-width: 600px) {
+        ::content .notes {
+          width: 550px;
+        }
       }
     </style>
     <div class="layout horizontal">
