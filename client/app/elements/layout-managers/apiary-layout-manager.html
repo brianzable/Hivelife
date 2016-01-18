@@ -3,18 +3,16 @@
     <style include="shared-styles"></style>
     <paper-header-panel class="fit">
       <paper-toolbar class="tall">
-        <a id="backLink" class="no-link" href="/apiaries">
-          <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
-        </a>
-        <span class="flex"></span>
-        <paper-menu-button ignoreSelect="true" vertical-align="top" horizontal-align="right">
-          <paper-icon-button icon="menu" class="dropdown-trigger"></paper-icon-button>
+        <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
+        <div class="flex"></div>
+        <paper-menu-button ignoreSelect="true" vertical-align="top" horizontal-align="right" style="padding-right: 0; margin-right: 0;">
+          <paper-icon-button icon="menu" class="dropdown-trigger" style="padding-right: 0; margin-right: 0;"></paper-icon-button>
           <paper-menu class="dropdown-content">
-            <paper-item>Edit Apiary</paper-item>
+            <paper-item on-click="_editApiary">Edit Apiary</paper-item>
             <template is="dom-if" if="{{canDelete}}">
               <paper-item id="deleteButton" on-click="_deleteApiary">Delete Apiary</paper-item>
             </template>
-            <paper-item>Logout</paper-item>
+            <paper-item on-click="_logout">Logout</paper-item>
           </paper-menu>
         </paper-menu-button>
 
@@ -25,6 +23,7 @@
           <paper-tab>BEEKEEPERS</paper-tab>
         </paper-tabs>
       </paper-toolbar>
+
       <div class="content">
         <iron-pages selected="{{selected}}">
           <section>
@@ -83,6 +82,7 @@
       },
 
       listeners: {
+        'backButton.click': '_handleBackLinkClick',
         'getApiaryRequest.apiary-load': '_handleLoad',
         'getApiaryRequest.apiary-load-error': '_handleError',
         'deleteApiaryRequest.apiary-delete': '_handleApiaryDelete',
@@ -128,6 +128,18 @@
 
       _reloadBeekeepers: function () {
         this.$.beekeeperList.loadBeekeepers();
+      },
+
+      _editApiary: function () {
+        this.fire('page-redirect', { path: this.editPath });
+      },
+
+      _logout: function () {
+        this.fire('page-redirect', { path: '/logout' });
+      },
+
+      _handleBackLinkClick: function () {
+        this.fire('page-redirect', { path: '/apiaries' });
       }
     });
   })();

@@ -1,4 +1,20 @@
 <dom-module id="beekeeper-list-item">
+  <style>
+    #photo {
+      margin: 5px 15px 5px 5px;
+    }
+
+    ::content .name {
+      margin-bottom: 3px;
+      font-size: 18px;
+    }
+
+    ::content .role {
+      font-size: 12px;
+      color: var(--secondary-text-color);
+    }
+  </style>
+
   <template>
     <style include="list-item-styles"></style>
     <div class="layout horizontal">
@@ -6,12 +22,9 @@
         <content select=".photo"></content>
       </div>
 
-      <div class="layout vertical flex">
-        <div class="main-text flex">
+      <div class="layout horizontal center flex">
+        <div class="layout vertical">
           <content select=".name"></content>
-        </div>
-
-        <div class="sub-text flex">
           <content select=".role"></content>
         </div>
       </div>
