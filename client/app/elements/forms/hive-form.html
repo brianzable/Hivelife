@@ -3,10 +3,13 @@
     google-map {
       height: 300px;
       margin: 8px;
+      margin-top: 30px;
     }
 
     .error-message {
-      text-color: red;
+      color: red;
+      font-size: 14px;
+      margin-left: 8px;
     }
   </style>
 
@@ -23,7 +26,7 @@
 
       <div class="form-content">
         <paper-material class="form-container" elements="1">
-          <h4>Hive Information</h4>
+          <h4 class="form-header">Hive Information</h4>
           <div class="form-row">
             <paper-input
               id="name"
@@ -80,15 +83,15 @@
             <paper-input id="comments" label="comments" class="flex"></paper-input>
           </div>
 
-          <h4>Hive Location</h4>
-          <span id="mapError" class="error-message" style="display: none;">Please choose a location on the map</span>
-          <google-map id="hiveLocation" latitude="[[latitude]]" longitude="[[longitude]]" zoom="12" click-events="true" class="flex">
+          <h4 class="form-header">Location</h4>
+          <google-map id="hiveLocation" latitude="[[latitude]]" longitude="[[longitude]]" zoom="1" click-events="true" class="flex">
             <google-map-marker latitude="[[latitude]]" longitude="[[longitude]]"></google-map-marker>
           </google-map>
+          <span id="mapError" class="error-message" style="display: none;">please choose a location on the map</span>
 
           <div class="form-row">
             <div class="layout vertical flex">
-              <h5>Inspection Sharing</h5>
+              <h4 class="form-header">Inspection Sharing</h4>
               <paper-radio-group id="dataSharing" selected="enabled">
                 <paper-radio-button name="enabled">Enabled</paper-radio-button>
                 <paper-radio-button name="disabled">Disabled</paper-radio-button>
@@ -96,7 +99,7 @@
             </div>
 
             <div class="layout vertical flex">
-              <h5>Location Sharing</h5>
+              <h4 class="form-header">Location Sharing</h4>
               <paper-radio-group id="locationSharing" selected="exact">
                 <paper-radio-button name="exact" class="flex">Exact</paper-radio-button>
                 <paper-radio-button name="imprecise" class="flex">City/Region</paper-radio-button>
@@ -168,7 +171,7 @@
         this.latitude = null;
         this.longitude = null;
         this.$.dataSharing.selected = 'enabled';
-        this.$.locationSharing.selected = 'exact';
+        this.$.locationSharing.selected = 'imprecise';
       },
 
       _formValid: function () {

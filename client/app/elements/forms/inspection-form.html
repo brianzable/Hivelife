@@ -2,6 +2,7 @@
   <style>
     #addDisease {
       cursor: pointer;
+      margin-left: 8px;
     }
   </style>
 
@@ -20,7 +21,7 @@
 
       <div class="form-content">
         <paper-material class="form-container" elements="1">
-          <h4>Time & Date</h4>
+          <h4 class="form-header">Time & Date</h4>
           <div class="form-row">
             <paper-input
               id="time"
@@ -43,7 +44,7 @@
             </paper-input>
           </div>
 
-          <h4>Weather</h4>
+          <h4 class="form-header">Weather</h4>
           <div class="form-row">
             <paper-input id="temperature" class="flex" label="temperature"></paper-input>
 
@@ -66,7 +67,7 @@
             <paper-input id="weatherNotes" id="flex" label="weather notes"></paper-input>
           </div>
 
-          <h4>Brood Pattern</h4>
+          <h4 class="form-header">Brood Pattern</h4>
           <div class="form-row">
             <paper-radio-group id="broodPattern" selected="n/a">
               <paper-radio-button name="Good">Good</paper-radio-button>
@@ -76,7 +77,7 @@
             <paper-radio-group>
           </div>
 
-          <h4>Sightings</h4>
+          <h4 class="form-header">Sightings</h4>
           <div class="form-row">
             <paper-checkbox id="eggsSighted">Eggs</paper-checkbox>
             <paper-checkbox id="queenSighted">Queen</paper-checkbox>
@@ -85,26 +86,29 @@
             <paper-checkbox id="queenCellsSighted">Queen Cells</paper-checkbox>
           </div>
 
-          <h4>Queen Cell Sightings</h4>
+          <h4 class="form-header">Queen Cell Sightings</h4>
           <div class="form-row">
             <paper-checkbox id="supersedureCellsSighted">Supersedure Cells</paper-checkbox>
             <paper-checkbox id="swarmCellsSighted">Swarm Cells</paper-checkbox>
             <paper-checkbox id="swarmCellsCapped">Swarm Cells Capped?</paper-checkbox>
           </div>
 
-          <h4>Diseases & Treatments</h4>
+          <h4 class="form-header">Diseases & Treatments</h4>
           <div>
             <div id="diseaseContainer"></div>
-            <h5 id="addDisease">Add Disease</h5>
+            <div class="layout horizontal">
+              <h5 id="addDisease">Add Disease</h5>
+              <div class="flex"></div>
+            </div>
           </div>
 
-          <h4>Hive Information</h4>
+          <h4 class="form-header">Hive Information</h4>
           <div class="form-row">
             <paper-checkbox id="ventilated">Ventilated</paper-checkbox>
             <paper-checkbox id="queenExcluder">Queen Excluder</paper-checkbox>
           </div>
 
-          <h4>Entrance Reducer</h4>
+          <h4 class="form-header">Entrance Reducer</h4>
           <div>
             <paper-radio-group id="entranceReducer" selected="None">
               <paper-radio-button name="Small">Small</paper-radio-button>
@@ -113,12 +117,12 @@
             <paper-radio-group>
           </div>
 
-          <h4>Hive Health</h4>
+          <h4 class="form-header">Hive Health</h4>
           <div class="horizontal-form-row">
             Poor<paper-slider id="hiveHealth" class="flex" min="0" max="100" value="0" immediateValue="0"></paper-slider>Healthy
           </div>
 
-          <h4>Hive Temperament</h4>
+          <h4 class="form-header">Hive Temperament</h4>
           <div>
             <paper-radio-group id="hiveTemperament" selected="calm">
               <paper-radio-button name="Calm">Calm</paper-radio-button>
@@ -128,7 +132,7 @@
             <paper-radio-group>
           </div>
 
-          <h4>Inspection Notes</h4>
+          <h4 class="form-header">Inspection Notes</h4>
           <div>
             <paper-input id="notes" label="notes"></paper-input>
           </div>
