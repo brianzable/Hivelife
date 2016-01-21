@@ -7,7 +7,7 @@
           <inspection-list-item>
             <span class="day">{{_dayFromTimestamp(item.inspected_at)}}</span>
             <span class="month">{{_monthFromTimestamp(item.inspected_at)}}</span>
-            <span class="notes">{{item.notes}}</span>
+            <span class="notes">{{_notesField(item.notes)}}</span>
             <span class="beekeeper">{{_timeFromTimestamp(item.last_edit)}}</span>
           </inspection-list-item>
         </a>
@@ -30,6 +30,13 @@
 
       _inspectionUrl: function (item) {
         return 'hives/' + this.hiveId + '/inspections/' + item.id;
+      },
+
+      _notesField: function (notes) {
+        if (notes === '' || typeof notes === undefined) {
+          return 'No notes for this inspection';
+        }
+        return notes;
       }
     });
   })();

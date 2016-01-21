@@ -7,7 +7,7 @@
           <harvest-list-item>
             <span class="day">{{_dayFromTimestamp(item.harvested_at)}}</span>
             <span class="month">{{_monthFromTimestamp(item.harvested_at)}}</span>
-            <span class="notes">{{item.notes}}</span>
+            <span class="notes">{{_notesField(item.notes)}}</span>
             <span class="beekeeper">{{_timeFromTimestamp(item.last_edit)}}</span>
           </harvest-list-item>
         </a>
@@ -30,6 +30,13 @@
       _harvestUrl: function (item) {
         return 'hives/' + this.hiveId + '/harvests/' + item.id;
       },
+
+      _notesField: function (notes) {
+        if (notes === '' || typeof notes === undefined) {
+          return 'No notes for this harvest';
+        }
+        return notes;
+      }
     });
   })();
 </script>
