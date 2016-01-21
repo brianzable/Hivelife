@@ -353,6 +353,16 @@ describe HarvestsController, type: :request do
   end
 
   describe '#destroy' do
+    it 'deletes associated HarvestEdits' do
+      expect do
+        delete hive_harvest_path(hive, harvest), { format: :json }, headers
+      end.to change{ HarvestEdit.count }.by(-1)
+
+      expect(response.status).to eq(200)
+
+      expect { harvest_edit.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
     it 'allows users with admin permissions to delete a harvest' do
       beekeeper.permission = Beekeeper::Roles::Admin
       beekeeper.save!
@@ -367,7 +377,7 @@ describe HarvestsController, type: :request do
     it 'runs 10 queries' do
       expect do
         delete hive_harvest_path(hive, harvest), { format: :json }, headers
-      end.to make_database_queries(count: 9..10)
+      end.to make_database_queries(count: 9..11)
 
       expect(response.status).to eq(200)
     end

@@ -345,6 +345,30 @@ describe HivesController, type: :request do
       expect(response.status).to eq(200)
     end
 
+    it 'deleted associated inspections' do
+      inspection = FactoryGirl.create(:inspection, hive: hive)
+
+      expect do
+        delete apiary_hive_path(apiary, hive), { format: :json }, headers
+      end.to change { Inspection.count }.by(-1)
+
+      expect(response.status).to eq(200)
+
+      expect { inspection.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'deleted associated harvests' do
+      harvest = FactoryGirl.create(:harvest, hive: hive)
+
+      expect do
+        delete apiary_hive_path(apiary, hive), { format: :json }, headers
+      end.to change { Harvest.count }.by(-1)
+
+      expect(response.status).to eq(200)
+
+      expect { harvest.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
     it 'allows admins to delete a hive from an apiary' do
       beekeeper.permission = Beekeeper::Roles::Admin
       beekeeper.save!

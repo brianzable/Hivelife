@@ -1,6 +1,6 @@
 class Inspection < ActiveRecord::Base
-	has_many :diseases
-  has_many :inspection_edits, -> { order 'created_at ASC' }
+	has_many :diseases, dependent: :destroy
+  has_many :inspection_edits, -> { order 'created_at ASC' }, dependent: :destroy
 
 	belongs_to :hive
 

@@ -358,16 +358,15 @@ RSpec.describe ApiariesController, type: :request do
     end
 
     it 'removes all hives associated with this apiary' do
-      beekeeper.permission = Beekeeper::Roles::Admin
-      beekeeper.save!
-
-      FactoryGirl.create(:hive, apiary: apiary)
+      hive = FactoryGirl.create(:hive, apiary: apiary)
 
       expect do
         delete apiary_path(apiary), { format: :json }, headers
       end.to change{ Hive.count }.by(-1)
 
       expect(response.status).to eq(200)
+
+      expect { hive.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'does not allow users with read permissions to destroy an apiary' do

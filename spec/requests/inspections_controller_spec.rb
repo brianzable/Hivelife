@@ -555,6 +555,28 @@ describe InspectionsController, type: :request do
   end
 
   describe '#destroy' do
+    it 'deletes diseases associated with an inspection' do
+      disease = FactoryGirl.create(:disease, inspection: inspection)
+
+      expect do
+        delete hive_inspection_path(hive, inspection), { format: :json }, headers
+      end.to change { Disease.count }.by(-1)
+
+      expect(response.status).to eq(200)
+
+      expect { disease.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'deletes InspectionEdits associated with an inspection' do
+      expect do
+        delete hive_inspection_path(hive, inspection), { format: :json }, headers
+      end.to change { InspectionEdit.count }.by(-1)
+
+      expect(response.status).to eq(200)
+
+      expect { inspection_edit.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
     it 'allows users with admin permissions to delete an inspection' do
       beekeeper.permission = Beekeeper::Roles::Admin
       beekeeper.save

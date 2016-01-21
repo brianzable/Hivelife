@@ -1,5 +1,5 @@
 class Harvest < ActiveRecord::Base
-  has_many :harvest_edits, -> { order 'created_at ASC' }
+  has_many :harvest_edits, -> { order 'created_at ASC' }, dependent: :destroy
 
 	belongs_to :hive
 
