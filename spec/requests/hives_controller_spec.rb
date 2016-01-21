@@ -44,6 +44,17 @@ describe HivesController, type: :request do
       expect(harvest_json['id']).to be(harvest.id)
     end
 
+    it 'runs 6 queries' do
+      FactoryGirl.create(:inspection, hive: hive)
+      FactoryGirl.create(:harvest, hive: hive)
+
+      expect do
+        get apiary_hive_path(apiary, hive), { format: :json }, headers
+      end.to make_database_queries(count: 6)
+
+      expect(response.status).to eq(200)
+    end
+
     it 'allows users with read permission to view hive information' do
       beekeeper.permission = Beekeeper::Roles::Viewer
       beekeeper.save!
@@ -111,6 +122,26 @@ describe HivesController, type: :request do
       expect(parsed_body['latitude']).to eq('88.8888')
       expect(parsed_body['longitude']).to eq('88.8888')
       expect(parsed_body['orientation']).to eq('N')
+    end
+
+    it 'runs 8..10 queries' do
+      payload = {
+        hive: {
+          hive_type: 'Langstroth',
+          breed: 'Italian',
+          orientation: 'N',
+          name: 'A Hive',
+          latitude: 88.8888,
+          longitude: 88.8888
+        },
+        format: :json
+      }
+
+      expect do
+        post apiary_hives_path(apiary), payload, headers
+      end.to make_database_queries(count: 8..10)
+
+      expect(response.status).to eq(201)
     end
 
     it 'renders full error messages when validation errors are present' do
@@ -229,6 +260,21 @@ describe HivesController, type: :request do
       expect(parsed_body['hive_type']).to eq('Langstroth')
     end
 
+    it 'runs 10 queries' do
+      payload = {
+        hive: {
+          hive_type: 'Langstroth',
+        },
+        format: :json
+      }
+
+      expect do
+        put apiary_hive_path(apiary, hive), payload, headers
+      end.to make_database_queries(count: 8..10)
+
+      expect(response.status).to eq(201)
+    end
+
     it 'allows users with write permission to edit hive information' do
       beekeeper.permission = Beekeeper::Roles::Inspector
       beekeeper.save!
@@ -291,6 +337,14 @@ describe HivesController, type: :request do
   end
 
   describe '#destroy' do
+    it 'runs 11 queries' do
+      expect do
+        delete apiary_hive_path(apiary, hive), { format: :json }, headers
+      end.to make_database_queries(count: 9..11)
+
+      expect(response.status).to eq(200)
+    end
+
     it 'allows admins to delete a hive from an apiary' do
       beekeeper.permission = Beekeeper::Roles::Admin
       beekeeper.save!

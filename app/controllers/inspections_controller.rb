@@ -1,7 +1,7 @@
 class InspectionsController < ApplicationController
   before_action :authenticate
   before_action :set_inspection, only: [:show, :update, :destroy]
-  before_action :set_hive, only: [:defaults, :create, :update]
+  before_action :set_hive
   around_action :set_time_zone
 
   def index
@@ -60,7 +60,11 @@ class InspectionsController < ApplicationController
   end
 
   def set_hive
-    @hive = Hive.includes(:apiary).find(params[:hive_id])
+    if @inspection.present?
+      @hive = @inspection.hive
+    else
+      @hive = Hive.includes(:apiary).find(params[:hive_id])
+    end
   end
 
   def inspection_params
@@ -95,7 +99,6 @@ class InspectionsController < ApplicationController
   end
 
   def pundit_user
-    @hive = apiary = Hive.find(params[:hive_id])
     @beekeeper = Beekeeper.where(user: @user, apiary_id: @hive.apiary_id).take
   end
 end

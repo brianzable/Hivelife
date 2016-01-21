@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe InspectionsController, type: :request do
-
   let!(:user) { create_logged_in_user }
   let!(:apiary) { FactoryGirl.create(:apiary) }
   let!(:beekeeper) { FactoryGirl.create(:beekeeper,user: user, apiary: apiary) }
@@ -151,6 +150,16 @@ describe InspectionsController, type: :request do
       expect(parsed_body['inspection']['apiary_id']).to eq(apiary.id)
       expect(parsed_body['inspection']['honey_weight_units']).to eq('LB')
       expect(parsed_body['inspection']['wax_weight_units']).to eq('OZ')
+    end
+
+    it 'runs 6 queries' do
+      FactoryGirl.create(:harvest, hive: hive)
+
+      expect do
+        get defaults_hive_inspections_path(hive), { format: :json }, headers
+      end.to make_database_queries(count: 5..6)
+
+      expect(response.status).to eq(200)
     end
 
     it 'returns defaults for an inspection when no inspections have been made' do

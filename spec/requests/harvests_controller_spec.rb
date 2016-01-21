@@ -155,6 +155,21 @@ describe HarvestsController, type: :request do
       expect(last_edit['beekeeper_name']).to eq('John Doe')
     end
 
+    it 'runs 14 queries' do
+      payload = {
+        harvest: {
+          harvested_at: Time.now,
+        },
+        format: :json
+      }
+
+      expect do
+        post hive_harvests_path(hive), payload, headers
+      end.to make_database_queries(count: 13..14)
+
+      expect(response.status).to eq(201)
+    end
+
     it 'allows beekeepers with write permission to create a harvest' do
       beekeeper.permission = Beekeeper::Roles::Inspector
       beekeeper.save!
@@ -243,6 +258,26 @@ describe HarvestsController, type: :request do
       expect(parsed_body['notes']).to eq('Notes about my harvest')
     end
 
+    it 'runs 14 queries' do
+      payload = {
+        harvest: {
+          harvested_at: Time.now,
+          honey_weight: 80,
+          honey_weight_units: 'KG',
+          wax_weight: 8,
+          wax_weight_units: 'LB',
+          notes: 'Notes about my harvest'
+        },
+        format: :json
+      }
+
+      expect do
+        put hive_harvest_path(hive, harvest), payload, headers
+      end.to make_database_queries(count: 13..14)
+
+      expect(response.status).to eq(201)
+    end
+
     it 'records the beekeeper who made the edit' do
       payload = {
         harvest: {
@@ -325,6 +360,14 @@ describe HarvestsController, type: :request do
       expect do
         delete hive_harvest_path(hive, harvest), { format: :json }, headers
       end.to change{ hive.harvests.count }.by(-1)
+
+      expect(response.status).to eq(200)
+    end
+
+    it 'runs 10 queries' do
+      expect do
+        delete hive_harvest_path(hive, harvest), { format: :json }, headers
+      end.to make_database_queries(count: 9..10)
 
       expect(response.status).to eq(200)
     end

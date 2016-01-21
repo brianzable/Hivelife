@@ -30,6 +30,14 @@ RSpec.describe ApiariesController, type: :request do
       expect(parsed_apiary_hives[0]['id']).to_not be_nil
       expect(parsed_apiary_hives[0]['name']).to_not be_nil
     end
+
+    it 'makes 5 queries' do
+      expect do
+        get apiaries_path, { format: :json }, headers
+      end.to make_database_queries(count: 4..5)
+
+      expect(response.status).to eq(200)
+    end
   end
 
   describe '#show' do
@@ -51,6 +59,14 @@ RSpec.describe ApiariesController, type: :request do
 
       parsed_beekeeper = parsed_apiary['beekeeper']
       expect(parsed_beekeeper['role']).to eq(Beekeeper::Roles::Viewer)
+    end
+
+    it 'makes 5 queries' do
+      expect do
+        get apiary_path(apiary), { format: :json }, headers
+      end.to make_database_queries(count: 5)
+
+      expect(response.status).to eq(200)
     end
 
     it 'allows beekeepers with write permissions to view an apiary' do
@@ -117,6 +133,25 @@ RSpec.describe ApiariesController, type: :request do
       expect(parsed_body['state']).to eq('IL')
       expect(parsed_body['street_address']).to eq('123 Fake St')
       expect(parsed_body['zip_code']).to eq('60000')
+    end
+
+    it 'makes 10 queries' do
+      payload = {
+        apiary: {
+          name: 'My Apiary',
+          zip_code: '60000',
+          city: 'A Town',
+          state: 'IL',
+          street_address: '123 Fake St'
+        },
+        format: :json
+      }
+
+      expect do
+        post apiaries_path, payload, headers
+      end.to make_database_queries(count: 9..10)
+
+      expect(response.status).to eq(201)
     end
 
     it 'creates a beekeeper object making the creator an admin at the new apiary' do
@@ -222,6 +257,21 @@ RSpec.describe ApiariesController, type: :request do
       expect(apiary.city).to eq('Chicago')
     end
 
+    it 'makes 8 queries' do
+      payload = {
+        apiary: {
+          city: 'Chicago'
+        },
+        format: :json
+      }
+
+      expect do
+        put apiary_path(apiary), payload, headers
+      end.to make_database_queries(count: 7..8)
+
+      expect(response.status).to eq(201)
+    end
+
     it 'does not allow users with read permissions to update an apiary' do
       beekeeper.permission = Beekeeper::Roles::Viewer
       beekeeper.save!
@@ -287,6 +337,12 @@ RSpec.describe ApiariesController, type: :request do
       end.to change{ Apiary.count }.by(-1)
 
       expect(response.status).to eq(200)
+    end
+
+    it 'makes 10 queries' do
+      expect do
+        delete apiary_path(apiary), { format: :json }, headers
+      end.to make_database_queries(count: 9..10)
     end
 
     it 'removes all beekeepers associated with this apiary' do

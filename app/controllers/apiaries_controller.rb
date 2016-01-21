@@ -1,13 +1,12 @@
 class ApiariesController < ApplicationController
   before_action :authenticate
-  before_action :set_apiary, only: [:update, :destroy]
+  before_action :set_apiary, only: [:show, :update, :destroy]
 
   def index
     @apiaries = Apiary.for_user(@user)
   end
 
   def show
-    @apiary = Apiary.includes(:hives).find(params[:id])
     authorize(@apiary)
   end
 
@@ -38,7 +37,7 @@ class ApiariesController < ApplicationController
   private
 
   def set_apiary
-    @apiary = Apiary.find(params[:id])
+    @apiary = Apiary.includes(:hives).find(params[:id])
     authorize(@apiary)
   end
 

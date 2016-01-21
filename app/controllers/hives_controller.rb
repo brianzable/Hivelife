@@ -24,8 +24,6 @@ class HivesController < ApplicationController
   end
 
   def update
-    authorize(@hive)
-
     if @hive.update(hive_params)
       render action: 'show', status: :created, location: [@hive.apiary, @hive]
     else
@@ -34,8 +32,6 @@ class HivesController < ApplicationController
   end
 
   def destroy
-    authorize(@hive)
-
     @hive.destroy
     render json: { head: :no_content }
   end

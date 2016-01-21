@@ -14,7 +14,7 @@ RSpec.describe BeekeepersController, type: :request do
     )
   end
 
-  let(:beekeeper) do
+  let!(:beekeeper) do
     FactoryGirl.create(
       :beekeeper,
       user: FactoryGirl.create(:user),
@@ -45,6 +45,14 @@ RSpec.describe BeekeepersController, type: :request do
 
       expect(response.status).to eq(404)
     end
+
+    it 'makes 4 queries' do
+      expect do
+        get apiary_beekeepers_path(apiary), { format: :json }, headers
+      end.to make_database_queries(count: 4)
+
+      expect(response.status).to eq(200)
+    end
   end
 
   describe '#show' do
@@ -60,6 +68,14 @@ RSpec.describe BeekeepersController, type: :request do
 
       expect(response.status).to eq(200)
       expect(response.body).to eq(beekeeper_json)
+    end
+
+    it 'makes 4 queries' do
+      expect do
+        get apiary_beekeeper_path(apiary, beekeeper), { format: :json }, headers
+      end.to make_database_queries(count: 4)
+
+      expect(response.status).to eq(200)
     end
 
     it 'does not allow users to view beekeepers at other apiaries' do
@@ -113,6 +129,23 @@ RSpec.describe BeekeepersController, type: :request do
       expect(parsed_response['apiary_id']).to be(apiary.id)
       expect(parsed_response['permission']).to eq(Beekeeper::Roles::Viewer)
       expect(parsed_response['editable']).to eq(true)
+    end
+
+    it 'makes 8 queries' do
+      new_user = FactoryGirl.create(:user, email: 'new_guy@example.com')
+      payload = {
+        beekeeper: {
+          email: new_user.email,
+          permission: Beekeeper::Roles::Viewer
+        },
+        format: :json
+      }
+
+      expect do
+        post apiary_beekeepers_path(apiary), payload, headers
+      end.to make_database_queries(count: 7..8)
+
+      expect(response.status).to eq(201)
     end
 
     it 'will not allow users with write access to create beekeepers' do
@@ -211,6 +244,21 @@ RSpec.describe BeekeepersController, type: :request do
       expect(beekeeper.permission).to eq(Beekeeper::Roles::Inspector)
 
       expect(response.status).to be(200)
+    end
+
+    it 'makes 8 queries' do
+      payload = {
+        beekeeper: {
+          permission: Beekeeper::Roles::Inspector
+        },
+        format: :json
+      }
+
+      expect do
+        put apiary_beekeeper_path(apiary, beekeeper), payload, headers
+      end.to make_database_queries(count: 7..8)
+
+      expect(response.status).to eq(200)
     end
 
     it 'will not allow users with write access to update beekeepers' do
@@ -341,6 +389,21 @@ RSpec.describe BeekeepersController, type: :request do
 
       expect(response.status).to eq(200)
       expect { a_beekeeper.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'makes 7 queries' do
+      a_user = FactoryGirl.create(:user, email: 'a_user@example.com')
+      a_beekeeper = FactoryGirl.create(
+        :beekeeper,
+        user: a_user,
+        apiary: apiary,
+        permission: Beekeeper::Roles::Viewer
+      )
+      expect do
+        delete apiary_beekeeper_path(apiary, a_beekeeper), nil, headers
+      end.to make_database_queries(count: 6..7)
+
+      expect(response.status).to eq(200)
     end
 
     it 'does not allow users to remove beekeepers from other apiaries' do

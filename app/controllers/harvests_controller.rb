@@ -1,7 +1,7 @@
 class HarvestsController < ApplicationController
   before_action :authenticate
   before_action :set_harvest, only: [:show, :update, :destroy]
-  before_action :set_hive, only: [:update, :create]
+  before_action :set_hive
   around_action :set_time_zone
 
   def index
@@ -17,7 +17,7 @@ class HarvestsController < ApplicationController
   end
 
   def create
-    @harvest = @hive.harvests.new(harvest_params)
+    @harvest = @hive.harvests.build(harvest_params)
     authorize(@harvest)
 
     if @harvest.save
@@ -47,7 +47,11 @@ class HarvestsController < ApplicationController
   private
 
   def set_hive
-    @hive = Hive.find(params[:hive_id])
+    if @harvest.present?
+      @hive = @harvest.hive
+    else
+      @hive = Hive.find(params[:hive_id])
+    end
   end
 
   def set_harvest
@@ -69,7 +73,6 @@ class HarvestsController < ApplicationController
   end
 
   def pundit_user
-    @hive = apiary = Hive.find(params[:hive_id])
     @beekeeper = Beekeeper.where(user: @user, apiary_id: @hive.apiary_id).take
   end
 end

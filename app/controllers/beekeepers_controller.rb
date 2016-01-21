@@ -5,7 +5,9 @@ class BeekeepersController < ApplicationController
   before_action :set_and_authorize_beekeeper, only: [:show, :update, :destroy]
 
   def index
-    @beekeepers = Beekeeper.where(apiary_id: params[:apiary_id])
+    @beekeepers = Beekeeper
+      .includes(:user)
+      .where(apiary_id: params[:apiary_id])
     authorize(@beekeepers)
   end
 
@@ -14,7 +16,7 @@ class BeekeepersController < ApplicationController
 
   def create
     @beekeeper = Beekeeper.new(create_beekeeper_params)
-    authorize @beekeeper
+    authorize(@beekeeper)
 
     if @beekeeper.save
       render action: 'show', status: :created
