@@ -29,16 +29,42 @@
           </div>
 
           <div class="form-row">
-            <paper-input id="city" label="city" class="flex"></paper-input>
-            <paper-input id="state" label="state" class="flex"></paper-input>
             <paper-input
-            id="postalCode"
-            label="zip code"
-            class="flex"
-            auto-validate
-            required
-            error-message="zip code is required">
-          </paper-input>
+              id="city"
+              label="city"
+              class="flex"
+              auto-validate
+              required
+              error-message="city is required">
+            </paper-input>
+
+            <paper-input
+              id="region"
+              label="region / state"
+              auto-validate
+              required
+              error-message="region/state is required">
+            </paper-input>
+
+            <paper-input
+              id="postalCode"
+              label="zip code"
+              class="flex"
+              auto-validate
+              required
+              error-message="zip code is required">
+            </paper-input>
+          </div>
+
+          <div class="form-row">
+            <paper-input
+              id="country"
+              label="country"
+              class="flex"
+              auto-validate
+              required
+              error-message="country is required">
+            </paper-input>
           </div>
         </paper-material>
       </div>
@@ -94,7 +120,8 @@
         this.$.name.value = '';
         this.$.streetAddress.value = '';
         this.$.city.value = '';
-        this.$.state.value = '';
+        this.$.region.value = '';
+        this.$.country.value = '';
         this.$.postalCode.value = '';
       },
 
@@ -108,9 +135,12 @@
 
       _formValid: function () {
         var nameValid = this.$.name.validate();
-        var zipValid = this.$.postalCode.validate();
+        var postalValid = this.$.postalCode.validate();
+        var cityValid = this.$.city.validate();
+        var regionValid = this.$.region.validate();
+        var countryValid = this.$.country.validate();
 
-        return nameValid && zipValid;
+        return nameValid && postalValid && cityValid && regionValid && countryValid;
       },
 
       _submitForm: function () {
@@ -123,8 +153,9 @@
             name: this.$.name.value,
             street_address: this.$.streetAddress.value,
             city: this.$.city.value,
-            state: this.$.state.value,
-            zip_code: this.$.postalCode.value
+            region: this.$.region.value,
+            postal_code: this.$.postalCode.value,
+            country: this.$.country.value
           }
         };
 
@@ -143,8 +174,9 @@
         this.$.name.value = apiary.name;
         this.$.streetAddress.value = apiary.street_address;
         this.$.city.value = apiary.city;
-        this.$.state.value = apiary.state;
-        this.$.postalCode.value = apiary.zip_code;
+        this.$.region.value = apiary.region;
+        this.$.postalCode.value = apiary.postal_code;
+        this.$.country.value = apiary.country;
       },
 
       _handleApiaryLoadError: function (event) {

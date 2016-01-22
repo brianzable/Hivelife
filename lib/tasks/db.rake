@@ -42,7 +42,7 @@ namespace :db do
       :beekeeper,
       apiary: main_apiary,
       user: user,
-      permission: Beekeeper::Roles::Admin
+      role: Beekeeper::Roles::Admin
     )
 
     main_apiary.hives.each do |hive|
@@ -79,7 +79,7 @@ namespace :db do
         :beekeeper,
         apiary: main_apiary,
         user: u,
-        permission: Beekeeper::Roles::Viewer
+        role: Beekeeper::Roles::Viewer
       )
     end
   end
