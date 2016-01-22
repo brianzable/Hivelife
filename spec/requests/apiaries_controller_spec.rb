@@ -61,10 +61,10 @@ RSpec.describe ApiariesController, type: :request do
       expect(parsed_beekeeper['role']).to eq(Beekeeper::Roles::Viewer)
     end
 
-    it 'makes 5 queries' do
+    it 'makes 4 queries' do
       expect do
         get apiary_path(apiary), { format: :json }, headers
-      end.to make_database_queries(count: 5)
+      end.to make_database_queries(count: 4)
 
       expect(response.status).to eq(200)
     end
