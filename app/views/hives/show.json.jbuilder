@@ -1,7 +1,7 @@
 json.extract! @hive, :id, :name, :apiary_id, :breed, :hive_type, :latitude, :longitude, :orientation, :exact_location_sharing, :data_sharing,:comments, :source
 
 json.beekeeper do
-  json.role @beekeeper.permission
+  json.role @beekeeper.role
 end
 
 json.inspections do

@@ -97,7 +97,7 @@ describe InspectionsController, type: :request do
     end
 
     it 'allows beekeepers with read permissions to view an inspection' do
-      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.role = Beekeeper::Roles::Viewer
       beekeeper.save!
 
       get hive_inspection_path(hive, inspection), { format: :json }, headers
@@ -105,7 +105,7 @@ describe InspectionsController, type: :request do
     end
 
     it 'allows beekeepers with write permissions to view an inspection' do
-      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.role = Beekeeper::Roles::Inspector
       beekeeper.save!
 
       get hive_inspection_path(hive, inspection), { format: :json }, headers
@@ -113,7 +113,7 @@ describe InspectionsController, type: :request do
     end
 
     it 'allows beekeepers with admin permissions to view an inspection' do
-      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.role = Beekeeper::Roles::Admin
       beekeeper.save!
 
       get hive_inspection_path(hive, inspection), { format: :json }, headers
@@ -177,7 +177,7 @@ describe InspectionsController, type: :request do
     end
 
     it 'allows beekeepers with read permission to view this route' do
-      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.role = Beekeeper::Roles::Viewer
       beekeeper.save!
 
       get defaults_hive_inspections_path(hive), { format: :json }, headers
@@ -186,7 +186,7 @@ describe InspectionsController, type: :request do
     end
 
     it 'allows beekeepers with write permission to view this route' do
-      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.role = Beekeeper::Roles::Inspector
       beekeeper.save!
 
       get defaults_hive_inspections_path(hive), { format: :json }, headers
@@ -195,7 +195,7 @@ describe InspectionsController, type: :request do
     end
 
     it 'allows beekeepers with admin permission to view this route' do
-      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.role = Beekeeper::Roles::Admin
       beekeeper.save!
 
       get defaults_hive_inspections_path(hive), { format: :json }, headers
@@ -295,7 +295,7 @@ describe InspectionsController, type: :request do
     end
 
     it 'does not allow beekeepers with read permissions to create an inspection' do
-      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.role = Beekeeper::Roles::Viewer
       beekeeper.save!
 
       payload = {
@@ -310,7 +310,7 @@ describe InspectionsController, type: :request do
     end
 
     it 'allows beekeepers with write permission to create an inspection' do
-      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.role = Beekeeper::Roles::Inspector
       beekeeper.save!
 
       payload = {
@@ -325,7 +325,7 @@ describe InspectionsController, type: :request do
     end
 
     it 'allows beekeepers with admin permissions to create an inspection' do
-      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.role = Beekeeper::Roles::Admin
       beekeeper.save!
 
       payload = {
@@ -482,7 +482,7 @@ describe InspectionsController, type: :request do
     end
 
     it 'does not allow users with read permission to update an inspection' do
-      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.role = Beekeeper::Roles::Viewer
       beekeeper.save
 
       payload = {
@@ -500,7 +500,7 @@ describe InspectionsController, type: :request do
     end
 
     it 'allows users with write permissions to update an inspection' do
-      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.role = Beekeeper::Roles::Inspector
       beekeeper.save
 
       payload = {
@@ -518,7 +518,7 @@ describe InspectionsController, type: :request do
     end
 
     it 'allows users with admin permissions to update an inspection' do
-      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.role = Beekeeper::Roles::Admin
       beekeeper.save
 
       payload = {
@@ -578,7 +578,7 @@ describe InspectionsController, type: :request do
     end
 
     it 'allows users with admin permissions to delete an inspection' do
-      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.role = Beekeeper::Roles::Admin
       beekeeper.save
 
       expect do
@@ -589,7 +589,7 @@ describe InspectionsController, type: :request do
     end
 
     it 'allows users with write permissions to delete an inspection' do
-      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.role = Beekeeper::Roles::Inspector
       beekeeper.save
 
       expect do
@@ -600,7 +600,7 @@ describe InspectionsController, type: :request do
     end
 
     it 'does not allow users with read permissions to delete an inspection' do
-      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.role = Beekeeper::Roles::Viewer
       beekeeper.save
 
       expect do

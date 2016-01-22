@@ -14,7 +14,7 @@ class ApiariesController < ApplicationController
     @apiary = Apiary.new(apiary_params)
 
     if @apiary.save
-      @beekeeper = Beekeeper.create(apiary: @apiary, user: @user, permission: Beekeeper::Roles::Admin)
+      @beekeeper = Beekeeper.create(apiary: @apiary, user: @user, role: Beekeeper::Roles::Admin)
       render action: 'show', status: :created, location: @apiary
     else
       render json: @apiary.errors.full_messages, status: :unprocessable_entity
@@ -44,10 +44,11 @@ class ApiariesController < ApplicationController
   def apiary_params
     params.require(:apiary).permit(
       :name,
-      :zip_code,
+      :postal_code,
       :city,
-      :state,
-      :street_address
+      :region,
+      :street_address,
+      :country
     )
   end
 

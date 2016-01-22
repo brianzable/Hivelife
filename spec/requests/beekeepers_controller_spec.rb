@@ -10,7 +10,7 @@ RSpec.describe BeekeepersController, type: :request do
       :beekeeper,
       apiary: apiary,
       user: user,
-      permission: Beekeeper::Roles::Admin
+      role: Beekeeper::Roles::Admin
     )
   end
 
@@ -19,7 +19,7 @@ RSpec.describe BeekeepersController, type: :request do
       :beekeeper,
       user: FactoryGirl.create(:user),
       apiary: apiary,
-      permission: Beekeeper::Roles::Viewer
+      role: Beekeeper::Roles::Viewer
     )
   end
 
@@ -59,7 +59,7 @@ RSpec.describe BeekeepersController, type: :request do
     it 'returns a JSON representation of a beekeeper' do
       beekeeper_json = {
         id: beekeeper.id,
-        permission: beekeeper.permission,
+        role: beekeeper.role,
         apiary_id: beekeeper.apiary_id,
         editable: true
       }.to_json
@@ -98,7 +98,7 @@ RSpec.describe BeekeepersController, type: :request do
       payload = {
         beekeeper: {
           email: new_user.email,
-          permission: Beekeeper::Roles::Viewer
+          role: Beekeeper::Roles::Viewer
         },
         format: :json
       }
@@ -115,7 +115,7 @@ RSpec.describe BeekeepersController, type: :request do
       payload = {
         beekeeper: {
           email: new_user.email,
-          permission: Beekeeper::Roles::Viewer
+          role: Beekeeper::Roles::Viewer
         },
         format: :json
       }
@@ -127,7 +127,7 @@ RSpec.describe BeekeepersController, type: :request do
       parsed_response = JSON.parse(response.body)
       expect(parsed_response['id']).to_not be_nil
       expect(parsed_response['apiary_id']).to be(apiary.id)
-      expect(parsed_response['permission']).to eq(Beekeeper::Roles::Viewer)
+      expect(parsed_response['role']).to eq(Beekeeper::Roles::Viewer)
       expect(parsed_response['editable']).to eq(true)
     end
 
@@ -136,7 +136,7 @@ RSpec.describe BeekeepersController, type: :request do
       payload = {
         beekeeper: {
           email: new_user.email,
-          permission: Beekeeper::Roles::Viewer
+          role: Beekeeper::Roles::Viewer
         },
         format: :json
       }
@@ -156,7 +156,7 @@ RSpec.describe BeekeepersController, type: :request do
         :beekeeper,
         user: another_user,
         apiary: apiary,
-        permission: Beekeeper::Roles::Inspector
+        role: Beekeeper::Roles::Inspector
       )
 
       yet_another_user = FactoryGirl.create(:user, email: 'yet_another_user@example.com')
@@ -164,7 +164,7 @@ RSpec.describe BeekeepersController, type: :request do
       payload = {
         beekeeper: {
           email: yet_another_user.email,
-          permission: Beekeeper::Roles::Inspector
+          role: Beekeeper::Roles::Inspector
         },
         format: :json
       }
@@ -184,7 +184,7 @@ RSpec.describe BeekeepersController, type: :request do
         :beekeeper,
         user: another_user,
         apiary: apiary,
-        permission: Beekeeper::Roles::Inspector
+        role: Beekeeper::Roles::Inspector
       )
 
       yet_another_user = FactoryGirl.create(:user, email: 'yet_another_user@example.com')
@@ -192,7 +192,7 @@ RSpec.describe BeekeepersController, type: :request do
       payload = {
         beekeeper: {
           email: yet_another_user.email,
-          permission: Beekeeper::Roles::Viewer
+          role: Beekeeper::Roles::Viewer
         },
         format: :json
       }
@@ -214,7 +214,7 @@ RSpec.describe BeekeepersController, type: :request do
       payload = {
         beekeeper: {
           email: another_user.email,
-          permission: Beekeeper::Roles::Viewer
+          role: Beekeeper::Roles::Viewer
         },
         format: :json
       }
@@ -231,17 +231,17 @@ RSpec.describe BeekeepersController, type: :request do
     it 'modifies an existing Beekeeper in the database' do
       payload = {
         beekeeper: {
-          permission: Beekeeper::Roles::Inspector
+          role: Beekeeper::Roles::Inspector
         },
         format: :json
       }
 
-      expect(beekeeper.permission).to eq(Beekeeper::Roles::Viewer)
+      expect(beekeeper.role).to eq(Beekeeper::Roles::Viewer)
 
       put apiary_beekeeper_path(apiary, beekeeper), payload, headers
 
       beekeeper.reload
-      expect(beekeeper.permission).to eq(Beekeeper::Roles::Inspector)
+      expect(beekeeper.role).to eq(Beekeeper::Roles::Inspector)
 
       expect(response.status).to be(200)
     end
@@ -249,7 +249,7 @@ RSpec.describe BeekeepersController, type: :request do
     it 'makes 8 queries' do
       payload = {
         beekeeper: {
-          permission: Beekeeper::Roles::Inspector
+          role: Beekeeper::Roles::Inspector
         },
         format: :json
       }
@@ -267,7 +267,7 @@ RSpec.describe BeekeepersController, type: :request do
         :beekeeper,
         user: write_user,
         apiary: apiary,
-        permission: Beekeeper::Roles::Inspector
+        role: Beekeeper::Roles::Inspector
       )
       headers = { 'Authorization' => "Token token=#{write_user.authentication_token}" }
 
@@ -276,12 +276,12 @@ RSpec.describe BeekeepersController, type: :request do
         :beekeeper,
         user: another_user,
         apiary: apiary,
-        permission: Beekeeper::Roles::Viewer
+        role: Beekeeper::Roles::Viewer
       )
 
       payload = {
         beekeeper: {
-          permission: Beekeeper::Roles::Inspector
+          role: Beekeeper::Roles::Inspector
         },
         format: :json
       }
@@ -289,7 +289,7 @@ RSpec.describe BeekeepersController, type: :request do
       put apiary_beekeeper_path(apiary, another_beekeeper), payload, headers
 
       another_beekeeper.reload
-      expect(another_beekeeper.permission).to eq(Beekeeper::Roles::Viewer)
+      expect(another_beekeeper.role).to eq(Beekeeper::Roles::Viewer)
 
       expect(response.status).to eq(404)
     end
@@ -300,7 +300,7 @@ RSpec.describe BeekeepersController, type: :request do
         :beekeeper,
         user: read_user,
         apiary: apiary,
-        permission: Beekeeper::Roles::Viewer
+        role: Beekeeper::Roles::Viewer
       )
       headers = { 'Authorization' => "Token token=#{read_user.authentication_token}" }
 
@@ -309,12 +309,12 @@ RSpec.describe BeekeepersController, type: :request do
         :beekeeper,
         user: another_user,
         apiary: apiary,
-        permission: Beekeeper::Roles::Viewer
+        role: Beekeeper::Roles::Viewer
       )
 
       payload = {
         beekeeper: {
-          permission: Beekeeper::Roles::Inspector
+          role: Beekeeper::Roles::Inspector
         },
         format: :json
       }
@@ -322,7 +322,7 @@ RSpec.describe BeekeepersController, type: :request do
       put apiary_beekeeper_path(apiary, another_beekeeper), payload, headers
 
       expect(response.status).to eq(404)
-      expect(another_beekeeper.reload.permission).to eq(Beekeeper::Roles::Viewer)
+      expect(another_beekeeper.reload.role).to eq(Beekeeper::Roles::Viewer)
     end
 
     it 'will not allow random users to edit beekeepers at different apiaries' do
@@ -332,12 +332,12 @@ RSpec.describe BeekeepersController, type: :request do
         :beekeeper,
         user: a_user,
         apiary: different_apiary,
-        permission: Beekeeper::Roles::Viewer
+        role: Beekeeper::Roles::Viewer
       )
 
       payload = {
         beekeeper: {
-          permission: Beekeeper::Roles::Admin
+          role: Beekeeper::Roles::Admin
         },
         format: :json
       }
@@ -345,7 +345,7 @@ RSpec.describe BeekeepersController, type: :request do
       put apiary_beekeeper_path(different_apiary, a_beekeeper), payload, headers
 
       expect(response.status).to eq(404)
-      expect(a_beekeeper.reload.permission).to eq(Beekeeper::Roles::Viewer)
+      expect(a_beekeeper.reload.role).to eq(Beekeeper::Roles::Viewer)
     end
 
     it 'does not allow admin to demote other admin' do
@@ -354,12 +354,12 @@ RSpec.describe BeekeepersController, type: :request do
         :beekeeper,
         user: another_user,
         apiary: apiary,
-        permission: Beekeeper::Roles::Admin
+        role: Beekeeper::Roles::Admin
       )
 
       payload = {
         beekeeper: {
-          permission: Beekeeper::Roles::Viewer
+          role: Beekeeper::Roles::Viewer
         },
         format: :json
       }
@@ -367,7 +367,7 @@ RSpec.describe BeekeepersController, type: :request do
       put apiary_beekeeper_path(apiary, another_admin), payload, headers
 
       expect(response.status).to eq(404)
-      expect(another_admin.reload.permission).to eq(Beekeeper::Roles::Admin)
+      expect(another_admin.reload.role).to eq(Beekeeper::Roles::Admin)
     end
   end
 
@@ -378,7 +378,7 @@ RSpec.describe BeekeepersController, type: :request do
         :beekeeper,
         user: a_user,
         apiary: apiary,
-        permission: Beekeeper::Roles::Viewer
+        role: Beekeeper::Roles::Viewer
       )
 
       expect do
@@ -397,7 +397,7 @@ RSpec.describe BeekeepersController, type: :request do
         :beekeeper,
         user: a_user,
         apiary: apiary,
-        permission: Beekeeper::Roles::Viewer
+        role: Beekeeper::Roles::Viewer
       )
       expect do
         delete apiary_beekeeper_path(apiary, a_beekeeper), nil, headers
@@ -413,7 +413,7 @@ RSpec.describe BeekeepersController, type: :request do
         :beekeeper,
         user: a_user,
         apiary: different_apiary,
-        permission: Beekeeper::Roles::Viewer
+        role: Beekeeper::Roles::Viewer
       )
 
       expect do
@@ -430,7 +430,7 @@ RSpec.describe BeekeepersController, type: :request do
         :beekeeper,
         user: write_user,
         apiary: apiary,
-        permission: Beekeeper::Roles::Inspector
+        role: Beekeeper::Roles::Inspector
       )
       headers = { 'Authorization' => "Token token=#{write_user.authentication_token}" }
 
@@ -439,7 +439,7 @@ RSpec.describe BeekeepersController, type: :request do
         :beekeeper,
         user: read_user,
         apiary: apiary,
-        permission: Beekeeper::Roles::Viewer
+        role: Beekeeper::Roles::Viewer
       )
 
       expect do
@@ -456,7 +456,7 @@ RSpec.describe BeekeepersController, type: :request do
         :beekeeper,
         user: read_user,
         apiary: apiary,
-        permission: Beekeeper::Roles::Viewer
+        role: Beekeeper::Roles::Viewer
       )
       headers = { 'Authorization' => "Token token=#{read_user.authentication_token}" }
 
@@ -465,7 +465,7 @@ RSpec.describe BeekeepersController, type: :request do
         :beekeeper,
         user: another_read_user,
         apiary: apiary,
-        permission: Beekeeper::Roles::Viewer
+        role: Beekeeper::Roles::Viewer
       )
 
       expect do
@@ -491,7 +491,7 @@ RSpec.describe BeekeepersController, type: :request do
         :beekeeper,
         user: another_user,
         apiary: apiary,
-        permission: Beekeeper::Roles::Admin
+        role: Beekeeper::Roles::Admin
       )
 
       expect do

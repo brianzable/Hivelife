@@ -3,7 +3,7 @@ class Apiary < ActiveRecord::Base
 	has_many :hives, -> { order 'name ASC' }, dependent: :destroy
 	has_many :users, through: :beekeepers
 
-  validates_presence_of :name, :zip_code
+  validates_presence_of :name, :postal_code
 
   def self.for_user(user)
     joins(:beekeepers)

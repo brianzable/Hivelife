@@ -1,5 +1,5 @@
 FactoryGirl.define do
   factory :beekeeper do
-    permission 'Admin'
+    role Beekeeper::Roles::Admin
   end
 end

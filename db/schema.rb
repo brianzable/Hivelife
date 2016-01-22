@@ -11,53 +11,43 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160109170011) do
+ActiveRecord::Schema.define(version: 20160122163855) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "apiaries", force: :cascade do |t|
-    t.string   "name",           limit: 255
-    t.string   "zip_code",       limit: 255
-    t.string   "photo_url",      limit: 255, default: "defaults/beehive_placeholder.png", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "city",           limit: 255
-    t.string   "state",          limit: 255
-    t.string   "street_address", limit: 255
+    t.string   "name",           null: false
+    t.string   "postal_code"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.string   "city"
+    t.string   "region"
+    t.string   "street_address"
+    t.string   "country"
   end
 
   create_table "beekeepers", force: :cascade do |t|
-    t.integer  "apiary_id"
-    t.integer  "user_id"
-    t.string   "permission", limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer  "apiary_id",  null: false
+    t.integer  "user_id",    null: false
+    t.string   "role",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table "brood_boxes", force: :cascade do |t|
-    t.integer  "inspection_id"
-    t.string   "pattern",                   limit: 255
-    t.boolean  "eggs_sighted"
-    t.boolean  "queen_sighted"
-    t.boolean  "queen_cells_sighted"
-    t.boolean  "swarm_cells_capped"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "honey_sighted"
-    t.boolean  "pollen_sighted"
-    t.boolean  "swarm_cells_sighted"
-    t.boolean  "supersedure_cells_sighted"
-  end
+  add_index "beekeepers", ["apiary_id"], name: "index_beekeepers_on_apiary_id", using: :btree
+  add_index "beekeepers", ["user_id", "apiary_id"], name: "index_beekeepers_on_user_id_and_apiary_id", using: :btree
 
   create_table "diseases", force: :cascade do |t|
-    t.integer  "inspection_id"
-    t.string   "disease_type",  limit: 255
-    t.string   "treatment",     limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer  "inspection_id", null: false
+    t.string   "disease_type"
+    t.string   "treatment"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
     t.string   "notes"
   end
+
+  add_index "diseases", ["inspection_id"], name: "index_diseases_on_inspection_id", using: :btree
 
   create_table "harvest_edits", force: :cascade do |t|
     t.integer  "harvest_id",   null: false
@@ -73,39 +63,34 @@ ActiveRecord::Schema.define(version: 20160109170011) do
     t.integer  "honey_weight"
     t.integer  "wax_weight"
     t.datetime "harvested_at"
-    t.string   "weight_units",       limit: 255
-    t.string   "notes",              limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "hive_id"
+    t.string   "weight_units"
+    t.string   "notes"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.integer  "hive_id",            null: false
     t.string   "honey_weight_units"
     t.string   "wax_weight_units"
   end
 
+  add_index "harvests", ["hive_id"], name: "index_harvests_on_hive_id", using: :btree
+
   create_table "hives", force: :cascade do |t|
-    t.integer  "apiary_id"
-    t.string   "name",                   limit: 255,                           default: "",    null: false
-    t.string   "breed",                  limit: 255
-    t.string   "hive_type",              limit: 255
-    t.boolean  "exact_location_sharing",                                       default: false, null: false
-    t.boolean  "data_sharing",                                                 default: false, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.decimal  "latitude",                           precision: 18, scale: 15
-    t.decimal  "longitude",                          precision: 18, scale: 15
-    t.string   "orientation",            limit: 255
+    t.integer  "apiary_id",                                                        null: false
+    t.string   "name",                                                             null: false
+    t.string   "breed"
+    t.string   "hive_type"
+    t.boolean  "exact_location_sharing",                           default: false, null: false
+    t.boolean  "data_sharing",                                     default: false, null: false
+    t.datetime "created_at",                                                       null: false
+    t.datetime "updated_at",                                                       null: false
+    t.decimal  "latitude",               precision: 18, scale: 15
+    t.decimal  "longitude",              precision: 18, scale: 15
+    t.string   "orientation"
     t.string   "comments"
     t.string   "source"
   end
 
-  create_table "honey_supers", force: :cascade do |t|
-    t.integer  "inspection_id"
-    t.decimal  "full",              precision: 10
-    t.decimal  "capped",            precision: 10
-    t.boolean  "ready_for_harvest"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
+  add_index "hives", ["apiary_id"], name: "index_hives_on_apiary_id", using: :btree
 
   create_table "inspection_edits", force: :cascade do |t|
     t.integer  "inspection_id", null: false
@@ -118,18 +103,18 @@ ActiveRecord::Schema.define(version: 20160109170011) do
   add_index "inspection_edits", ["inspection_id"], name: "index_inspection_edits_on_inspection_id", using: :btree
 
   create_table "inspections", force: :cascade do |t|
-    t.decimal  "temperature",                           precision: 10
-    t.string   "weather_conditions",        limit: 255
-    t.string   "weather_notes",             limit: 255
-    t.string   "notes",                     limit: 255
+    t.decimal  "temperature",               precision: 10
+    t.string   "weather_conditions"
+    t.string   "weather_notes"
+    t.string   "notes"
     t.boolean  "ventilated"
-    t.string   "entrance_reducer",          limit: 255
+    t.string   "entrance_reducer"
     t.boolean  "queen_excluder"
-    t.string   "hive_orientation",          limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "inspected_at"
-    t.integer  "hive_id"
+    t.string   "hive_orientation"
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.datetime "inspected_at",                             null: false
+    t.integer  "hive_id",                                  null: false
     t.integer  "health"
     t.string   "brood_pattern"
     t.boolean  "eggs_sighted"
@@ -144,15 +129,17 @@ ActiveRecord::Schema.define(version: 20160109170011) do
     t.string   "temperature_units"
   end
 
+  add_index "inspections", ["hive_id"], name: "index_inspections_on_hive_id", using: :btree
+
   create_table "users", force: :cascade do |t|
-    t.string   "email",                           limit: 255, null: false
-    t.string   "crypted_password",                limit: 255
-    t.string   "salt",                            limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "authentication_token",            limit: 255
-    t.string   "activation_state",                limit: 255
-    t.string   "activation_token",                limit: 255
+    t.string   "email",                           null: false
+    t.string   "crypted_password"
+    t.string   "salt"
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.string   "authentication_token"
+    t.string   "activation_state"
+    t.string   "activation_token"
     t.datetime "activation_token_expires_at"
     t.string   "first_name"
     t.string   "last_name"

@@ -57,12 +57,12 @@ class BeekeepersController < ApplicationController
   end
 
   def create_beekeeper_params
-    whitelisted_params = params.require(:beekeeper).permit(:permission)
+    whitelisted_params = params.require(:beekeeper).permit(:role)
     whitelisted_params.merge(user: @beekeeper_user, apiary: @apiary)
   end
 
   def update_beekeeper_params
-    params.require(:beekeeper).permit(:permission)
+    params.require(:beekeeper).permit(:role)
   end
 
   def pundit_user

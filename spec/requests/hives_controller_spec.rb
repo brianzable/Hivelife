@@ -56,7 +56,7 @@ describe HivesController, type: :request do
     end
 
     it 'allows users with read permission to view hive information' do
-      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.role = Beekeeper::Roles::Viewer
       beekeeper.save!
 
       get apiary_hive_path(apiary, hive), { format: :json }, headers
@@ -67,7 +67,7 @@ describe HivesController, type: :request do
     end
 
     it 'allows users with write permission to view hive information' do
-      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.role = Beekeeper::Roles::Inspector
       beekeeper.save!
 
       get apiary_hive_path(apiary, hive), { format: :json }, headers
@@ -164,7 +164,7 @@ describe HivesController, type: :request do
     end
 
     it 'allows users with write permission to add a hive to an apiary' do
-      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.role = Beekeeper::Roles::Inspector
       beekeeper.save!
 
       payload = {
@@ -201,7 +201,7 @@ describe HivesController, type: :request do
     end
 
     it 'does not allow users with read permission to add a hive to an apiary' do
-      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.role = Beekeeper::Roles::Viewer
       beekeeper.save!
 
       payload = {
@@ -276,7 +276,7 @@ describe HivesController, type: :request do
     end
 
     it 'allows users with write permission to edit hive information' do
-      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.role = Beekeeper::Roles::Inspector
       beekeeper.save!
 
       payload = {
@@ -291,7 +291,7 @@ describe HivesController, type: :request do
     end
 
     it 'allows users with admin permission to edit hive information' do
-      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.role = Beekeeper::Roles::Admin
       beekeeper.save!
 
       payload = {
@@ -306,7 +306,7 @@ describe HivesController, type: :request do
     end
 
     it 'does not allow users with read permission to edit hive information' do
-      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.role = Beekeeper::Roles::Viewer
       beekeeper.save!
 
       payload = {
@@ -370,7 +370,7 @@ describe HivesController, type: :request do
     end
 
     it 'allows admins to delete a hive from an apiary' do
-      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.role = Beekeeper::Roles::Admin
       beekeeper.save!
 
       expect do
@@ -381,7 +381,7 @@ describe HivesController, type: :request do
     end
 
     it 'does not allow write users to delete a hive from an apiary' do
-      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.role = Beekeeper::Roles::Inspector
       beekeeper.save!
 
       expect do
@@ -392,7 +392,7 @@ describe HivesController, type: :request do
     end
 
     it 'does not allow read users to delete a hive from an apiary' do
-      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.role = Beekeeper::Roles::Viewer
       beekeeper.save!
 
       expect do

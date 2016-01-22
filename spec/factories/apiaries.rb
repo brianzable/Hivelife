@@ -1,10 +1,10 @@
 FactoryGirl.define do
   factory :apiary do
     name 'Test Apiary'
-    zip_code '60126'
+    postal_code '60126'
     city 'My City'
     street_address '123 Fake Street'
-    state 'IL'
+    region 'IL'
 
     factory :apiary_with_hives do
       after(:create) do |apiary, evaluator|

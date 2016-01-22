@@ -18,20 +18,20 @@ class Beekeeper < ActiveRecord::Base
     presence: { message: 'could not be found' },
 		uniqueness: { scope: :apiary_id, message: "is already a beekeeper at this apiary." }
 
-	validates :permission, inclusion: VALID_ROLES
+	validates :role, inclusion: VALID_ROLES
 
 	validates :apiary_id, presence: true
 
 	def admin?
-		permission == Roles::Admin
+		role == Roles::Admin
 	end
 
 	def read?
-		(permission == Roles::Viewer) || write?
+		(role == Roles::Viewer) || write?
 	end
 
 	def write?
-		(permission == Roles::Inspector) || admin?
+		(role == Roles::Inspector) || admin?
 	end
 
 	def self.for_apiary(apiary_id)

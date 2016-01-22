@@ -20,10 +20,10 @@ RSpec.describe ApiariesController, type: :request do
       parsed_apiary = apiaries.first
       expect(parsed_apiary['id']).to eq(apiary.id)
       expect(parsed_apiary['name']).to eq(apiary.name)
-      expect(parsed_apiary['photo_url']).to eq(apiary.photo_url)
       expect(parsed_apiary['city']).to eq(apiary.city)
-      expect(parsed_apiary['state']).to eq(apiary.state)
-      expect(parsed_apiary['zip_code']).to eq(apiary.zip_code)
+      expect(parsed_apiary['region']).to eq(apiary.region)
+      expect(parsed_apiary['postal_code']).to eq(apiary.postal_code)
+      expect(parsed_apiary['country']).to eq(apiary.country)
 
       parsed_apiary_hives = parsed_apiary['hives']
       expect(parsed_apiary_hives.count).to be(1)
@@ -42,7 +42,7 @@ RSpec.describe ApiariesController, type: :request do
 
   describe '#show' do
     it 'allows beekeepers with read permissions to view an apiary' do
-      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.role = Beekeeper::Roles::Viewer
       beekeeper.save!
 
       get apiary_path(apiary), { format: :json }, headers
@@ -52,10 +52,9 @@ RSpec.describe ApiariesController, type: :request do
       parsed_apiary = JSON.parse(response.body)
       expect(parsed_apiary['id']).to eq(apiary.id)
       expect(parsed_apiary['name']).to eq(apiary.name)
-      expect(parsed_apiary['photo_url']).to eq(apiary.photo_url)
       expect(parsed_apiary['city']).to eq(apiary.city)
-      expect(parsed_apiary['state']).to eq(apiary.state)
-      expect(parsed_apiary['zip_code']).to eq(apiary.zip_code)
+      expect(parsed_apiary['region']).to eq(apiary.region)
+      expect(parsed_apiary['postal_code']).to eq(apiary.postal_code)
 
       parsed_beekeeper = parsed_apiary['beekeeper']
       expect(parsed_beekeeper['role']).to eq(Beekeeper::Roles::Viewer)
@@ -70,7 +69,7 @@ RSpec.describe ApiariesController, type: :request do
     end
 
     it 'allows beekeepers with write permissions to view an apiary' do
-      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.role = Beekeeper::Roles::Inspector
       beekeeper.save!
 
       get apiary_path(apiary), { format: :json }, headers
@@ -79,7 +78,7 @@ RSpec.describe ApiariesController, type: :request do
     end
 
     it 'allows beekeepers with admin permissions to view an apiary' do
-      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.role = Beekeeper::Roles::Admin
       beekeeper.save!
 
       get apiary_path(apiary), { format: :json }, headers
@@ -113,9 +112,10 @@ RSpec.describe ApiariesController, type: :request do
       payload = {
         apiary: {
           name: 'My Apiary',
-          zip_code: '60000',
+          postal_code: '60000',
           city: 'A Town',
-          state: 'IL',
+          region: 'IL',
+          country: 'USA',
           street_address: '123 Fake St'
         },
         format: :json
@@ -130,18 +130,19 @@ RSpec.describe ApiariesController, type: :request do
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['id']).to_not be_nil
       expect(parsed_body['city']).to eq('A Town')
-      expect(parsed_body['state']).to eq('IL')
+      expect(parsed_body['region']).to eq('IL')
       expect(parsed_body['street_address']).to eq('123 Fake St')
-      expect(parsed_body['zip_code']).to eq('60000')
+      expect(parsed_body['postal_code']).to eq('60000')
+      expect(parsed_body['country']).to eq('USA')
     end
 
     it 'makes 10 queries' do
       payload = {
         apiary: {
           name: 'My Apiary',
-          zip_code: '60000',
+          postal_code: '60000',
           city: 'A Town',
-          state: 'IL',
+          region: 'IL',
           street_address: '123 Fake St'
         },
         format: :json
@@ -158,9 +159,9 @@ RSpec.describe ApiariesController, type: :request do
       payload = {
         apiary: {
           name: 'My Apiary',
-          zip_code: '60000',
+          postal_code: '60000',
           city: 'A Town',
-          state: 'IL',
+          region: 'IL',
           street_address: '123 Fake St'
         },
         format: :json
@@ -173,14 +174,14 @@ RSpec.describe ApiariesController, type: :request do
       expect(response.status).to eq(201)
 
       beekeeper = Beekeeper.last
-      expect(beekeeper.permission).to eq(Beekeeper::Roles::Admin)
+      expect(beekeeper.role).to eq(Beekeeper::Roles::Admin)
       expect(beekeeper.apiary).to eq(Apiary.last)
     end
 
     it 'returns an error when trying to create an apiary with no name' do
       payload = {
         apiary: {
-          zip_code: '60000'
+          postal_code: '60000'
         },
         format: :json
       }
@@ -214,7 +215,7 @@ RSpec.describe ApiariesController, type: :request do
       expect(response.status).to eq(422)
 
       parsed_response = JSON.parse(response.body)
-      expect(parsed_response).to eq(["Zip code can't be blank"])
+      expect(parsed_response).to eq(["Postal code can't be blank"])
     end
 
     it 'returns multiple errors when they occur' do
@@ -234,13 +235,13 @@ RSpec.describe ApiariesController, type: :request do
       expect(response.status).to eq(422)
 
       parsed_response = JSON.parse(response.body)
-      expect(parsed_response).to eq(["Name can't be blank", "Zip code can't be blank"])
+      expect(parsed_response).to eq(["Name can't be blank", "Postal code can't be blank"])
     end
   end
 
   describe '#update' do
     it 'allows a beekeeper with admin permissions to update an apiary' do
-      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.role = Beekeeper::Roles::Admin
       beekeeper.save!
 
       payload = {
@@ -273,7 +274,7 @@ RSpec.describe ApiariesController, type: :request do
     end
 
     it 'does not allow users with read permissions to update an apiary' do
-      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.role = Beekeeper::Roles::Viewer
       beekeeper.save!
 
       payload = {
@@ -290,8 +291,8 @@ RSpec.describe ApiariesController, type: :request do
       expect(apiary.city).to eq('My City')
     end
 
-    it 'does not allow users with write permissions to update an apiary' do
-      beekeeper.permission = Beekeeper::Roles::Inspector
+    it 'does not allow users with write roles to update an apiary' do
+      beekeeper.role = Beekeeper::Roles::Inspector
       beekeeper.save!
 
       payload = {
@@ -329,7 +330,7 @@ RSpec.describe ApiariesController, type: :request do
 
   describe '#destroy' do
     it 'allows admins at an apiary to delete an apiary' do
-      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.role = Beekeeper::Roles::Admin
       beekeeper.save!
 
       expect do
@@ -346,7 +347,7 @@ RSpec.describe ApiariesController, type: :request do
     end
 
     it 'removes all beekeepers associated with this apiary' do
-      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.role = Beekeeper::Roles::Admin
       beekeeper.save!
 
       expect do
@@ -370,7 +371,7 @@ RSpec.describe ApiariesController, type: :request do
     end
 
     it 'does not allow users with read permissions to destroy an apiary' do
-      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.role = Beekeeper::Roles::Viewer
       beekeeper.save!
 
       expect do
@@ -381,7 +382,7 @@ RSpec.describe ApiariesController, type: :request do
     end
 
     it 'does not allow users with write permissions to destroy an apiary' do
-      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.role = Beekeeper::Roles::Inspector
       beekeeper.save!
 
       expect do

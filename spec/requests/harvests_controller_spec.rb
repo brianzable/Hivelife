@@ -71,7 +71,7 @@ describe HarvestsController, type: :request do
     end
 
     it 'allows beekeepers with read permissions to view a harvest' do
-      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.role = Beekeeper::Roles::Viewer
       beekeeper.save!
 
       get hive_harvest_path(hive, harvest), { format: :json }, headers
@@ -79,7 +79,7 @@ describe HarvestsController, type: :request do
     end
 
     it 'allows beekeepers with write permissions to view a harvest' do
-      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.role = Beekeeper::Roles::Inspector
       beekeeper.save!
 
       get hive_harvest_path(hive, harvest), { format: :json }, headers
@@ -87,7 +87,7 @@ describe HarvestsController, type: :request do
     end
 
     it 'allows beekeepers with admin permissions to view a harvest' do
-      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.role = Beekeeper::Roles::Admin
       beekeeper.save!
 
       get hive_harvest_path(hive, harvest), { format: :json }, headers
@@ -171,7 +171,7 @@ describe HarvestsController, type: :request do
     end
 
     it 'allows beekeepers with write permission to create a harvest' do
-      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.role = Beekeeper::Roles::Inspector
       beekeeper.save!
 
       payload = {
@@ -189,7 +189,7 @@ describe HarvestsController, type: :request do
     end
 
     it 'does not allow users with read permissions to create a harvest' do
-      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.role = Beekeeper::Roles::Viewer
       beekeeper.save!
 
       payload = {
@@ -227,7 +227,7 @@ describe HarvestsController, type: :request do
 
   describe '#update' do
     it 'allows an admin to update a harvest' do
-      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.role = Beekeeper::Roles::Admin
       beekeeper.save!
 
       payload = {
@@ -304,7 +304,7 @@ describe HarvestsController, type: :request do
     end
 
     it 'allows users with write permissions to update a harvest' do
-      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.role = Beekeeper::Roles::Inspector
       beekeeper.save!
 
       payload = {
@@ -320,7 +320,7 @@ describe HarvestsController, type: :request do
     end
 
     it 'does not allow users with read permission to update a harvest' do
-      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.role = Beekeeper::Roles::Viewer
       beekeeper.save!
 
       payload = {
@@ -364,7 +364,7 @@ describe HarvestsController, type: :request do
     end
 
     it 'allows users with admin permissions to delete a harvest' do
-      beekeeper.permission = Beekeeper::Roles::Admin
+      beekeeper.role = Beekeeper::Roles::Admin
       beekeeper.save!
 
       expect do
@@ -383,7 +383,7 @@ describe HarvestsController, type: :request do
     end
 
     it 'allows users with write permissions to delete a harvest' do
-      beekeeper.permission = Beekeeper::Roles::Inspector
+      beekeeper.role = Beekeeper::Roles::Inspector
       beekeeper.save!
 
       expect do
@@ -394,7 +394,7 @@ describe HarvestsController, type: :request do
     end
 
     it 'does not allow users with read permissions to delete a harvest' do
-      beekeeper.permission = Beekeeper::Roles::Viewer
+      beekeeper.role = Beekeeper::Roles::Viewer
       beekeeper.save!
 
       expect do
