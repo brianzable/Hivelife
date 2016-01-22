@@ -45,8 +45,8 @@ describe Apiary, type: :model do
       results = Apiary.for_user(user)
 
       expect(results.size).to be(2)
-      expect(results[0].hives.size).to be(2)
-      expect(results[1].hives.size).to be(2)
+      expect(results[0].hives.size).to be(20)
+      expect(results[1].hives.size).to be(20)
     end
 
     it 'returns an empty array if the user is not a member at any apiaries' do

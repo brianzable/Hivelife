@@ -16,21 +16,21 @@ describe BeekeeperPolicy, type: :model do
       :beekeeper,
       user: FactoryGirl.build(:user, email: 'write_user@example.com'),
       apiary: @apiary,
-      permission: 'Write'
+      role: Beekeeper::Roles::Inspector
     )
 
     @read_beekeeper = FactoryGirl.build(
       :beekeeper,
       user: FactoryGirl.build(:user, email: 'read_user@example.com'),
       apiary: @apiary,
-      permission: 'Read'
+      role: Beekeeper::Roles::Viewer
     )
 
     @new_beekeeper = FactoryGirl.build(
       :beekeeper,
       user: FactoryGirl.build(:user, email: 'another_user@example.com'),
       apiary: @apiary,
-      permission: 'Admin'
+      role: Beekeeper::Roles::Admin
     )
   end
 

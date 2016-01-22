@@ -16,14 +16,14 @@ describe HarvestPolicy, type: :model do
       :beekeeper,
       user: FactoryGirl.build(:user, email: 'write_user@example.com'),
       apiary: @apiary,
-      permission: 'Write'
+      role: Beekeeper::Roles::Inspector
     )
 
     @read_beekeeper = FactoryGirl.build(
       :beekeeper,
       user: FactoryGirl.build(:user, email: 'read_user@example.com'),
       apiary: @apiary,
-      permission: 'Read'
+      role: Beekeeper::Roles::Viewer
     )
 
     @hive = @apiary.hives.first
