@@ -24,6 +24,11 @@
       return new Date(timestamp).getDate();
     },
 
+    _yearFromTimestamp: function (timestamp) {
+      var date = new Date(timestamp);
+      return 1900 + date.getYear();;
+    },
+
     _timeFromTimestamp: function (timestamp) {
       var date = new Date(timestamp);
       var hours = date.getHours();

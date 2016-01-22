@@ -1,4 +1,4 @@
-<dom-module id="inspection-list-item">
+<dom-module id="inspection-harvest-list-item">
   <template>
     <style include="list-item-styles"></style>
     <style>
@@ -30,25 +30,31 @@
     </style>
     <div class="layout horizontal">
       <div id="count" class="layout vertical">
+        <div class="sub-text layout vertical center">
+          <content select=".month"></content>
+        </div>
+
         <div class="main-text layout vertical center">
           <content select=".day"></content>
         </div>
 
         <div class="sub-text layout vertical center">
-          <content select=".month"></content>
+          <content select=".year"></content>
         </div>
       </div>
 
-      <div class="layout vertical">
-        <div class="main-text notes flex">
-          <content select=".notes"></content>
-        </div>
+      <div class="layout horizontal center">
+        <div class="layout vertical">
+          <div class="main-text notes flex">
+            <content select=".notes"></content>
+          </div>
 
-        <div class="sub-text flex">
-          <span>
-            Last updated at
-            <content select=".beekeeper"></content>
-          </span>
+          <div class="sub-text flex">
+            <span>
+              Last updated at
+              <content select=".beekeeper"></content>
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -58,7 +64,7 @@
 <script>
   (function () {
     Polymer({
-      is: 'inspection-list-item'
+      is: 'inspection-harvest-list-item'
     });
   })();
 </script>

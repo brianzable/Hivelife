@@ -1,15 +1,16 @@
 <dom-module id="harvest-list">
   <template>
     <style include="list-styles"></style>
-    <iron-list id="list" items="{{harvests}}" as="item" scrollTarget="{{scrollTarget}}">
+    <iron-list id="list" items="{{harvests}}" as="item">
       <template>
         <a href="{{_harvestUrl(item)}}" style="text-decoration: none; color: inherit;">
-          <harvest-list-item>
-            <span class="day">{{_dayFromTimestamp(item.harvested_at)}}</span>
+          <inspection-harvest-list-item>
             <span class="month">{{_monthFromTimestamp(item.harvested_at)}}</span>
+            <span class="day">{{_dayFromTimestamp(item.harvested_at)}}</span>
+            <span class="year">{{_yearFromTimestamp(item.harvested_at)}}</span>
             <span class="notes">{{_notesField(item.notes)}}</span>
             <span class="beekeeper">{{_timeFromTimestamp(item.last_edit)}}</span>
-          </harvest-list-item>
+          </inspection-harvest-list-item>
         </a>
       </template>
     </iron-list>
