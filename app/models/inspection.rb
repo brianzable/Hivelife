@@ -2,7 +2,7 @@ class Inspection < ActiveRecord::Base
 	has_many :diseases, dependent: :destroy
   has_many :inspection_edits, -> { order 'created_at ASC' }, dependent: :destroy
 
-	belongs_to :hive
+	belongs_to :hive, counter_cache: true
 
 	accepts_nested_attributes_for :diseases, allow_destroy: true
 

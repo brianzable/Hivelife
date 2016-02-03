@@ -24,8 +24,8 @@ describe HivesController, type: :request do
       expect(parsed_body['hive_type']).to eq(hive.hive_type)
       expect(parsed_body['exact_location_sharing']).to eq(hive.exact_location_sharing)
       expect(parsed_body['data_sharing']).to eq(hive.data_sharing)
-      expect(parsed_body['latitude']).to eq(hive.latitude.to_s)
-      expect(parsed_body['longitude']).to eq(hive.longitude.to_s)
+      expect(parsed_body['latitude']).to eq(hive.latitude)
+      expect(parsed_body['longitude']).to eq(hive.longitude)
       expect(parsed_body['orientation']).to eq(hive.orientation)
 
       beekeeper = parsed_body['beekeeper']
@@ -119,8 +119,8 @@ describe HivesController, type: :request do
       expect(parsed_body['apiary_id']).to eq(apiary.id)
       expect(parsed_body['breed']).to eq('Italian')
       expect(parsed_body['hive_type']).to eq('Langstroth')
-      expect(parsed_body['latitude']).to eq('88.8888')
-      expect(parsed_body['longitude']).to eq('88.8888')
+      expect(parsed_body['latitude']).to eq(88.8888)
+      expect(parsed_body['longitude']).to eq(88.8888)
       expect(parsed_body['orientation']).to eq('N')
     end
 

@@ -165,7 +165,7 @@ describe HarvestsController, type: :request do
 
       expect do
         post hive_harvests_path(hive), payload, headers
-      end.to make_database_queries(count: 13..14)
+      end.to make_database_queries(count: 14..15)
 
       expect(response.status).to eq(201)
     end
@@ -377,7 +377,7 @@ describe HarvestsController, type: :request do
     it 'runs 10 queries' do
       expect do
         delete hive_harvest_path(hive, harvest), { format: :json }, headers
-      end.to make_database_queries(count: 9..11)
+      end.to make_database_queries(count: 11..12)
 
       expect(response.status).to eq(200)
     end

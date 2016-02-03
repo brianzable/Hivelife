@@ -11,10 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160122163855) do
+ActiveRecord::Schema.define(version: 20160202035113) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "postgis"
 
   create_table "apiaries", force: :cascade do |t|
     t.string   "name",           null: false
@@ -75,22 +76,24 @@ ActiveRecord::Schema.define(version: 20160122163855) do
   add_index "harvests", ["hive_id"], name: "index_harvests_on_hive_id", using: :btree
 
   create_table "hives", force: :cascade do |t|
-    t.integer  "apiary_id",                                                        null: false
-    t.string   "name",                                                             null: false
-    t.string   "breed"
-    t.string   "hive_type"
-    t.boolean  "exact_location_sharing",                           default: false, null: false
-    t.boolean  "data_sharing",                                     default: false, null: false
-    t.datetime "created_at",                                                       null: false
-    t.datetime "updated_at",                                                       null: false
-    t.decimal  "latitude",               precision: 18, scale: 15
-    t.decimal  "longitude",              precision: 18, scale: 15
-    t.string   "orientation"
-    t.string   "comments"
-    t.string   "source"
+    t.integer   "apiary_id",                                                                                       null: false
+    t.string    "name",                                                                                            null: false
+    t.string    "breed"
+    t.string    "hive_type"
+    t.boolean   "exact_location_sharing",                                                          default: false, null: false
+    t.boolean   "data_sharing",                                                                    default: false, null: false
+    t.datetime  "created_at",                                                                                      null: false
+    t.datetime  "updated_at",                                                                                      null: false
+    t.string    "orientation"
+    t.string    "comments"
+    t.string    "source"
+    t.integer   "inspections_count"
+    t.integer   "harvests_count"
+    t.geography "coordinates",            limit: {:srid=>4326, :type=>"point", :geographic=>true}
   end
 
   add_index "hives", ["apiary_id"], name: "index_hives_on_apiary_id", using: :btree
+  add_index "hives", ["coordinates"], name: "index_hives_on_coordinates", using: :gist
 
   create_table "inspection_edits", force: :cascade do |t|
     t.integer  "inspection_id", null: false
