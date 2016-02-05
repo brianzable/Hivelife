@@ -59,6 +59,7 @@ RSpec.describe ApiariesController, type: :request do
       parsed_beekeeper = parsed_apiary['beekeeper']
       expect(parsed_beekeeper['can_edit']).to be(false)
       expect(parsed_beekeeper['can_delete']).to be(false)
+      expect(parsed_beekeeper['can_manage_beekeepers']).to be(false)
     end
 
     it 'makes 5 queries' do

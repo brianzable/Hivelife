@@ -17,7 +17,9 @@
       </section>
     </iron-pages>
 
-    <paper-fab id="addHiveButton" icon="add"></paper-fab>
+    <template is="dom-if" if="{{showAddButton}}">
+      <paper-fab id="addHiveButton" icon="add" on-click="_createNewHive"></paper-fab>
+    </template>
   </template>
 </dom-module>
 
@@ -25,10 +27,6 @@
   (function () {
     Polymer({
       is: 'hives-page',
-
-      listeners: {
-        'addHiveButton.click': '_createNewHive'
-      },
 
       properties: {
         state: {

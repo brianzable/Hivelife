@@ -39,7 +39,9 @@
 
     <delete-beekeeper-dialog id="deleteConfirmation"></delete-beekeeper-dialog>
 
-    <paper-fab id="addBeekeeperButton" icon="add"></paper-fab>
+    <template is="dom-if" if="{{showAddButton}}">
+      <paper-fab id="addBeekeeperButton" icon="add" on-click="_toggleDialog"></paper-fab>
+    </template>
   </template>
 </dom-module>
 
@@ -49,10 +51,10 @@
       is: 'beekeepers-page',
 
       listeners: {
-        'addBeekeeperButton.click': '_toggleDialog',
         'addBeekeeperDialog.beekeeper-added': '_reload',
         'beekeeperList.delete-beekeeper': '_handleBeekeeperDelete',
         'beekeeperIndexRequest.beekeepers-load': '_setBeekeepers',
+        'beekeeperIndexRequest.beekeepers-load-error': '_handleLoadError',
         'beekeeperDeleteRequest.beekeeper-delete': '_beekeeperDeleteSuccess',
         'beekeeperDeleteRequest.beekeeper-delete-error': '_beekeeperDeleteError',
         'deleteConfirmation.iron-overlay-closed':  '_handleConfirmationClose'
@@ -109,6 +111,10 @@
       _setBeekeepers: function (event) {
         this.beekeepers = event.detail.beekeepers;
         this.state = 'loaded';
+      },
+
+      _handleLoadError: function (event) {
+        this.fire('page-redirect', { path: '/apiaries' });
       },
 
       _toggleDialog: function () {

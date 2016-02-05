@@ -8,7 +8,9 @@
         <paper-menu-button ignoreSelect="true" vertical-align="top" horizontal-align="right" style="padding-right: 0; margin-right: 0;">
           <paper-icon-button icon="menu" class="dropdown-trigger" style="padding-right: 0; margin-right: 0;"></paper-icon-button>
           <paper-menu class="dropdown-content">
-            <paper-item on-click="_editApiary">Edit Apiary</paper-item>
+            <template is="dom-if" if="{{canEdit}}">
+              <paper-item on-click="_editApiary">Edit Apiary</paper-item>
+            </template>
             <template is="dom-if" if="{{canDelete}}">
               <paper-item id="deleteButton" on-click="_deleteApiary">Delete Apiary</paper-item>
             </template>
@@ -27,7 +29,7 @@
       <div class="content">
         <iron-pages selected="{{selected}}">
           <section>
-            <hives-page apiary-id="{{apiaryId}}" hives="{{hives}}" class="fit"></hives-page>
+            <hives-page apiary-id="{{apiaryId}}" hives="{{hives}}" show-add-button="[[canEdit]]" class="fit"></hives-page>
           </section>
 
           <section class="layout vertical center">
@@ -35,6 +37,7 @@
               id="beekeepersPage"
               apiary-id="{{apiaryId}}"
               authentication-token="{{authenticationToken}}"
+              show-add-button="[[canManageBeekeepers]]"
               class="fit">
             </beekeepers-page>
           </section>
@@ -119,7 +122,9 @@
       _handleLoad: function (event) {
         this.name = event.detail.apiary.name;
         this.hives = event.detail.apiary.hives;
-        this.canDelete = event.detail.apiary.beekeeper.role === 'Admin';
+        this.canDelete = event.detail.apiary.beekeeper.can_delete;
+        this.canEdit = event.detail.apiary.beekeeper.can_edit;
+        this.canManageBeekeepers = event.detail.apiary.beekeeper.can_manage_beekeepers;
       },
 
       _handleError: function (event) {
