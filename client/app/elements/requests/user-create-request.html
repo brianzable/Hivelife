@@ -21,7 +21,7 @@
       },
 
       send: function () {
-        this.$.client.url = 'v1/api/users';
+        this.$.client.url = '/v1/api/users';
         this.$.client.body = this.payload;
         this.$.client.generateRequest();
       },

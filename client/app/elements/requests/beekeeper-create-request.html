@@ -21,7 +21,7 @@
 
       send: function () {
         this._setAuthorization();
-        this.$.client.url = 'v1/api/apiaries/' + this.apiaryId + '/beekeepers';
+        this.$.client.url = '/v1/api/apiaries/' + this.apiaryId + '/beekeepers';
         this.$.client.body = this.payload;
         this.$.client.generateRequest();
       },

@@ -25,7 +25,7 @@
 
       send: function () {
         this._setAuthorization();
-        this.$.client.url = 'v1/api/hives/' + this.hiveId + '/harvests/' + this.harvestId;
+        this.$.client.url = '/v1/api/hives/' + this.hiveId + '/harvests/' + this.harvestId;
         this.$.client.body = this.payload;
         this.$.client.generateRequest();
       },
