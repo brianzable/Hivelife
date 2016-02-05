@@ -1,11 +1,12 @@
 <dom-module id="settings-form">
-  <style include="form-styles"></style>
-
   <template>
+    <style include="shared-styles"></style>
+    <style include="form-styles"></style>
+
     <div class="form-content">
-      <paper-material class="form-container" elevation="1">
-        <h4 class="form-header">Identity</h4>
-        <div class="form-row">
+      <paper-material elevation="1">
+        <h4 class="header-4">Identity</h4>
+        <div class="row">
           <paper-input
             id="firstName"
             class="flex"
@@ -34,8 +35,8 @@
           </paper-input>
         </div>
 
-        <h4 class="form-header">Time</h4>
-        <div class="form-row">
+        <h4 class="header-4">Time</h4>
+        <div class="row">
           <paper-dropdown-menu id="timezone" class="flex" label="time zone">
             <paper-menu id="timezoneMenu" class="dropdown-content">
               <template is="dom-repeat" items="[[_timezones()]]">
@@ -45,7 +46,7 @@
           </paper-dropdown-menu>
         </div>
 
-        <div class="horizontal-form-row">
+        <div class="horizontal-row">
           <div class="flex"></div>
           <paper-button id="resetPassword" raised>Reset Password</paper-button>
           <paper-button id="formSubmit" raised>Save</paper-button>

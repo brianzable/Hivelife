@@ -1,9 +1,10 @@
 <dom-module id="registration-page">
   <template>
+    <style include="shared-styles"></style>
     <style include="form-styles"></style>
 
     <h4>Login Details</h4>
-    <div class="form-row">
+    <div class="row">
       <paper-input
         id="emailAddress"
         class="flex"
@@ -35,7 +36,7 @@
     </div>
 
     <h4>Account Information</h4>
-    <div class="form-row">
+    <div class="row">
       <paper-input
         id="firstName"
         class="flex"
@@ -63,7 +64,7 @@
       </paper-dropdown-menu>
     </div>
 
-    <div class="form-row">
+    <div class="row">
       <paper-button id="formSubmit" raised>Register</paper-button>
     </div>
 

@@ -1,8 +1,9 @@
 <dom-module id="harvest-form">
   <template>
-    <paper-header-panel class="fit">
-      <style include="form-styles"></style>
+    <style include="shared-styles"></style>
+    <style include="form-styles"></style>
 
+    <paper-header-panel class="fit">
       <paper-toolbar id="mainToolbar">
         <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
 
@@ -12,10 +13,10 @@
       </paper-toolbar>
 
       <div class="form-content">
-        <paper-material class="form-container" elements="1">
-          <div class="form-row">
+        <paper-material elements="1">
+          <div class="row">
             <div class="layout vertical flex">
-              <h4 class="form-header">Date</h4>
+              <h4 class="header-4">Date</h4>
               <div class="layout horizontal">
                 <paper-input
                   id="date"
@@ -32,10 +33,10 @@
             <div class="flex"></div>
           </div>
 
-          <div class="form-row">
+          <div class="row">
             <div class="layout vertical flex">
-              <h4 class="form-header">Honey Weight</h4>
-              <div class="form-row">
+              <h4 class="header-4">Honey Weight</h4>
+              <div class="row">
                 <paper-input id="honeyWeight" class="flex" label="honey weight"></paper-input>
 
                 <paper-dropdown-menu id="honeyWeightUnits" class="flex" label="units">
@@ -49,8 +50,8 @@
             </div>
 
             <div class="layout vertical flex">
-              <h4 class="form-header">Wax Weight</h4>
-              <div class="form-row">
+              <h4 class="header-4">Wax Weight</h4>
+              <div class="row">
                 <paper-input id="waxWeight" class="flex" label="wax weight"></paper-input>
 
                 <paper-dropdown-menu id="waxWeightUnits" class="flex" label="units">
@@ -64,7 +65,7 @@
             </div>
           </div>
 
-          <h4 class="form-header">Harvest Notes</h4>
+          <h4 class="header-4">Harvest Notes</h4>
           <paper-input id="notes" class="flex" label="notes"></paper-input>
         </paper-material>
       </div>

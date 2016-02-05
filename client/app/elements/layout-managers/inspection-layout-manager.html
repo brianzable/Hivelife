@@ -1,7 +1,6 @@
 <dom-module id="inspection-layout-manager">
   <template>
     <style include="shared-styles"></style>
-    <style include="form-styles"></style>
 
     <paper-header-panel class="fit">
       <paper-toolbar>
@@ -24,8 +23,8 @@
 
       <div class="content">
         <paper-material elevation="1">
-          <h4 class="form-header">Time & Date</h4>
-          <div class="form-row">
+          <h4 class="header-4">Time & Date</h4>
+          <div class="row">
             <div class="layout vertical flex">
               <span class="sub-title">Time</span>
               <span>[[inspectionTime]]</span>
@@ -37,8 +36,8 @@
             </div>
           </div>
 
-          <h4 class="form-header">Weather</h4>
-          <div class="form-row">
+          <h4 class="header-4">Weather</h4>
+          <div class="row">
             <div class="layout vertical flex">
               <span class="sub-title">Temperature</span>
               <span>[[temperature]]</span>
@@ -50,31 +49,31 @@
             </div>
           </div>
 
-          <div class="form-row">
+          <div class="row">
             <div class="layout vertical flex">
               <span class="sub-title">Notes</span>
               <span>[[weatherNotes]]</span>
             </div>
           </div>
 
-          <h4 class="form-header">Brood Chamber</h4>
-          <div class="form-row">
+          <h4 class="header-4">Brood Chamber</h4>
+          <div class="row">
             <div class="layout vertical flex">
               <span class="sub-title">Laying Pattern</span>
               <span>[[layingPattern]]</span>
             </div>
           </div>
 
-          <div class="form-row">
+          <div class="row">
             <div class="layout vertical flex">
               <span class="sub-title">Sightings</span>
               <span>[[sightings]]</span>
             </div>
           </div>
 
-          <h4 class="form-header">Diseases & Treatments</h4>
+          <h4 class="header-4">Diseases & Treatments</h4>
           <template is="dom-repeat" items="[[diseases]]">
-            <div class="form-row" style="margin-bottom; 10px;">
+            <div class="row" style="margin-bottom; 10px;">
               <div class="layout vertical flex">
                 <span class="sub-title">Disease</span>
                 <span>[[item.disease_type]]</span>
@@ -86,7 +85,7 @@
               </div>
             </div>
 
-            <div class="form-row">
+            <div class="row">
               <div class="layout vertical flex">
                 <span class="sub-title">Disease Notes</span>
                 <span>[[item.notes]]</span>
@@ -94,21 +93,21 @@
             </div>
           </template>
 
-          <h4 class="form-header">Hive Information</h4>
+          <h4 class="header-4">Hive Information</h4>
           <div class="layout vertical flex">
             <span class="sub-title">Health</span>
-            <div class="horizontal-form-row">
+            <div class="horizontal-row">
               Poor<paper-slider class="flex" min="0" max="100" value="[[hiveHealth]]" immediateValue="0" disabled></paper-slider>Healthy
             </div>
           </div>
 
-          <h4 class="form-header">Hive Temperament</h4>
+          <h4 class="header-4">Hive Temperament</h4>
           <div class="layout vertical flex">
             <span class="sub-title">Temperament</span>
             <span>[[temperament]]</span>
           </div>
 
-          <h4 class="form-header">Notes</h4>
+          <h4 class="header-4">Notes</h4>
           <span>[[notes]]</span>
         </paper-material>
       </div>

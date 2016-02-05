@@ -13,37 +13,11 @@
         padding: var(--component-padding);
       }
 
-      .form-header {
-        margin-bottom: 0;
-        padding-bottom: 0;
-        font-weight: 500;
-      }
-
-      .form-container {
-        padding: 10px;
-      }
-
-      .horizontal-form-row {
-        @apply(--layout-horizontal);
-        @apply(--layout-center);
-      }
-
-      /* Small */
-      @media (max-width: 600px) {
-        .form-row {
-          @apply(--layout-vertical);
-        }
-      }
-
       /* Tablet+ */
       @media (min-width: 601px) {
         .form-content {
           @apply(--layout-vertical);
           @apply(--layout-center);
-        }
-
-        .form-row {
-          @apply(--layout-horizontal);
         }
       }
     </style>
