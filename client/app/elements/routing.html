@@ -115,11 +115,21 @@
       app.$.harvestForm.setup();
     });
 
+    page('/hives/:hiveId/harvests/:id/edit', function (data) {
+      app.hiveId = data.params.hiveId;
+      app.harvestId = data.params.id;
+      app.layoutManager = 'harvest-form';
+      app.route = 'harvest-edit';
+      app.$.harvestForm.mode = 'edit';
+      app.$.harvestForm.setup();
+    });
+
     page('/hives/:hiveId/harvests/:id', function (data) {
       app.hiveId = data.params.hiveId;
       app.harvestId = data.params.id;
       app.layoutManager = 'harvest';
       app.route = 'harvest-show';
+      app.$.harvestManager.setup();
     });
 
     page('/register', function() {

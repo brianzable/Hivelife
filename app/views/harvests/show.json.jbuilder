@@ -8,6 +8,11 @@ json.wax_weight_units @harvest.wax_weight_units
 json.harvested_at @harvest.harvested_at
 json.notes @harvest.notes
 
+json.beekeeper do
+  json.can_edit HarvestPolicy.new(@beekeeper, @harvest).update?
+  json.can_delete HarvestPolicy.new(@beekeeper, @harvest).destroy?
+end
+
 json.last_edit do
   json.edited_at @harvest.last_edit.created_at
   json.beekeeper_name @harvest.last_edit.harvester_name
