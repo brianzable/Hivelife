@@ -23,6 +23,11 @@ json.honey_sighted @inspection.honey_sighted
 json.supersedure_cells_sighted @inspection.supersedure_cells_sighted
 json.pollen_sighted @inspection.pollen_sighted
 
+json.beekeeper do
+  json.can_delete InspectionPolicy.new(@beekeeper, @inspection).destroy?
+  json.can_edit InspectionPolicy.new(@beekeeper, @inspection).update?
+end
+
 json.last_edit do
   json.edited_at @inspection.last_edit.created_at
   json.beekeeper_name @inspection.last_edit.inspector_name

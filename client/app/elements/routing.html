@@ -90,11 +90,21 @@
       app.$.inspectionForm.setup();
     });
 
+    page('/hives/:hiveId/inspections/:id/edit', function (data) {
+      app.hiveId = data.params.hiveId;
+      app.inspectionId = data.params.id;
+      app.layoutManager = 'inspection-form';
+      app.route = 'inspection-edit';
+      app.$.inspectionForm.mode = 'edit';
+      app.$.inspectionForm.setup();
+    });
+
     page('/hives/:hiveId/inspections/:id', function (data) {
       app.hiveId = data.params.hiveId;
       app.inspectionId = data.params.id;
       app.layoutManager = 'inspection';
       app.route = 'inspection-show';
+      app.$.inspectionManager.setup();
     });
 
     page('/hives/:hiveId/harvests/new', function (data) {
