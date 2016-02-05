@@ -93,10 +93,8 @@
     page('/hives/:hiveId/inspections/:id', function (data) {
       app.hiveId = data.params.hiveId;
       app.inspectionId = data.params.id;
-      app.layoutManager = 'inspection-form';
-      app.route = 'inspection-edit';
-      app.$.inspectionForm.mode = 'edit';
-      app.$.inspectionForm.setup();
+      app.layoutManager = 'inspection';
+      app.route = 'inspection-show';
     });
 
     page('/hives/:hiveId/harvests/new', function (data) {
@@ -110,10 +108,8 @@
     page('/hives/:hiveId/harvests/:id', function (data) {
       app.hiveId = data.params.hiveId;
       app.harvestId = data.params.id;
-      app.layoutManager = 'harvest-form';
-      app.route = 'harvest-edit';
-      app.$.harvestForm.mode = 'edit';
-      app.$.harvestForm.setup();
+      app.layoutManager = 'harvest';
+      app.route = 'harvest-show';
     });
 
     page('/register', function() {
@@ -163,7 +159,7 @@
     });
 
     page({
-      hashbang: false
+      hashbang: true
     });
   });
 </script>

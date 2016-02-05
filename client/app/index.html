@@ -74,6 +74,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </hive-layout-manager>
       </section>
 
+      <section data-layout-manager="inspection">
+        <inspection-layout-manager
+          id="inspectionManager"
+          authentication-token="{{authenticationToken}}"
+          hive-id="{{hiveId}}"
+          inspection-id="{{inspectionId}}">
+        </inspection-layout-manager>
+      </section>
+
+      <section data-layout-manager="harvest">
+        <harvest-layout-manager
+          id="harvestManager"
+          authentication-token="{{authenticationToken}}"
+          hive-id="{{hiveId}}"
+          harvest-id="{{harvestId}}">
+        </harvest-layout-manager>
+      </section>
+
       <section data-layout-manager="root">
         <root-layout-manager
           id="rootManager"

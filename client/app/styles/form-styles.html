@@ -2,21 +2,20 @@
   <template>
     <style>
       paper-input {
-        padding: 8px;
+        padding: var(--component-padding);
       }
 
       paper-dropdown-menu {
-        padding: 8px;
+        padding: var(--component-padding);
       }
 
       paper-checkbox {
-        padding: 8px;
+        padding: var(--component-padding);
       }
 
       .form-header {
         margin-bottom: 0;
         padding-bottom: 0;
-        margin-left: 8px;
         font-weight: 500;
       }
 
@@ -27,7 +26,6 @@
       .horizontal-form-row {
         @apply(--layout-horizontal);
         @apply(--layout-center);
-        padding: 8px;
       }
 
       /* Small */
@@ -42,16 +40,10 @@
         .form-content {
           @apply(--layout-vertical);
           @apply(--layout-center);
-          padding: 48px 62px;
-        }
-
-        .form-container {
-          width: 600px;
         }
 
         .form-row {
           @apply(--layout-horizontal);
-          @apply(--layout-center);
         }
       }
     </style>

@@ -1,0 +1,127 @@
+<dom-module id="inspection-layout-manager">
+  <style>
+    .sub-title {
+      color: var(--secondary-text-color);
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
+  <template>
+    <style include="shared-styles"></style>
+    <style include="form-styles"></style>
+
+    <paper-header-panel class="fit">
+      <paper-toolbar>
+        <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
+        <div>View Inspection</div>
+        <span class="flex"></span>
+        <paper-menu-button ignoreSelect="true" vertical-align="top" horizontal-align="right" style="padding-right: 0; margin-right: 0;">
+          <paper-icon-button icon="menu" class="dropdown-trigger" style="padding-right: 0; margin-right: 0;"></paper-icon-button>
+          <paper-menu class="dropdown-content">
+            <paper-item on-click="_editInspection">Edit</paper-item>
+            <template is="dom-if" if="{{canDelete}}">
+              <paper-item id="deleteButton" on-click="_deleteHive">Delete</paper-item>
+            </template>
+            <paper-item on-click="_logout">Logout</paper-item>
+          </paper-menu>
+        </paper-menu-button>
+      </paper-toolbar>
+
+      <div class="content">
+        <paper-material elevation="1">
+          <h4 class="form-header">Time & Date</h4>
+          <div class="form-row">
+            <div class="layout vertical flex">
+              <span class="sub-title">Time</span>
+              <span>20:30</span>
+            </div>
+
+            <div class="layout vertical flex">
+              <span class="sub-title">Date</span>
+              <span>2016-12-12</span>
+            </div>
+          </div>
+
+          <h4 class="form-header">Weather</h4>
+          <div class="form-row">
+            <div class="layout vertical flex">
+              <span class="sub-title">Temperature</span>
+              <span>73 F</span>
+            </div>
+
+            <div class="layout vertical flex">
+              <span class="sub-title">Conditions</span>
+              <span>Sunny</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="layout vertical flex">
+              <span class="sub-title">Notes</span>
+              <span>These are some pretty long notes. They are really long. Do people need to talk this much about the weather?</span>
+            </div>
+          </div>
+
+          <h4 class="form-header">Brood Chamber</h4>
+          <div class="form-row">
+            <div class="layout vertical flex">
+              <span class="sub-title">Laying Pattern</span>
+              <span>Good</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="layout vertical flex">
+              <span class="sub-title">Sightings</span>
+              <span>Eggs, Queen, Honey, Pollen, Queen Cells, Swarm Cells, Capped Swarm Cells</span>
+            </div>
+          </div>
+
+          <h4 class="form-header">Diseases & Treatments</h4>
+          <div class="layout vertical flex">
+            <span class="sub-title">Diseases</span>
+            <span>Varroa Mites, Small Hive Beetes</span>
+          </div>
+
+          <div class="layout vertical flex">
+            <span class="sub-title">Treatments Applied</span>
+            <span>MAQS</span>
+          </div>
+
+          <h4 class="form-header">Hive Information</h4>
+          <div class="layout vertical flex">
+            <span class="sub-title">Health</span>
+            <div class="horizontal-form-row">
+              Poor<paper-slider disabled id="hiveHealth" class="flex" min="0" max="100" value="90" immediateValue="0"></paper-slider>Healthy
+            </div>
+          </div>
+
+          <h4 class="form-header">Hive Temperament</h4>
+          <div class="layout vertical flex">
+            <span class="sub-title">Temperament</span>
+            <span>Calm</span>
+          </div>
+
+          <h4 class="form-header">Notes</h4>
+          <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</span>
+        </paper-material>
+      </div>
+    </paper-header-panel>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'inspection-layout-manager',
+
+      setup: function () {
+        this.editPath = '/hives/' + this.hiveId + '/inspections/' + this.inspectionId + '/edit';
+      },
+
+      _editInspection: function () {
+        this.fire('page-redirect', { path: this.editPath });
+      },
+    });
+  })();
+</script>

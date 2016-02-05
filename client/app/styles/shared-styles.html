@@ -16,6 +16,8 @@
         right: 15px;
       }
 
+      /* General styles */
+
       #drawerToolbar {
         color: var(--secondary-text-color);
         background-color: var(--drawer-menu-color);
@@ -29,7 +31,7 @@
       paper-material {
         border-radius: 2px;
         height: 100%;
-        padding: 16px 0 16px 0;
+        padding: 16px 8px 16px 8px;
         width: calc(98.66% - 16px);
         margin: 16px auto;
         background: white;
@@ -84,13 +86,16 @@
 
       #mainToolbar .bottom {
         margin-left: 48px;
-        padding-bottom: 15px;
+        /* Required for main area's paper-scroll-header-panel custom condensing transformation */
+        -webkit-transform-origin: left center;
+        transform-origin: left center;
       }
 
       /* Breakpoints */
 
       /* Small */
       @media (max-width: 600px) {
+
         paper-material {
           --menu-container-display: none;
           width: calc(97.33% - 32px);
@@ -178,7 +183,6 @@
       @media all and (min-width: 1281px) and (max-width: 1600px) { }
       /* desktop-xlarge */
       @media all and (min-width: 1601px) and (max-width: 1920px) { }
-
     </style>
   </template>
 </dom-module>
