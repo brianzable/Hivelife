@@ -35,6 +35,7 @@ class InspectionsController < ApplicationController
 
   def update
     authorize(@inspection)
+
     if @inspection.update(inspection_params)
       @inspection_edit = @inspection.inspection_edits.create(beekeeper: @beekeeper)
       render action: 'show', status: :created, location: [@hive, @inspection]

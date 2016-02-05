@@ -1,3 +1,5 @@
+policy = ApiaryPolicy.new(@beekeeper, @apiary)
+
 json.id @apiary.id
 json.name @apiary.name
 json.street_address @apiary.street_address
@@ -7,7 +9,8 @@ json.postal_code @apiary.postal_code
 json.country @apiary.country
 
 json.beekeeper do
-  json.role @beekeeper.role
+  json.can_edit policy.update?
+  json.can_delete policy.destroy?
 end
 
 json.hives do

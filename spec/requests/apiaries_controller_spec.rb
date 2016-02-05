@@ -57,10 +57,11 @@ RSpec.describe ApiariesController, type: :request do
       expect(parsed_apiary['postal_code']).to eq(apiary.postal_code)
 
       parsed_beekeeper = parsed_apiary['beekeeper']
-      expect(parsed_beekeeper['role']).to eq(Beekeeper::Roles::Viewer)
+      expect(parsed_beekeeper['can_edit']).to be(false)
+      expect(parsed_beekeeper['can_delete']).to be(false)
     end
 
-    it 'makes 4 queries' do
+    it 'makes 5 queries' do
       expect do
         get apiary_path(apiary), { format: :json }, headers
       end.to make_database_queries(count: 4)

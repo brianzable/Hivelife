@@ -83,6 +83,10 @@ describe InspectionsController, type: :request do
       expect(disease['treatment']).to eq('MAQS')
       expect(disease['notes']).to eq('')
 
+      parsed_beekeeper = parsed_body['beekeeper']
+      expect(parsed_beekeeper['can_edit']).to be(true)
+      expect(parsed_beekeeper['can_delete']).to be(true)
+
       last_edit = parsed_body['last_edit']
       expect(last_edit['edited_at']).to_not be_nil
       expect(last_edit['beekeeper_name']).to eq('John Doe')

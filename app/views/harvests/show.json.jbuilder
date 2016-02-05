@@ -1,3 +1,5 @@
+policy = HarvestPolicy.new(@beekeeper, @harvest)
+
 json.id @harvest.id
 json.hive_id @harvest.hive.id
 json.apiary_id @harvest.hive.apiary_id
@@ -9,8 +11,8 @@ json.harvested_at @harvest.harvested_at
 json.notes @harvest.notes
 
 json.beekeeper do
-  json.can_edit HarvestPolicy.new(@beekeeper, @harvest).update?
-  json.can_delete HarvestPolicy.new(@beekeeper, @harvest).destroy?
+  json.can_delete policy.destroy?
+  json.can_edit policy.update?
 end
 
 json.last_edit do

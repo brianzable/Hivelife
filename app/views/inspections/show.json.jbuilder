@@ -1,3 +1,5 @@
+policy = InspectionPolicy.new(@beekeeper, @inspection)
+
 json.id @inspection.id
 json.hive_id @hive.id
 json.apiary_id @hive.apiary_id
@@ -24,8 +26,8 @@ json.supersedure_cells_sighted @inspection.supersedure_cells_sighted
 json.pollen_sighted @inspection.pollen_sighted
 
 json.beekeeper do
-  json.can_delete InspectionPolicy.new(@beekeeper, @inspection).destroy?
-  json.can_edit InspectionPolicy.new(@beekeeper, @inspection).update?
+  json.can_delete policy.destroy?
+  json.can_edit policy.update?
 end
 
 json.last_edit do

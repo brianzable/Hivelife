@@ -57,6 +57,10 @@ describe HarvestsController, type: :request do
       expect(parsed_body['harvested_at']).to eq('2016-07-31T13:30:00.000-05:00')
       expect(parsed_body['notes']).to eq(harvest.notes)
 
+      parsed_beekeeper = parsed_body['beekeeper']
+      expect(parsed_beekeeper['can_edit']).to be(true)
+      expect(parsed_beekeeper['can_delete']).to be(true)
+
       last_edit = parsed_body['last_edit']
       expect(last_edit['edited_at']).to_not be_nil
       expect(last_edit['beekeeper_name']).to eq('John Doe')
