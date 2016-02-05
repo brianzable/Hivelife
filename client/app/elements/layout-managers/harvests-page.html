@@ -1,6 +1,7 @@
 <dom-module id="harvests-page">
   <template>
     <style include="shared-styles"></style>
+
     <iron-pages attr-for-selected="state" selected="{{state}}">
       <section state="loading">
         <loading-page id="spinner"></loading-page>
@@ -17,7 +18,9 @@
       </section>
     </iron-pages>
 
-    <paper-fab id="addInspectionButton" icon="add"></paper-fab>
+    <template is="dom-if" if="{{showAddButton}}">
+      <paper-fab icon="add" on-click="_createNewHarvest"></paper-fab>
+    </template>
   </template>
 </dom-module>
 
@@ -25,10 +28,6 @@
   (function () {
     Polymer({
       is: 'harvests-page',
-
-      listeners: {
-        'addInspectionButton.click': '_createNewInspection'
-      },
 
       properties: {
         state: {
@@ -58,7 +57,7 @@
         }
       },
 
-      _createNewInspection: function () {
+      _createNewHarvest: function () {
         this.fire('page-redirect', { path: '/hives/' + this.hiveId + '/harvests/new' });
       }
     });

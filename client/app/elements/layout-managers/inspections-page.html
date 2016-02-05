@@ -17,7 +17,9 @@
       </section>
     </iron-pages>
 
-    <paper-fab id="addInspectionButton" icon="add"></paper-fab>
+    <template is="dom-if" if="{{showAddButton}}">
+      <paper-fab icon="add" on-click="_createNewInspection"></paper-fab>
+    </template>
   </template>
 </dom-module>
 
@@ -25,10 +27,6 @@
   (function () {
     Polymer({
       is: 'inspections-page',
-
-      listeners: {
-        'addInspectionButton.click': '_createNewInspection'
-      },
 
       properties: {
         state: {

@@ -28,11 +28,21 @@
       <div class="content">
         <iron-pages selected="{{selected}}">
           <section>
-            <inspections-page inspections="{{inspections}}" hive-id="{{hiveId}}" class="fit"></inspections-page>
+            <inspections-page
+              inspections="{{inspections}}"
+              hive-id="{{hiveId}}"
+              show-add-button="{{canEdit}}"
+              class="fit">
+            </inspections-page>
           </section>
 
           <section>
-            <harvests-page harvests="{{harvests}}" hive-id="{{hiveId}}" class="fit"></harvests-page>
+            <harvests-page
+              harvests="{{harvests}}"
+              hive-id="{{hiveId}}"
+              show-add-button="{{canEdit}}"
+              class="fit">
+            </harvests-page>
           </section>
 
           <section>
@@ -98,7 +108,6 @@
         this.backLink = '/apiaries/' + this.apiaryId;
         this.inspections = null;
         this.harvests = null;
-        this.canDelete = false;
         this.$.getHiveRequest.send();
       },
 
@@ -125,7 +134,8 @@
         this.name = hive.name;
         this.inspections = hive.inspections;
         this.harvests = hive.harvests;
-        this.canDelete = hive.beekeeper.role === 'Admin';
+        this.canDelete = hive.beekeeper.can_delete;
+        this.canEdit = hive.beekeeper.can_edit;
 
 
         this.latitude = hive.latitude;
