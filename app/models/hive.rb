@@ -1,5 +1,5 @@
 class Hive < ActiveRecord::Base
-	belongs_to :apiary
+	belongs_to :apiary, counter_cache: true
 
 	has_many :inspections, -> { order 'inspected_at DESC' }, dependent: :destroy
 	has_many :harvests, -> { order 'harvested_at'}, dependent: :destroy

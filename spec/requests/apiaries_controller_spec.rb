@@ -34,7 +34,7 @@ RSpec.describe ApiariesController, type: :request do
     it 'makes 5 queries' do
       expect do
         get apiaries_path, { format: :json }, headers
-      end.to make_database_queries(count: 4..5)
+      end.to make_database_queries(count: 3..4)
 
       expect(response.status).to eq(200)
     end

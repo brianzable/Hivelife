@@ -7,7 +7,7 @@ json.array!(@apiaries) do |apiary|
   json.postal_code apiary.postal_code
   json.country apiary.country
   json.location "#{apiary.city}, #{apiary.region}"
-  json.hive_count apiary.hives.count
+  json.hive_count apiary.hives.size
   json.hives apiary.hives do |hive|
     json.extract! hive, :id, :name
   end
