@@ -212,9 +212,9 @@
 
       setup: function () {
         this.$.inspectionDefaultsRequest.send();
+        this.clearFields();
 
         if (this.mode === 'new') {
-          this.clearFields();
           this.pageTitle = 'New Inspection';
         } else {
           this.pageTitle = 'Edit Inspection';
@@ -394,7 +394,12 @@
 
       _clearDiseases: function () {
         var container = this.$.diseaseContainer;
-        container.children = [];
+        var diseaseSubform = container.firstChild;
+
+        while(diseaseSubform) {
+          container.removeChild(diseaseSubform);
+          diseaseSubform = container.firstChild;
+        }
       },
 
       _insertDisease: function (disease) {
