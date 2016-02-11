@@ -19,8 +19,6 @@
 # Ignore .DS_Store files
 *.DS_Store
 
-/Gemfile.lock
-
 # Ignore files with secret information
 /config/database.yml
 /config/secrets.yml
