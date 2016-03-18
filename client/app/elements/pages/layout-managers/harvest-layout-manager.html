@@ -1,0 +1,151 @@
+<dom-module id="harvest-layout-manager">
+  <template>
+    <style include="shared-styles"></style>
+
+    <paper-header-panel class="fit">
+      <paper-toolbar>
+        <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
+        <div>View Harvest</div>
+        <span class="flex"></span>
+        <paper-menu-button ignoreSelect="true" vertical-align="top" horizontal-align="right" style="padding-right: 0; margin-right: 0;">
+          <paper-icon-button icon="menu" class="dropdown-trigger" style="padding-right: 0; margin-right: 0;"></paper-icon-button>
+          <paper-menu class="dropdown-content">
+            <template is="dom-if" if="{{canEdit}}">
+              <paper-item on-click="_editHarvest">Edit</paper-item>
+            </template>
+            <template is="dom-if" if="{{canDelete}}">
+              <paper-item id="deleteButton" on-click="_deleteHarvest">Delete</paper-item>
+            </template>
+            <paper-item on-click="_logout">Logout</paper-item>
+          </paper-menu>
+        </paper-menu-button>
+      </paper-toolbar>
+
+      <div class="content">
+        <paper-material elevation="1">
+          <h4 class="header-4">Time & Date</h4>
+          <div class="row">
+            <div class="layout vertical flex">
+              <span class="sub-title">Time</span>
+              <span>[[harvestTime]]</span>
+            </div>
+
+            <div class="layout vertical flex">
+              <span class="sub-title">Date</span>
+              <span>[[harvestDate]]</span>
+            </div>
+          </div>
+
+          <h4 class="header-4">Yields</h4>
+          <div class="row">
+            <div class="layout vertical flex">
+              <span class="sub-title">Honey</span>
+              <span>[[honeyWeight]]</span>
+            </div>
+
+            <div class="layout vertical flex">
+              <span class="sub-title">Wax</span>
+              <span>[[waxWeight]]</span>
+            </div>
+          </div>
+
+          <h4 class="header-4">Notes</h4>
+          <span>[[notes]]</span>
+        </paper-material>
+      </div>
+    </paper-header-panel>
+
+    <delete-harvest-dialog id="deleteConfirmation"></delete-harvest-dialog>
+
+    <harvest-show-request
+      id="getHarvestRequest"
+      hive-id="{{hiveId}}"
+      harvest-id="{{harvestId}}"
+      authentication-token="{{authenticationToken}}">
+    </harvest-show-request>
+
+    <harvest-delete-request
+      id="deleteHarvestRequest"
+      hive-id="{{hiveId}}"
+      harvest-id="{{harvestId}}"
+      authentication-token="{{authenticationToken}}">
+    </harvest-delete-request>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'harvest-layout-manager',
+
+      behaviors: [HivelifeBehaviors.PageBehavior, HivelifeBehaviors.TimeBehavior],
+
+      listeners: {
+        'backButton.click': '_handleBackLinkClick',
+        'getHarvestRequest.harvest-show': '_handleLoad',
+        'getHarvestRequest.harvest-show-error': '_handleLoadError',
+        'deleteHarvestRequest.harvest-delete': '_handleDelete',
+        'deleteHarvestRequest.harvest-delete-error': '_handleDeleteError',
+        'deleteConfirmation.iron-overlay-closed':  '_handleConfirmationClose'
+      },
+
+      setup: function () {
+        this.editPath = '/hives/' + this.hiveId + '/harvests/' + this.harvestId + '/edit';
+        this.$.getHarvestRequest.send();
+      },
+
+      _handleBackLinkClick: function () {
+        this.fire('page-redirect', { path: '/apiaries/' + this.apiaryId + '/hives/' + this.hiveId });
+      },
+
+      _editHarvest: function () {
+        this.fire('page-redirect', { path: this.editPath });
+      },
+
+      _handleLoad: function (event) {
+        var harvest = event.detail.harvest;
+
+        this.apiaryId = harvest.apiary_id;
+        this.harvestTime = this._timeFromTimestamp(harvest.harvested_at);
+        this.harvestDate = this._dateFromTimestamp(harvest.harvested_at);
+        this.honeyWeight = this._formattedWeight(harvest.honey_weight, harvest.honey_weight_units);
+        this.waxWeight = this._formattedWeight(harvest.wax_weight, harvest.wax_weight_units);
+        this.notes = harvest.notes;
+        this.canDelete = harvest.beekeeper.can_delete;
+        this.canEdit = harvest.beekeeper.can_edit;
+      },
+
+      _handleLoadError: function () {
+        this._processError(event.detail.response);
+      },
+
+      _deleteHarvest: function () {
+        this.$.deleteConfirmation.toggle();
+      },
+
+      _handleConfirmationClose: function () {
+        if (this.$.deleteConfirmation.closingReason.confirmed === true) {
+          this.$.deleteHarvestRequest.send();
+        }
+      },
+
+      _handleDelete: function (event) {
+        this.fire('app-message', { message: 'Successfully deleted harvest.' });
+        this.fire('page-redirect', { path: '/apiaries/' + this.apiaryId + '/hives/' + this.hiveId });
+      },
+
+      _handleDeleteError: function (event) {
+        this.fire('app-message', { message: 'Failed to delete harvest. Try again later.' });
+      },
+
+      _formattedWeight: function (weight, units) {
+        if (weight === null || weight === 0) {
+          return '';
+        }
+        else {
+          return weight + ' ' + units;
+        }
+      }
+    });
+  })();
+</script>

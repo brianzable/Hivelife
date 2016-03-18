@@ -1,0 +1,40 @@
+<dom-module id="hive-delete-request">
+  <template>
+    <iron-ajax
+      id="client"
+      method="DELETE"
+      on-response="_handleSuccess"
+      on-error="_handleError">
+    </iron-ajax>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'hive-delete-request',
+
+      behaviors: [HivelifeBehaviors.RequestBehavior],
+
+      properties: {
+        authenticationToken: String,
+        apiaryId: Number,
+        hiveId: Number
+      },
+
+      send: function () {
+        this._setAuthorization();
+        this.$.client.url = '/v1/api/apiaries/' + this.apiaryId + '/hives/' + this.hiveId;;
+        this.$.client.generateRequest();
+      },
+
+      _handleSuccess: function (event) {
+        this.fire('hive-delete');
+      },
+
+      _handleError: function (event) {
+        this.fire('hive-delete-error');
+      }
+    });
+  })();
+</script>

@@ -24,6 +24,7 @@ var historyApiFallback = require('connect-history-api-fallback');
 var packageJson = require('./package.json');
 var crypto = require('crypto');
 var ensureFiles = require('./tasks/ensure-files.js');
+var proxyMiddleware = require('http-proxy-middleware');
 
 // var ghPages = require('gulp-gh-pages');
 
@@ -216,10 +217,11 @@ gulp.task('clean', function() {
 
 // Watch files for changes & reload
 gulp.task('serve', ['styles', 'elements'], function() {
+  var proxy = proxyMiddleware('/v1/api', {target: 'http://0.0.0.0:3000'});
   browserSync({
     port: 5000,
     notify: false,
-    logPrefix: 'PSK',
+    logPrefix: 'Hivelife',
     snippetOptions: {
       rule: {
         match: '<span id="browser-sync-binding"></span>',
@@ -234,7 +236,7 @@ gulp.task('serve', ['styles', 'elements'], function() {
     // https: true,
     server: {
       baseDir: ['.tmp', 'app'],
-      middleware: [historyApiFallback()]
+      middleware: [proxy, historyApiFallback()]
     }
   });
 
@@ -246,10 +248,11 @@ gulp.task('serve', ['styles', 'elements'], function() {
 
 // Build and serve the output from the dist build
 gulp.task('serve:dist', ['default'], function() {
+  var proxy = proxyMiddleware('/v1/api', {target: 'http://0.0.0.0:3000'});
   browserSync({
     port: 5001,
     notify: false,
-    logPrefix: 'PSK',
+    logPrefix: 'Hivelife',
     snippetOptions: {
       rule: {
         match: '<span id="browser-sync-binding"></span>',
@@ -263,7 +266,7 @@ gulp.task('serve:dist', ['default'], function() {
     //       will present a certificate warning in the browser.
     // https: true,
     server: dist(),
-    middleware: [historyApiFallback()]
+    middleware: [proxy, historyApiFallback()]
   });
 });
 

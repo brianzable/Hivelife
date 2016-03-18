@@ -1,0 +1,427 @@
+<dom-module id="inspection-form">
+  <style>
+    #addDisease {
+      cursor: pointer;
+    }
+  </style>
+
+  <template>
+    <style include="shared-styles"></style>
+    <style include="form-styles"></style>
+
+    <paper-header-panel class="fit">
+      <paper-toolbar id="mainToolbar">
+        <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
+
+        <div>{{pageTitle}}</div>
+
+        <span class="flex"></span>
+        <paper-icon-button id="formSubmit" icon="check"></paper-icon-button>
+      </paper-toolbar>
+
+      <div class="form-content">
+        <paper-material elements="1">
+          <h4 class="header-4">Time & Date</h4>
+          <div class="row">
+            <paper-input
+              id="time"
+              class="flex"
+              label="time"
+              auto-validate
+              required
+              error-message="try something like 11:30am"
+              pattern="{{_timeRegex()}}">
+            </paper-input>
+
+            <paper-input
+              id="date"
+              class="flex"
+              label="date"
+              auto-validate
+              required
+              error-message="please enter a date formatted yyyy-mm-dd"
+              pattern="{{_dateRegex()}}">
+            </paper-input>
+          </div>
+
+          <h4 class="header-4">Weather</h4>
+          <div class="row">
+            <paper-input id="temperature" class="flex" label="temperature"></paper-input>
+
+            <paper-dropdown-menu id="temperatureUnits" class="flex" label="units">
+              <paper-menu id="temperatureUnitsMenu" class="dropdown-content">
+                <template is="dom-repeat" items="[[temperatureUnits]]">
+                  <paper-item>{{item}}</paper-item>
+                </template>
+              </paper-menu>
+            </paper-dropdown-menu>
+
+            <paper-dropdown-menu id="weatherConditions" class="flex" label="conditions">
+              <paper-menu id="weatherConditionsMenu" class="dropdown-content">
+                <template is="dom-repeat" items="[[weatherConditions]]">
+                  <paper-item>{{item}}</paper-item>
+                </template>
+              </paper-menu>
+            </paper-dropdown-menu>
+
+            <paper-input id="weatherNotes" id="flex" label="weather notes"></paper-input>
+          </div>
+
+          <h4 class="header-4">Brood Pattern</h4>
+          <div class="row">
+            <paper-radio-group id="broodPattern" selected="n/a">
+              <paper-radio-button name="Good">Good</paper-radio-button>
+              <paper-radio-button name="Fair">Fair</paper-radio-button>
+              <paper-radio-button name="Poor">Poor</paper-radio-button>
+              <paper-radio-button name="n/a">n/a</paper-radio-button>
+            <paper-radio-group>
+          </div>
+
+          <h4 class="header-4">Sightings</h4>
+          <div class="row">
+            <paper-checkbox id="eggsSighted">Eggs</paper-checkbox>
+            <paper-checkbox id="queenSighted">Queen</paper-checkbox>
+            <paper-checkbox id="honeySighted">Honey</paper-checkbox>
+            <paper-checkbox id="pollenSighted">Pollen</paper-checkbox>
+            <paper-checkbox id="queenCellsSighted">Queen Cells</paper-checkbox>
+          </div>
+
+          <h4 class="header-4">Queen Cell Sightings</h4>
+          <div class="row">
+            <paper-checkbox id="supersedureCellsSighted">Supersedure Cells</paper-checkbox>
+            <paper-checkbox id="swarmCellsSighted">Swarm Cells</paper-checkbox>
+            <paper-checkbox id="swarmCellsCapped">Swarm Cells Capped?</paper-checkbox>
+          </div>
+
+          <h4 class="header-4">Diseases & Treatments</h4>
+          <div>
+            <div id="diseaseContainer"></div>
+            <div class="layout horizontal">
+              <h5 id="addDisease">Add Disease</h5>
+              <div class="flex"></div>
+            </div>
+          </div>
+
+          <h4 class="header-4">Hive Information</h4>
+          <div class="row">
+            <paper-checkbox id="ventilated">Ventilated</paper-checkbox>
+            <paper-checkbox id="queenExcluder">Queen Excluder</paper-checkbox>
+          </div>
+
+          <h4 class="header-4">Entrance Reducer</h4>
+          <div>
+            <paper-radio-group id="entranceReducer" selected="None">
+              <paper-radio-button name="Small">Small</paper-radio-button>
+              <paper-radio-button name="Large">Large</paper-radio-button>
+              <paper-radio-button name="None">None</paper-radio-button>
+            <paper-radio-group>
+          </div>
+
+          <h4 class="header-4">Hive Health</h4>
+          <div class="horizontal-row">
+            Poor<paper-slider id="hiveHealth" class="flex" min="0" max="100" value="0" immediateValue="0"></paper-slider>Healthy
+          </div>
+
+          <h4 class="header-4">Hive Temperament</h4>
+          <div>
+            <paper-radio-group id="hiveTemperament" selected="calm">
+              <paper-radio-button name="Calm">Calm</paper-radio-button>
+              <paper-radio-button name="Nervous">Nervous</paper-radio-button>
+              <paper-radio-button name="Angry">Angry</paper-radio-button>
+              <paper-radio-button name="Other">Other</paper-radio-button>
+            <paper-radio-group>
+          </div>
+
+          <h4 class="header-4">Inspection Notes</h4>
+          <div>
+            <paper-input id="notes" label="notes"></paper-input>
+          </div>
+        </paper-material>
+      </div>
+    </paper-header-panel>
+
+    <inspection-defaults-request
+      id="inspectionDefaultsRequest"
+      hive-id="{{hiveId}}"
+      authentication-token="{{authenticationToken}}">
+    </inspection-defaults-request>
+
+    <inspection-show-request
+      id="getInspectionRequest"
+      inspection-id="{{inspectionId}}"
+      hive-id="{{hiveId}}"
+      authentication-token="{{authenticationToken}}">
+    </inspection-show-request>
+
+    <inspection-create-request
+      id="inspectionCreateRequest"
+      hive-id="{{hiveId}}"
+      authentication-token="{{authenticationToken}}">
+    </inspection-create-request>
+
+    <inspection-update-request
+      id="inspectionUpdateRequest"
+      hive-id="{{hiveId}}"
+      inspection-id="{{inspectionId}}"
+      authentication-token="{{authenticationToken}}">
+    </inspection-update-request>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'inspection-form',
+
+      behaviors: [HivelifeBehaviors.TimeBehavior],
+
+      listeners: {
+        'backButton.click': '_backButtonClick',
+        'formSubmit.click': '_submitForm',
+        'addDisease.click': '_insertDisease',
+        'diseaseContainer.disease-removal': '_removeDisease',
+        'getInspectionRequest.inspection-show': '_handleLoad',
+        'getInspectionRequest.inspection-show-error': '_handleDefaultsLoadError',
+        'inspectionDefaultsRequest.inspection-defaults-load': '_handleDefaultsLoad',
+        'inspectionDefaultsRequest.inspection-defaults-load-error': '_handleDefaultsLoadError',
+        'inspectionCreateRequest.inspection-create': '_handleCreateSuccess',
+        'inspectionCreateRequest.inspection-create-error': '_handleCreateError',
+        'inspectionUpdateRequest.inspection-update': '_handleUpdateSuccess',
+        'inspectionUpdateRequest.inspection-update-error': '_handleUpdateError'
+      },
+
+      ready: function () {
+        this.weatherConditions = [
+          'Clear',
+          'Cloudy',
+          'Sunny',
+          'Rain'
+        ];
+
+        this.temperatureUnits = [
+          'C',
+          'F',
+          'K'
+        ];
+      },
+
+      _setupInspectionDefaults: function (event) {
+        var hive = event.detail.hive;
+        this.apiaryId = hive.apiary_id;
+      },
+
+      setup: function () {
+        this.$.inspectionDefaultsRequest.send();
+        this.clearFields();
+
+        if (this.mode === 'new') {
+          this.pageTitle = 'New Inspection';
+        } else {
+          this.pageTitle = 'Edit Inspection';
+          this.$.getInspectionRequest.send();
+        }
+      },
+
+      clearFields: function () {
+        this.$.time.value = '';
+        this.$.date.value = '';
+        this.$.temperature.value = '';
+        this.$.temperatureUnits.selectedItemLabel = null;
+        this.$.weatherConditions.selectedItemLabel = null;
+        this.$.weatherNotes.value = '';
+        this.$.broodPattern.selected = 'na';
+        this.$.eggsSighted.checked = false;
+        this.$.queenSighted.checked = false;
+        this.$.honeySighted.checked = false;
+        this.$.pollenSighted.checked = false;
+        this.$.queenCellsSighted.checked = false;
+        this.$.supersedureCellsSighted.checked = false;
+        this.$.swarmCellsSighted.checked = false;
+        this.$.swarmCellsCapped.checked = false;
+        this.$.ventilated.checked = false;
+        this.$.queenExcluder.checked = false;
+        this.$.entranceReducer.selected = 'none';
+        this.$.hiveHealth.value = 0;
+        this.$.hiveTemperament.selected = 'calm';
+        this.$.notes.value = '';
+        this._clearDiseases();
+      },
+
+      _backButtonClick: function () {
+        if (this.apiaryId !== undefined) {
+          this.fire('page-redirect', { path: '/apiaries/' + this.apiaryId + '/hives/' + this.hiveId });
+        }
+      },
+
+      _handleLoad: function (event) {
+        var inspection = event.detail.inspection;
+
+        this.apiaryId = inspection.apiary_id;
+        this.$.time.value = this._timeFromTimestamp(inspection.inspected_at);
+        this.$.date.value = this._dateFromTimestamp(inspection.inspected_at);
+        this.$.temperature.value = inspection.temperature;
+        this.$.temperatureUnitsMenu.selected = this._selectionForTemperatureUnits(inspection.temperature_units);
+        this.$.weatherConditionsMenu.selected = this._selectionForWeatherConditions(inspection.weather_conditions);
+        this.$.weatherNotes.value = inspection.weather_notes;
+        this.$.broodPattern.selected = inspection.brood_pattern;
+        this.$.eggsSighted.checked = inspection.eggs_sighted;
+        this.$.queenSighted.checked = inspection.queen_sighted;
+        this.$.honeySighted.checked = inspection.honey_sighted;
+        this.$.pollenSighted.checked = inspection.pollen_sighted;
+        this.$.queenCellsSighted.checked = inspection.queen_cells_sighted;
+        this.$.supersedureCellsSighted.checked = inspection.supersedure_cells_sighted;
+        this.$.swarmCellsSighted.checked = inspection.swarm_cells_sighted;
+        this.$.swarmCellsCapped.checked = inspection.swarm_cells_capped;
+        this.$.ventilated.checked = inspection.ventilated;
+        this.$.queenExcluder.checked = inspection.queen_excluder;
+        this.$.entranceReducer.selected = inspection.entrance_reducer;
+        this.$.hiveHealth.value = inspection.health;
+        this.$.hiveTemperament.selected = inspection.hive_temperament;
+        this.$.notes.value = inspection.notes;
+
+        var diseases = inspection.diseases;
+        for (var i = 0; i < diseases.length; i++) {
+          this._insertDisease(diseases[i]);
+        }
+      },
+
+      _handleCreateSuccess: function (event) {
+        var inspection = event.detail.inspection;
+
+        this.fire('app-message', { message: 'Inspection successfully created!' });
+        this.fire('page-redirect', { path: '/hives/' + this.hiveId + '/inspections/' + inspection.id });
+      },
+
+      _handleUpdateSuccess: function (event) {
+        var inspection = event.detail.inspection;
+
+        this.fire('app-message', { message: 'Inspection successfully updated!' });
+        this.fire('page-redirect', { path: '/hives/' + this.hiveId + '/inspections/' + inspection.id });
+      },
+
+      _handleUpdateError: function (event) {
+        this.fire('app-message', { message: "Time/date can't be blank" });
+      },
+
+      _handleCreateError: function (event) {
+        this._handleUpdateError(event);
+      },
+
+      _handleDefaultsLoad: function (event) {
+        var inspection = event.detail.inspection;
+        this.apiaryId = inspection.apiary_id;
+        this.$.temperatureUnitsMenu.selected = this._selectionForTemperatureUnits(inspection.temperature_units);
+      },
+
+      _handleDefaultsLoadError: function (event) {
+        this.fire('page-redirect', { path: '/error' });
+      },
+
+      _formValid: function () {
+        var timeValid = this.$.time.validate();
+        var dateValid = this.$.date.validate();
+
+        return timeValid && dateValid;
+      },
+
+      _submitForm: function () {
+        if (!this._formValid()) {
+          return;
+        }
+
+        var date = this.$.date.value;
+        var time = this.$.time.value;
+
+        var payload = {
+          inspection: {
+            inspected_at: this._formattedTimestamp(date, time),
+            temperature: this.$.temperature.value,
+            temperature_units: this.$.temperatureUnits.selectedItemLabel,
+            weather_conditions: this.$.weatherConditions.selectedItemLabel,
+            weather_notes: this.$.weatherNotes.value,
+            brood_pattern: this.$.broodPattern.selected,
+            eggs_sighted: this.$.eggsSighted.checked,
+            queen_sighted: this.$.queenSighted.checked,
+            honey_sighted: this.$.honeySighted.checked,
+            pollen_sighted: this.$.pollenSighted.checked,
+            queen_cells_sighted: this.$.queenCellsSighted.checked,
+            supersedure_cells_sighted: this.$.supersedureCellsSighted.checked,
+            swarm_cells_sighted: this.$.swarmCellsSighted.checked,
+            swarm_cells_capped: this.$.swarmCellsCapped.checked,
+            ventilated: this.$.ventilated.checked,
+            queen_excluder: this.$.queenExcluder.checked,
+            entrance_reducer: this.$.entranceReducer.selected,
+            health: this.$.hiveHealth.value,
+            hive_temperament: this.$.hiveTemperament.selected,
+            notes: this.$.notes.value,
+            diseases_attributes: this._getDiseases()
+          }
+        };
+
+        var request = this._requestForSubmit();
+        request.payload = payload;
+        request.send();
+      },
+
+      _requestForSubmit: function () {
+        if (this.mode === 'new') {
+          return this.$.inspectionCreateRequest;
+        } else {
+          return this.$.inspectionUpdateRequest;
+        }
+      },
+
+      _selectionForWeatherConditions: function (selection) {
+        return this.weatherConditions.indexOf(selection);
+      },
+
+      _selectionForTemperatureUnits: function (selection) {
+        return this.temperatureUnits.indexOf(selection);
+      },
+
+      _getDiseases: function () {
+        var diseaseElements = this.$.diseaseContainer.children;
+        var values = [];
+        for (var i = 0; i < diseaseElements.length; i++) {
+          var diseaseValues = diseaseElements[i].formValue();
+          if ((diseaseValues.id === undefined && diseaseValues._destroy === false) || (diseaseValues.id !== undefined)) {
+            values.push(diseaseElements[i].formValue());
+          }
+        }
+
+        return values;
+      },
+
+      _clearDiseases: function () {
+        var container = this.$.diseaseContainer;
+        var diseaseSubform = container.firstChild;
+
+        while(diseaseSubform) {
+          container.removeChild(diseaseSubform);
+          diseaseSubform = container.firstChild;
+        }
+      },
+
+      _insertDisease: function (disease) {
+        var container = this.$.diseaseContainer;
+        var diseaseForm = document.createElement('disease-subform');
+
+        if (disease.id !== undefined) {
+          diseaseForm.id = disease.id;
+          diseaseForm.disease = disease.disease_type;
+          diseaseForm.treatment = disease.treatment;
+          diseaseForm.notes = disease.notes;
+          diseaseForm.setup();
+        }
+
+        container.appendChild(diseaseForm);
+      },
+
+      _removeDisease: function (event) {
+        var diseaseElement = event.target;
+        diseaseElement.destroy = true;
+        diseaseElement.style.display = 'none';
+      }
+    });
+  })();
+</script>

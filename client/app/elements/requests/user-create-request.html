@@ -1,0 +1,50 @@
+<dom-module id="user-create-request">
+  <template>
+    <iron-ajax
+      id="client"
+      method="POST"
+      on-response="_handleSuccess"
+      on-error="_handleError">
+    </iron-ajax>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'user-create-request',
+
+      behaviors: [HivelifeBehaviors.RequestBehavior],
+
+      properties: {
+        payload: Object
+      },
+
+      send: function () {
+        this.$.client.url = '/v1/api/users';
+        this.$.client.body = this.payload;
+        this.$.client.generateRequest();
+      },
+
+      _handleSuccess: function (event) {
+        var detail = {
+          user: event.detail.response
+        };
+
+        this.fire('user-create', detail);
+      },
+
+      _handleError: function (event) {
+        var status = event.target.lastRequest.xhr.status;
+        if (status === 500 || status === 401) {
+          this._handleServerError();
+          return;
+        }
+
+        var errors = event.target.lastRequest.xhr.response;
+        this.fire('user-create-error', { errors: errors });
+      }
+    });
+  })();
+</script>
+

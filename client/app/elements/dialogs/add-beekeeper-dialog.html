@@ -1,0 +1,83 @@
+<dom-module id="add-beekeeper-dialog">
+  <style>
+    paper-input {
+      width: 100%;
+    }
+
+    paper-dropdown-menu {
+      width: 100%;
+    }
+  </style>
+
+  <template>
+    <style include="paper-dialog-shared-styles"></style>
+    <h2>Add Beekeeper</h2>
+    <div class="layout vertical center">
+      <paper-input id="email" class="flex" label="email address"></paper-input>
+      <paper-dropdown-menu id="permission" class="flex" label="role">
+        <paper-menu id="permissionMenu" class="dropdown-content">
+          <paper-item>Viewer</paper-item>
+          <paper-item>Inspector</paper-item>
+          <paper-item>Admin</paper-item>
+        </paper-menu>
+      </paper-dropdown-menu>
+    </div>
+
+    <span>* Adding a new Admin cannot be undone.</span>
+
+    <div class="buttons">
+      <paper-button dialog-dismiss>Cancel</paper-button>
+      <paper-button id="addButton" dialog-confirm autofocus>Add</paper-button>
+    </div>
+
+    <beekeeper-create-request
+      id="createBeekeeperRequest"
+      apiary-id="{{apiaryId}}"
+      authentication-token="{{authenticationToken}}">
+    </beekeeper-create-request>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'add-beekeeper-dialog',
+
+      behaviors: [
+        Polymer.PaperDialogBehavior
+      ],
+
+      listeners: {
+        'addButton.click': '_submitForm',
+        'createBeekeeperRequest.beekeeper-create': '_handleCreateSuccess',
+        'createBeekeeperRequest.beekeeper-create-error': '_handleCreateError'
+      },
+
+      _submitForm: function () {
+        var client = this.$.createBeekeeperRequest;
+
+        client.payload = {
+          beekeeper: {
+            email: this.$.email.value,
+            permission: this.$.permission.selectedItemLabel
+          }
+        };
+
+        this.$.createBeekeeperRequest.send();
+      },
+
+      _handleCreateSuccess: function (event) {
+        this.$.email.value = '';
+        this.$.permissionMenu.selected = null;
+        this.fire('app-message', { message: 'Beekeeper successfully added!' });
+        this.fire('beekeeper-added');
+      },
+
+      _handleCreateError: function (event) {
+        this.$.email.value = '';
+        this.$.permissionMenu.selected = null;
+        this.fire('app-message', { message: event.detail.message });
+      }
+    });
+  })();
+</script>

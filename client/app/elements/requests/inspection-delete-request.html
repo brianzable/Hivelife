@@ -1,0 +1,40 @@
+<dom-module id="inspection-delete-request">
+  <template>
+    <iron-ajax
+      id="client"
+      method="DELETE"
+      on-response="_handleSuccess"
+      on-error="_handleError">
+    </iron-ajax>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'inspection-delete-request',
+
+      behaviors: [HivelifeBehaviors.RequestBehavior],
+
+      properties: {
+        authenticationToken: String,
+        hiveId: Number,
+        inspectionId: Number,
+      },
+
+      send: function () {
+        this._setAuthorization();
+        this.$.client.url = '/v1/api/hives/' + this.hiveId + '/inspections/' + this.inspectionId;;
+        this.$.client.generateRequest();
+      },
+
+      _handleSuccess: function (event) {
+        this.fire('inspection-delete');
+      },
+
+      _handleError: function (event) {
+        this.fire('inspection-delete-error');
+      }
+    });
+  })();
+</script>

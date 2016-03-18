@@ -1,0 +1,206 @@
+<dom-module id="root-layout-manager">
+  <template>
+    <style>
+      #subtitle {
+        padding-bottom: 10px;
+      }
+
+    </style>
+    <style include="shared-styles"></style>
+
+    <paper-drawer-panel id="paperDrawerPanel" responsive-width="900px">
+      <div drawer>
+        <paper-toolbar id="drawerToolbar">
+          <span>Menu</span>
+        </paper-toolbar>
+
+        <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}">
+          <template is="dom-repeat" items="{{menuOptions}}">
+            <a data-route="{{item.route}}" href="{{item.path}}">
+              <iron-icon icon="{{item.icon}}"></iron-icon>
+              <span>{{item.text}}</span>
+            </a>
+          </template>
+        </paper-menu>
+      </div>
+
+      <paper-header-panel id="mainPanel" main mode="tall">
+        <paper-toolbar id="mainToolbar" class="tall">
+          <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
+          <span class="flex"></span>
+
+          <div class="middle paper-font-display2 app-name">Hivelife</div>
+
+          <div id="subtitle" class="bottom title">{{title}}</div>
+        </paper-toolbar>
+
+        <div class="content">
+          <iron-pages attr-for-selected="data-route" selected="{{route}}">
+            <section data-route="home">
+              <paper-material elevation="1">
+                <registration-page></registration-page>
+              </paper-material>
+            </section>
+
+            <section data-route="login">
+              <paper-material elevation="1">
+                <login-page session="{{session}}"></login-page>
+              </paper-material>
+            </section>
+
+            <section data-route="my-account">
+              <settings-form id="settingsForm" authentication-token="{{authenticationToken}}"></settings-form>
+            </section>
+
+            <section data-route="data-portal">
+              <paper-material elevation="1">
+                <h2 class="paper-font-display2">Data Portal</h2>
+              </paper-material>
+            </section>
+
+            <section data-route="contact">
+              <paper-material elevation="1">
+                <h2 class="paper-font-display2">Contact Page</h2>
+              </paper-material>
+            </section>
+
+            <section data-route="about">
+              <paper-material elevation="1">
+                <h2 class="paper-font-display2">About Page</h2>
+              </paper-material>
+            </section>
+
+            <section data-route="reset-password">
+              <request-password-reset-page></request-password-reset-page>
+            </section>
+
+            <section data-route="change-password">
+              <change-password-page password-reset-token="{{passwordResetToken}}"></change-password-page>
+            </section>
+
+            <section data-route="error">
+              <no-records-page message="An error occurred while processing your request."></no-records-page>
+            </section>
+
+            <section data-route="not-found">
+              <no-records-page message="The page you requested could not be found."></no-records-page>
+            </section>
+
+            <section data-route="apiaries">
+              <apiaries-page apiaries={{apiaries}}></apiaries-page>
+            </section>
+          </iron-pages>
+        </div>
+      </paper-header-panel>
+    </paper-drawer-panel>
+
+    <apiary-index-request id="indexRequest" authentication-token="{{authenticationToken}}"></apiary-index-request>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'root-layout-manager',
+
+      behaviors: [HivelifeBehaviors.PageBehavior],
+
+      properties: {
+        route: {
+          type: String,
+          value: 'home',
+          observer: '_routeChanged',
+          notify: true
+        },
+        authenticationToken: {
+          type: String
+        },
+        passwordResetToken: {
+          type: String
+        },
+        session: {
+          type: Object,
+          notify: true
+        }
+      },
+
+      listeners: {
+        'indexRequest.apiaries-load': '_handleResponse',
+        'indexRequest.apiaries-load-error': '_handleError'
+      },
+
+      ready: function () {
+        this.loggedInMenuOptions = [
+          { route: 'apiaries',    path: '/apiaries', icon: 'list',          text: 'Apiaries' },
+          { route: 'my-account',  path: '/account',  icon: 'settings',      text: 'My Account' },
+          { route: 'data-portal', path: '/data',     icon: 'file-download', text: 'Data Portal' },
+          { route: 'contact',     path: '/contact',  icon: 'mail',          text: 'Contact Us' },
+          { route: 'about',       path: '/about',    icon: 'info',          text: 'About Us' },
+          { route: 'logout',      path: '/logout',   icon: 'clear',         text: 'Logout' }
+        ];
+
+        this.loggedOutMenuOptions = [
+          { route: 'home',        path: '/',        icon: 'home',          text: 'Home' },
+          { route: 'data-portal', path: '/data',    icon: 'file-download', text: 'Data Portal' },
+          { route: 'contact',     path: '/contact', icon: 'mail',          text: 'Contact Us' },
+          { route: 'about',       path: '/about',   icon: 'info',          text: 'About Us' },
+          { route: 'login',       path: '/login',   icon: 'fingerprint',   text: 'Login' }
+        ];
+      },
+
+      reloadMenu: function () {
+        if (this.authenticationToken !== null) {
+          this.menuOptions = this.loggedInMenuOptions;
+        } else {
+          this.menuOptions = this.loggedOutMenuOptions;
+        }
+      },
+
+      loadApiaries: function () {
+        this.apiaries = null;
+        this.$.indexRequest.send();
+      },
+
+      loadUserDefaults: function () {
+        this.$.settingsForm.setup();
+      },
+
+      closeDrawer: function () {
+        this.$.paperDrawerPanel.closeDrawer();
+      },
+
+      _routeChanged: function (newValue, oldValue) {
+        switch(newValue) {
+          case 'apiaries':
+            this.title = 'My Apiaries'
+            break;
+          case 'my-account':
+            this.title = 'Settings';
+            break;
+          case 'data-portal':
+            this.title = 'Data Portal';
+            break;
+          case 'contact':
+            this.title = 'Contact Us';
+            break;
+          case 'about':
+            this.title = 'About Us';
+            break;
+          case 'login':
+            this.title = 'Login';
+            break;
+          default:
+            this.title = '';
+        }
+      },
+
+      _handleResponse: function (event) {
+        this.apiaries = event.detail.apiaries;
+      },
+
+      _handleError: function (event) {
+        this._processError(event.detail.response);
+      }
+    });
+  })();
+</script>

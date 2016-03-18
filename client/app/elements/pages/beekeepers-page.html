@@ -1,0 +1,126 @@
+<dom-module id="beekeepers-page">
+  <template>
+    <style include="shared-styles"></style>
+
+    <iron-pages attr-for-selected="state" selected="{{state}}">
+      <section state="loading">
+        <loading-page id="spinner"></loading-page>
+      </section>
+
+      <section state="loaded">
+        <paper-material elevation="1">
+          <beekeeper-list
+            id="beekeeperList"
+            beekeepers="{{beekeepers}}"
+            authentication-token="{{authenticationToken}}"
+            apiary-id="{{apiaryId}}">
+          </beekeeper-list>
+        </paper-material>
+      </section>
+    </iron-pages>
+
+    <beekeeper-index-request
+      id="beekeeperIndexRequest"
+      authentication-token="{{authenticationToken}}"
+      apiary-id="{{apiaryId}}">
+    </beekeeper-index-request>
+
+    <add-beekeeper-dialog
+      id="addBeekeeperDialog"
+      apiary-id="{{apiaryId}}"
+      authentication-token="{{authenticationToken}}">
+    </add-beekeeper-dialog>
+
+    <beekeeper-delete-request
+      id="beekeeperDeleteRequest"
+      apiary-id="{{apiaryId}}"
+      authentication-token="{{authenticationToken}}">
+    </beekeeper-delete-request>
+
+    <delete-beekeeper-dialog id="deleteConfirmation"></delete-beekeeper-dialog>
+
+    <template is="dom-if" if="{{showAddButton}}">
+      <paper-fab id="addBeekeeperButton" icon="add" on-click="_toggleDialog"></paper-fab>
+    </template>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'beekeepers-page',
+
+      listeners: {
+        'addBeekeeperDialog.beekeeper-added': '_reload',
+        'beekeeperList.delete-beekeeper': '_handleBeekeeperDelete',
+        'beekeeperIndexRequest.beekeepers-load': '_setBeekeepers',
+        'beekeeperIndexRequest.beekeepers-load-error': '_handleLoadError',
+        'beekeeperDeleteRequest.beekeeper-delete': '_beekeeperDeleteSuccess',
+        'beekeeperDeleteRequest.beekeeper-delete-error': '_beekeeperDeleteError',
+        'deleteConfirmation.iron-overlay-closed':  '_handleConfirmationClose'
+      },
+
+      _handleConfirmationClose: function () {
+        if (this.$.deleteConfirmation.closingReason.confirmed === true) {
+          var request = this.$.beekeeperDeleteRequest;
+          this.state = 'loading';
+          request.send();
+        }
+      },
+
+      _handleBeekeeperDelete: function (event) {
+        var request = this.$.beekeeperDeleteRequest;
+        request.beekeeperId = event.detail.id;
+
+        this.$.deleteConfirmation.toggle();
+      },
+
+      _reload: function () {
+        this.state = 'loading';
+        this.loadBeekeepers();
+      },
+
+      _beekeeperDeleteSuccess: function (event) {
+        this.loadBeekeepers();
+      },
+
+      _beekeeperDeleteError: function (event) {
+        this.state = 'loaded';
+        this.fire('app-message', { message: event.detail.message });
+      },
+
+      properties: {
+        state: {
+          type: String,
+          value: 'loading'
+        },
+        beekeepers: {
+          type: Array,
+          value: [],
+        },
+        apiaryId: {
+          type: Number,
+          value: null
+        }
+      },
+
+      loadBeekeepers: function () {
+        this.$.beekeeperIndexRequest.send();
+      },
+
+      _setBeekeepers: function (event) {
+        this.beekeepers = event.detail.beekeepers;
+        this.state = 'loaded';
+      },
+
+      _handleLoadError: function (event) {
+        this.fire('page-redirect', { path: '/apiaries' });
+      },
+
+      _toggleDialog: function () {
+        this.$.addBeekeeperDialog.toggle();
+      }
+    });
+  })();
+</script>
+

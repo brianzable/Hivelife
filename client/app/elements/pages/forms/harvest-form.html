@@ -1,0 +1,238 @@
+<dom-module id="harvest-form">
+  <template>
+    <style include="shared-styles"></style>
+    <style include="form-styles"></style>
+
+    <paper-header-panel class="fit">
+      <paper-toolbar id="mainToolbar">
+        <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
+
+        <div>{{pageTitle}}</div>
+        <span class="flex"></span>
+        <paper-icon-button id="formSubmit" icon="check"></paper-icon-button>
+      </paper-toolbar>
+
+      <div class="form-content">
+        <paper-material elements="1">
+          <div class="row">
+            <div class="layout vertical flex">
+              <h4 class="header-4">Date</h4>
+              <div class="layout horizontal">
+                <paper-input
+                  id="date"
+                  class="flex"
+                  label="date"
+                  auto-validate
+                  required
+                  error-message="please enter a date formatted yyyy-mm-dd"
+                  pattern="{{_dateRegex()}}">
+                </paper-input>
+              </div>
+            </div>
+
+            <div class="flex"></div>
+          </div>
+
+          <div class="row">
+            <div class="layout vertical flex">
+              <h4 class="header-4">Honey Weight</h4>
+              <div class="row">
+                <paper-input id="honeyWeight" class="flex" label="honey weight"></paper-input>
+
+                <paper-dropdown-menu id="honeyWeightUnits" class="flex" label="units">
+                  <paper-menu id="honeyWeightUnitsMenu" class="dropdown-content">
+                    <template is="dom-repeat" items="[[weightUnits]]">
+                      <paper-item>{{item}}</paper-item>
+                    </template>
+                  </paper-menu>
+                </paper-dropdown-menu>
+              </div>
+            </div>
+
+            <div class="layout vertical flex">
+              <h4 class="header-4">Wax Weight</h4>
+              <div class="row">
+                <paper-input id="waxWeight" class="flex" label="wax weight"></paper-input>
+
+                <paper-dropdown-menu id="waxWeightUnits" class="flex" label="units">
+                  <paper-menu id="waxWeightUnitsMenu" class="dropdown-content">
+                    <template is="dom-repeat" items="[[weightUnits]]">
+                      <paper-item>{{item}}</paper-item>
+                    </template>
+                  </paper-menu>
+                </paper-dropdown-menu>
+              </div>
+            </div>
+          </div>
+
+          <h4 class="header-4">Harvest Notes</h4>
+          <paper-input id="notes" class="flex" label="notes"></paper-input>
+        </paper-material>
+      </div>
+    </paper-header-panel>
+
+    <inspection-defaults-request
+      id="harvestDefaultsRequest"
+      hive-id="{{hiveId}}"
+      authentication-token="{{authenticationToken}}">
+    </inspection-defaults-request>
+
+    <harvest-show-request
+      id="harvestShowRequest"
+      harvest-id="{{harvestId}}"
+      hive-id="{{hiveId}}"
+      authentication-token="{{authenticationToken}}">
+    </harvest-show-request>
+
+    <harvest-create-request
+      id="harvestCreateRequest"
+      hive-id="{{hiveId}}"
+      authentication-token="{{authenticationToken}}">
+    </harvest-create-request>
+
+    <harvest-update-request
+      id="harvestUpdateRequest"
+      hive-id="{{hiveId}}"
+      harvest-id="{{harvestId}}"
+      authentication-token="{{authenticationToken}}">
+    </harvest-update-request>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'harvest-form',
+
+      behaviors: [HivelifeBehaviors.TimeBehavior],
+
+      listeners: {
+        'backButton.click': '_backButtonClick',
+        'formSubmit.click': '_submitForm',
+        'harvestShowRequest.harvest-show': '_handleLoad',
+        'harvestShowRequest.harvest-show-error': '_handleDefaultsLoadError',
+        'harvestDefaultsRequest.inspection-defaults-load': '_handleDefaultsLoad',
+        'harvestDefaultsRequest.inspection-defaults-load-error': '_handleDefaultsLoadError',
+        'harvestCreateRequest.harvest-create': '_handleCreateSuccess',
+        'harvestCreateRequest.harvest-create-error': '_handleCreateError',
+        'harvestUpdateRequest.harvest-update': '_handleUpdateSuccess',
+        'harvestUpdateRequest.harvest-update-error': '_handleUpdateError'
+      },
+
+      ready: function () {
+        this.weightUnits = [
+          'LB',
+          'KG',
+          'OZ',
+          'G'
+        ];
+      },
+
+      setup: function () {
+        if (this.mode === 'new') {
+          this.clearFields();
+          this.$.harvestDefaultsRequest.send();
+          this.pageTitle = 'New Harvest';
+        } else {
+          this.pageTitle = 'Edit Harvest';
+          this.$.harvestShowRequest.send();
+        }
+      },
+
+      clearFields: function () {
+        this.$.date.value = '';
+        this.$.honeyWeight.value = '';
+        this.$.waxWeight.value = '';
+        this.$.notes.value = '';
+      },
+
+      _backButtonClick: function () {
+        if (this.apiaryId !== undefined) {
+          this.fire('page-redirect', { path: '/apiaries/' + this.apiaryId + '/hives/' + this.hiveId });
+        }
+      },
+
+      _handleCreateSuccess: function (event) {
+        var harvest = event.detail.harvest;
+
+        this.fire('app-message', { message: 'Harvest successfully created!' });
+        this.fire('page-redirect', { path: '/hives/' + this.hiveId + '/harvests/' + harvest.id });
+      },
+
+      _handleCreateError: function (event) {
+        this._handleUpdateError(event);
+      },
+
+      _handleUpdateSuccess: function (event) {
+        var harvest = event.detail.harvest;
+
+        this.fire('app-message', { message: 'Harvest successfully updated!' });
+        this.fire('page-redirect', { path: '/hives/' + this.hiveId + '/harvests/' + harvest.id });
+      },
+
+      _handleUpdateError: function (event) {
+        this.fire('app-message', { message: "Time/date can't be blank" });
+      },
+
+      _handleDefaultsLoad: function (event) {
+        var harvest = event.detail.inspection;
+        this.apiaryId = harvest.apiary_id;
+        this.$.honeyWeightUnitsMenu.selected = this._selectionForWeightUnits(harvest.wax_weight_units);
+        this.$.waxWeightUnitsMenu.selected = this._selectionForWeightUnits(harvest.wax_weight_units);
+      },
+
+      _handleDefaultsLoadError: function (event) {
+        this.fire('page-redirect', { path: '/error' });
+      },
+
+      _handleLoad: function (event) {
+        var harvest = event.detail.harvest;
+
+        this.apiaryId = harvest.apiary_id;
+        this.$.date.value = this._dateFromTimestamp(harvest.harvested_at);
+        this.$.honeyWeightUnitsMenu.selected = this._selectionForWeightUnits(harvest.honey_weight_units);
+        this.$.waxWeightUnitsMenu.selected = this._selectionForWeightUnits(harvest.wax_weight_units);
+        this.$.honeyWeight.value = harvest.honey_weight;
+        this.$.waxWeight.value = harvest.wax_weight;
+        this.$.notes.value = harvest.notes;
+      },
+
+      _formValid: function () {
+        return this.$.date.validate();
+      },
+
+      _submitForm: function () {
+        if (!this._formValid()) {
+          return;
+        }
+
+        var payload = {
+          harvest: {
+            harvested_at: this.$.date.value,
+            honey_weight: this.$.honeyWeight.value,
+            honey_weight_units: this.$.honeyWeightUnits.selectedItemLabel,
+            wax_weight: this.$.waxWeight.value,
+            wax_weight_units: this.$.waxWeightUnits.selectedItemLabel,
+            notes: this.$.notes.value
+          }
+        };
+
+        var request = this._requestForSubmit();
+        request.payload = payload;
+        request.send();
+      },
+
+      _requestForSubmit: function () {
+        if (this.mode === 'new') {
+          return this.$.harvestCreateRequest;
+        } else {
+          return this.$.harvestUpdateRequest;
+        }
+      },
+
+      _selectionForWeightUnits: function (selection) {
+        return this.weightUnits.indexOf(selection);
+      }
+    });
+  })();
+</script>

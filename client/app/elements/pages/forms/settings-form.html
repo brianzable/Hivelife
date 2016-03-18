@@ -1,0 +1,164 @@
+<dom-module id="settings-form">
+  <template>
+    <style include="shared-styles"></style>
+    <style include="form-styles"></style>
+
+    <div class="form-content">
+      <paper-material elevation="1">
+        <h4 class="header-4">Identity</h4>
+        <div class="row">
+          <paper-input
+            id="firstName"
+            class="flex"
+            label="first name"
+            auto-validate
+            required
+            error-message="first name cannot be blank">
+          </paper-input>
+
+          <paper-input
+            id="lastName"
+            class="flex"
+            label="last name"
+            auto-validate
+            required
+            error-message="last name cannot be blank">
+          </paper-input>
+
+          <paper-input
+            id="email"
+            label="email address"
+            class="flex"
+            auto-validate
+            required
+            error-message="email address cannot be blank">
+          </paper-input>
+        </div>
+
+        <h4 class="header-4">Time</h4>
+        <div class="row">
+          <paper-dropdown-menu id="timezone" class="flex" label="time zone">
+            <paper-menu id="timezoneMenu" class="dropdown-content">
+              <template is="dom-repeat" items="[[_timezones()]]">
+                <paper-item>{{item}}</paper-item>
+              </template>
+            </paper-menu>
+          </paper-dropdown-menu>
+        </div>
+
+        <div class="horizontal-row">
+          <div class="flex"></div>
+          <paper-button id="resetPassword" raised>Reset Password</paper-button>
+          <paper-button id="formSubmit" raised>Save</paper-button>
+        </div>
+      </paper-material>
+    </div>
+
+    <user-show-request
+      id="getUserRequest"
+      authentication-token="{{authenticationToken}}">
+    </user-show-request>
+
+    <user-update-request
+      id="updateUserRequest"
+      user-id="{{userId}}"
+      authentication-token="{{authenticationToken}}">
+    </user-update-request>
+
+    <reset-password-request id="resetPasswordRequest"></reset-password-request>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'settings-form',
+
+      behaviors: [HivelifeBehaviors.PageBehavior],
+
+      listeners: {
+        'formSubmit.click': '_submitForm',
+        'resetPassword.click': '_resetPassword',
+        'getUserRequest.user-load': '_handleLoad',
+        'getUserRequest.user-load-error': '_handleLoadError',
+        'updateUserRequest.user-update': '_handleUpdateSuccess',
+        'updateUserRequest.user-update-error': '_handleUpdateError',
+        'resetPasswordRequest.reset-password': '_handlePasswordReset',
+      },
+
+      setup: function () {
+        this.$.getUserRequest.send();
+      },
+
+      _submitForm: function () {
+        if (!this._formValid()) {
+          return;
+        }
+
+        var payload = {
+          user: {
+            email: this.$.email.value,
+            first_name: this.$.firstName.value,
+            last_name: this.$.lastName.value,
+            timezone: this.$.timezone.selectedItemLabel
+          }
+        };
+
+        var request = this.$.updateUserRequest;
+        request.payload = payload;
+        request.send();
+      },
+
+      _resetPassword: function () {
+        var request = this.$.resetPasswordRequest;
+        request.payload = {
+          email: this.emailAddress
+        };
+        this.$.resetPasswordRequest.send();
+      },
+
+      _formValid: function () {
+        var firstNameValid = this.$.firstName.validate();
+        var lastNameValid = this.$.lastName.validate();
+        var emailValid = this.$.email.validate();
+
+        return firstNameValid && lastNameValid && emailValid;
+      },
+
+      _handleLoad: function (event) {
+        var user = event.detail.user;
+
+        this.userId = user.id;
+        this.emailAddress = user.email;
+        this.$.firstName.value = user.first_name;
+        this.$.lastName.value = user.last_name;
+        this.$.email.value = user.email;
+        this.$.timezoneMenu.selected = this._selectionForTimezone(user.timezone);
+      },
+
+      _handleLoadError: function (event) {
+        this.fire('page-redirect', { path: '/error' });
+      },
+
+      _handleUpdateSuccess: function (event) {
+        this.fire('app-message', { message: 'Account information successfully updated! '});
+        this.fire('page-redirect', { path: '/profile' });
+      },
+
+      _handleUpdateError: function (event) {
+        var errors = event.detail.errors;
+        var errorMessage = errors.join(', ');
+
+        this.fire('app-message', { message: errorMessage });
+      },
+
+      _handlePasswordReset: function () {
+        this.fire('app-message', { message: 'Password reset instructions have been sent to your email. '});
+      },
+
+      _selectionForTimezone: function (selection) {
+        return this._timezones().indexOf(selection);
+      }
+    });
+  })();
+</script>

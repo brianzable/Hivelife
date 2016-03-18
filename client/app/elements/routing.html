@@ -21,23 +21,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       page.base(app.baseUrl.replace(/\/$/, ''));
     }
 
-    // Middleware
-    function scrollToTop(ctx, next) {
-      app.scrollPageToTop();
-      next();
-    }
-
     function closeDrawer(ctx, next) {
       app.closeDrawer();
       next();
     }
 
+    function updateSession(ctx, next) {
+      app.updateSession();
+      next();
+    }
+
     // Routes
-    page('*', scrollToTop, closeDrawer, function(ctx, next) {
+    page('*', closeDrawer, updateSession, function(ctx, next) {
       next();
     });
 
-    page('/', function() {
+    page('/', function () {
+      app.layoutManager = 'root';
       app.route = 'home';
     });
 
@@ -45,18 +45,171 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.route = 'home';
     });
 
-    page('/users', function() {
-      app.route = 'users';
+    page('/login', function () {
+      app.layoutManager = 'root';
+      app.route = 'login';
     });
 
-    page('/users/:name', function(data) {
-      app.route = 'user-info';
-      app.params = data.params;
+    page('/logout', function () {
+      app.$.sessionStore.value = null;
+      page.redirect('/login');
     });
 
-    page('/contact', function() {
+    page('/apiaries/new', function () {
+      app.route = 'apiary-new';
+      app.layoutManager = 'apiary-form';
+      app.$.apiaryForm.mode = 'new';
+      app.$.apiaryForm.setup();
+    });
+
+    page('/apiaries/:id', function (data) {
+      app.apiaryId = data.params.id;
+      app.layoutManager = 'apiary';
+      app.route = 'apiary-show';
+      app.$.apiaryManager.loadApiary();
+    });
+
+    page('/apiaries/:id/edit', function (data) {
+      app.apiaryId = data.params.id;
+      app.layoutManager = 'apiary-form';
+      app.route = 'apiary-edit';
+      app.$.apiaryForm.mode = 'edit';
+      app.$.apiaryForm.setup();
+    });
+
+    page('/apiaries', function () {
+      app.layoutManager = 'root';
+      app.route = 'apiaries';
+      app.$.rootManager.loadApiaries();
+    });
+
+    page('/apiaries/:apiaryId/hives/new', function (data) {
+      app.apiaryId = data.params.apiaryId;
+      app.hiveId = data.params.id;
+      app.layoutManager = 'hive-form';
+      app.route = 'hive-new';
+      app.$.hiveForm.setup('new');
+    });
+
+    page('/apiaries/:apiaryId/hives/:id/edit', function (data) {
+      app.apiaryId = data.params.apiaryId;
+      app.hiveId = data.params.id;
+      app.layoutManager = 'hive-form';
+      app.route = 'hive-edit';
+      app.$.hiveForm.setup('edit');
+    });
+
+    page('/apiaries/:apiaryId/hives/:id', function (data) {
+      app.apiaryId = data.params.apiaryId;
+      app.hiveId = data.params.id;
+      app.layoutManager = 'hive';
+      app.$.hiveManager.loadHive();
+      app.route = 'hive-show';
+    });
+
+    page('/hives/:hiveId/inspections/new', function (data) {
+      app.hiveId = data.params.hiveId;
+      app.layoutManager = 'inspection-form';
+      app.route = 'inspection-new';
+      app.$.inspectionForm.mode = 'new';
+      app.$.inspectionForm.setup();
+    });
+
+    page('/hives/:hiveId/inspections/:id/edit', function (data) {
+      app.hiveId = data.params.hiveId;
+      app.inspectionId = data.params.id;
+      app.layoutManager = 'inspection-form';
+      app.route = 'inspection-edit';
+      app.$.inspectionForm.mode = 'edit';
+      app.$.inspectionForm.setup();
+    });
+
+    page('/hives/:hiveId/inspections/:id', function (data) {
+      app.hiveId = data.params.hiveId;
+      app.inspectionId = data.params.id;
+      app.layoutManager = 'inspection';
+      app.route = 'inspection-show';
+      app.$.inspectionManager.setup();
+    });
+
+    page('/hives/:hiveId/harvests/new', function (data) {
+      app.hiveId = data.params.hiveId;
+      app.layoutManager = 'harvest-form';
+      app.route = 'harvest-new';
+      app.$.harvestForm.mode = 'new';
+      app.$.harvestForm.setup();
+    });
+
+    page('/hives/:hiveId/harvests/:id/edit', function (data) {
+      app.hiveId = data.params.hiveId;
+      app.harvestId = data.params.id;
+      app.layoutManager = 'harvest-form';
+      app.route = 'harvest-edit';
+      app.$.harvestForm.mode = 'edit';
+      app.$.harvestForm.setup();
+    });
+
+    page('/hives/:hiveId/harvests/:id', function (data) {
+      app.hiveId = data.params.hiveId;
+      app.harvestId = data.params.id;
+      app.layoutManager = 'harvest';
+      app.route = 'harvest-show';
+      app.$.harvestManager.setup();
+    });
+
+    page('/register', function() {
+      page.redirect('/home');
+    });
+
+    page('/account', function () {
+      app.layoutManager = 'root';
+      app.route = 'my-account';
+      app.$.rootManager.loadUserDefaults();
+    });
+
+    page('/about', function () {
+      app.layoutManager = 'root';
+      app.route = 'about';
+    });
+
+    page('/contact', function () {
+      app.layoutManager = 'root';
       app.route = 'contact';
     });
+
+    page('/data', function () {
+      app.layoutManager = 'root';
+      app.route = 'data-portal';
+    });
+
+    page('/error', function () {
+      app.layoutManager = 'root';
+      app.route = 'error';
+    });
+
+    page('/reset_password/:token', function (data) {
+      app.layoutManager = 'root';
+      app.route = 'change-password';
+      app.passwordResetToken = data.params.token;
+    });
+
+    page('/reset_password', function () {
+      app.layoutManager = 'root';
+      app.route = 'reset-password';
+    });
+
+    /* page('/users', function() { */
+    /*   app.route = 'users'; */
+    /* }); */
+
+    /* page('/users/:name', function(data) { */
+    /*   app.route = 'user-info'; */
+    /*   app.params = data.params; */
+    /* }); */
+
+    /* page('/contact', function() { */
+    /*   app.route = 'contact'; */
+    /* }); */
 
     // 404
     page('*', function() {

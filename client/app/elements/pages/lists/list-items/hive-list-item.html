@@ -1,0 +1,31 @@
+<dom-module id="hive-list-item">
+  <template>
+    <style include="list-item-styles"></style>
+    <div class="layout horizontal">
+      <div id="count" class="layout vertical">
+        <div class="main-text layout vertical center">
+          <content select=".count"></content>
+        </div>
+
+        <div class="sub-text layout vertical center">
+          INSPECTIONS
+        </div>
+      </div>
+
+      <div class="layout horizontal center">
+        <div class="main-text flex">
+          <content select=".name"></content>
+        </div>
+      </div>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'hive-list-item'
+    });
+  })();
+</script>
+

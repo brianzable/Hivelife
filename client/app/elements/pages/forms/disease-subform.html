@@ -1,0 +1,99 @@
+<dom-module id="disease-subform">
+  <template>
+    <style include="shared-styles"></style>
+
+    <div class="horizontal-row">
+      <paper-dropdown-menu id="disease" class="flex" label="disease">
+        <paper-menu id="diseaseMenu" class="dropdown-content">
+          <template is="dom-repeat" items="[[diseases]]">
+            <paper-item>{{item}}</paper-item>
+          </template>
+        </paper-menu>
+      </paper-dropdown-menu>
+
+      <paper-dropdown-menu id="treatment" class="flex" label="treatment">
+        <paper-menu id="treatmentMenu" class="dropdown-content">
+          <template is="dom-repeat" items="[[treatments]]">
+            <paper-item>{{item}}</paper-item>
+          </template>
+        </paper-menu>
+      </paper-dropdown-menu>
+
+      <paper-input id="notes" class="flex" label="notes" value="{{notes}}"></paper-input>
+
+      <paper-icon-button
+        id="removeDisease"
+        style="margin-top: 18px;"
+        icon="clear"
+        title="clear"
+        role="button">
+      </paper-icon-button>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'disease-subform',
+
+      listeners: {
+        'removeDisease.click': '_removeDisease'
+      },
+
+      properties: {
+        id: {
+          type: Number,
+          value: null
+        },
+        disease: String,
+        treatment: String,
+        notes: {
+          type: String,
+          value: ''
+        },
+        destroy: {
+          type: Boolean,
+          value: false
+        }
+      },
+
+      ready: function () {
+        this.diseases = ['Varroa', 'Nosema'];
+        this.treatments = ['MAQS', 'Fumagilin'];
+      },
+
+      formValue: function () {
+        var formValue = {
+          disease_type: this.$.disease.selectedItemLabel,
+          treatment: this.$.treatment.selectedItemLabel,
+          notes: this.$.notes.value,
+          _destroy: this.destroy
+        };
+
+        if (this.id !== '') {
+          formValue.id = this.id;
+        }
+
+        return formValue;
+      },
+
+      setup: function () {
+        this.$.diseaseMenu.selected = this._selectionForDisease();
+        this.$.treatmentMenu.selected = this._selectionForTreatment();
+      },
+
+      _selectionForDisease: function () {
+        return this.diseases.indexOf(this.disease);
+      },
+
+      _selectionForTreatment: function () {
+        return this.treatments.indexOf(this.treatment);
+      },
+
+      _removeDisease: function () {
+        this.fire('disease-removal', { id: this.id });
+      }
+    });
+  })();
+</script>

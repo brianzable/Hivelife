@@ -1,0 +1,31 @@
+<dom-module id="hive-list">
+  <template>
+    <style include="list-styles"></style>
+    <iron-list id="list" items="[[hives]]" as="hive">
+      <template>
+        <a href="{{_hiveUrl(hive)}}" style="text-decoration: none; color: inherit;">
+          <hive-list-item>
+            <span class="count">{{hive.inspection_count}}</span>
+            <span class="name">{{hive.name}}</span>
+          </hive-list-item>
+        </a>
+      </template>
+    </iron-list>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'hive-list',
+
+      properties: {
+        apiaryId: Number,
+      },
+
+      _hiveUrl: function (item) {
+        return '/apiaries/' + this.apiaryId + '/hives/' + item.id;
+      }
+    });
+  })();
+</script>

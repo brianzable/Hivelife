@@ -15,8 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta charset="utf-8">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="generator" content="Polymer Starter Kit">
-  <title>Polymer Starter Kit</title>
+  <title>Hivelife</title>
 
   <!-- Place favicon.ico in the `app/` directory -->
 
@@ -57,151 +56,96 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <!-- For shared styles, shared-styles.html import in elements.html -->
   <style is="custom-style" include="shared-styles"></style>
+  <style is="custom-style" include="iron-flex iron-flex-alignment"></style>
 </head>
 
 <body unresolved>
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
+    <iron-pages id="pages" attr-for-selected="data-layout-manager" selected="{{layoutManager}}">
+      <section data-layout-manager="root">
+        <root-layout-manager
+          id="rootManager"
+          session="{{session}}"
+          route="{{route}}"
+          password-reset-token="{{passwordResetToken}}"
+          authentication-token="{{authenticationToken}}">
+        </root-layout-manager>
+      </section>
 
-    <paper-drawer-panel id="paperDrawerPanel">
-      <!-- Drawer Scroll Header Panel -->
-      <paper-scroll-header-panel drawer fixed>
+      <section data-layout-manager="apiary">
+        <apiary-layout-manager
+          id="apiaryManager"
+          authentication-token="{{authenticationToken}}"
+          apiary-id="{{apiaryId}}">
+        </apiary-layout-manager>
+      </section>
 
-        <!-- Drawer Toolbar -->
-        <paper-toolbar id="drawerToolbar">
-          <span class="menu-name">Menu</span>
-        </paper-toolbar>
+      <section data-layout-manager="hive">
+        <hive-layout-manager
+          id="hiveManager"
+          authentication-token="{{authenticationToken}}"
+          hive-id="{{hiveId}}"
+          apiary-id="{{apiaryId}}">
+        </hive-layout-manager>
+      </section>
 
-        <!-- Drawer Content -->
-        <paper-menu attr-for-selected="data-route" selected="[[route]]">
-          <a data-route="home" href="{{baseUrl}}">
-            <iron-icon icon="home"></iron-icon>
-            <span>Home</span>
-          </a>
+      <section data-layout-manager="inspection">
+        <inspection-layout-manager
+          id="inspectionManager"
+          authentication-token="{{authenticationToken}}"
+          hive-id="{{hiveId}}"
+          inspection-id="{{inspectionId}}">
+        </inspection-layout-manager>
+      </section>
 
-          <a data-route="users" href="{{baseUrl}}users">
-            <iron-icon icon="info"></iron-icon>
-            <span>Users</span>
-          </a>
+      <section data-layout-manager="harvest">
+        <harvest-layout-manager
+          id="harvestManager"
+          authentication-token="{{authenticationToken}}"
+          hive-id="{{hiveId}}"
+          harvest-id="{{harvestId}}">
+        </harvest-layout-manager>
+      </section>
 
-          <a data-route="contact" href="{{baseUrl}}contact">
-            <iron-icon icon="mail"></iron-icon>
-            <span>Contact</span>
-          </a>
-        </paper-menu>
-      </paper-scroll-header-panel>
+      <section data-layout-manager="apiary-form">
+        <apiary-form
+          id="apiaryForm"
+          authentication-token="{{authenticationToken}}"
+          apiary-id="{{apiaryId}}">
+        </apiary-form>
+      </section>
 
-      <!-- Main Area -->
-      <paper-scroll-header-panel main id="headerPanelMain" condenses keep-condensed-header>
-        <!-- Main Toolbar -->
-        <paper-toolbar id="mainToolbar" class="tall">
-          <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
+      <section data-layout-manager="hive-form">
+        <hive-form
+          id="hiveForm"
+          authentication-token="{{authenticationToken}}"
+          hive-id="{{hiveId}}"
+          apiary-id="{{apiaryId}}">
+        </hive-form>
+      </section>
 
-          <span class="space"></span>
+      <section data-layout-manager="inspection-form">
+        <inspection-form
+          id="inspectionForm"
+          authentication-token="{{authenticationToken}}"
+          hive-id="{{hiveId}}"
+          inspection-id="{{inspectionId}}">
+        </inspection-form>
+      </section>
 
-          <!-- Toolbar icons -->
-          <paper-icon-button icon="refresh"></paper-icon-button>
-          <paper-icon-button icon="search"></paper-icon-button>
+      <section data-layout-manager="harvest-form">
+        <harvest-form
+          id="harvestForm"
+          authentication-token="{{authenticationToken}}"
+          hive-id="{{hiveId}}"
+          harvest-id="{{harvestId}}">
+        </harvest-form>
+      </section>
+    </iron-pages>
 
-          <!-- Application name -->
-          <div class="middle middle-container">
-            <div class="app-name">Polymer Starter Kit</div>
-          </div>
-
-          <!-- Application sub title -->
-          <div class="bottom bottom-container">
-            <div class="bottom-title">The future of the web today</div>
-          </div>
-        </paper-toolbar>
-
-        <!-- Main Content -->
-        <div class="content">
-          <iron-pages attr-for-selected="data-route" selected="{{route}}">
-            <section data-route="home">
-              <paper-material elevation="1">
-                <my-greeting></my-greeting>
-
-                <p class="subhead">You now have:</p>
-                <my-list></my-list>
-
-                <p>Looking for more Web App layouts? Check out our <a href="https://github.com/PolymerElements/app-layout-templates">layouts</a> collection. You can also <a href="http://polymerelements.github.io/app-layout-templates/">preview</a> them live.</p>
-              </paper-material>
-
-              <paper-material elevation="1">
-                <p>This is another card.</p>
-              </paper-material>
-
-              <paper-material elevation="1">
-                <h1 id="license">License</h1>
-                <p>Everything in this repo is BSD style license unless otherwise specified.</p>
-                <p>Copyright (c) 2015 The Polymer Authors. All rights reserved.</p>
-                <p>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p>
-                <ul>
-                <li>Redistributions of source code must retain the above copyright
-                notice, this list of conditions and the following disclaimer.</li>
-                <li>Redistributions in binary form must reproduce the above
-                copyright notice, this list of conditions and the following disclaimer
-                in the documentation and/or other materials provided with the
-                distribution.</li>
-                <li>Neither the name of Google Inc. nor the names of its
-                contributors may be used to endorse or promote products derived from
-                this software without specific prior written permission.</li>
-                </ul>
-                <p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
-              </paper-material>
-            </section>
-
-            <section data-route="users">
-              <paper-material elevation="1">
-                <h2 class="page-title">Users</h2>
-                <p>This is the users section</p>
-                <a href$="{{baseUrl}}users/Addy">Addy</a><br>
-                <a href$="{{baseUrl}}users/Rob">Rob</a><br>
-                <a href$="{{baseUrl}}users/Chuck">Chuck</a><br>
-                <a href$="{{baseUrl}}users/Sam">Sam</a>
-              </paper-material>
-            </section>
-
-            <section data-route="user-info">
-              <paper-material elevation="1">
-                <h2 class="page-title">User: {{params.name}}</h2>
-                <div>This is {{params.name}}'s section</div>
-              </paper-material>
-            </section>
-
-            <section data-route="contact">
-              <paper-material elevation="1">
-                <h2 class="page-title">Contact</h2>
-                <p>This is the contact section</p>
-              </paper-material>
-            </section>
-          </iron-pages>
-        </div>
-      </paper-scroll-header-panel>
-    </paper-drawer-panel>
-
-    <paper-toast id="toast">
-      <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()">Ok</span>
-    </paper-toast>
-
-    <!-- Uncomment next block to enable Service Worker support (1/2) -->
-    <!--
-    <paper-toast id="caching-complete"
-                 duration="6000"
-                 text="Caching complete! This app will work offline.">
-    </paper-toast>
-
-    <platinum-sw-register auto-register
-                          clients-claim
-                          skip-waiting
-                          base-uri="bower_components/platinum-sw/bootstrap"
-                          on-service-worker-installed="displayInstalledToast">
-      <platinum-sw-cache default-cache-strategy="fastest"
-                         cache-config-file="cache-config.json">
-      </platinum-sw-cache>
-    </platinum-sw-register>
-    -->
-
+    <paper-toast id="toast" duration="6000"></paper-toast>
+    <iron-localstorage id="sessionStore" name="session" value="{{session}}"></iron-localstorage>
   </template>
 
   <!-- build:js scripts/app.js -->

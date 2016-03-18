@@ -1,0 +1,43 @@
+<dom-module id="harvest-list">
+  <template>
+    <style include="list-styles"></style>
+    <iron-list id="list" items="{{harvests}}" as="item">
+      <template>
+        <a href="{{_harvestUrl(item)}}" style="text-decoration: none; color: inherit;">
+          <inspection-harvest-list-item>
+            <span class="month">{{_monthFromTimestamp(item.harvested_at)}}</span>
+            <span class="day">{{_dayFromTimestamp(item.harvested_at)}}</span>
+            <span class="year">{{_yearFromTimestamp(item.harvested_at)}}</span>
+            <span class="notes">{{_notesField(item.notes)}}</span>
+            <span class="beekeeper">{{_timeFromTimestamp(item.last_edit)}}</span>
+          </inspection-harvest-list-item>
+        </a>
+      </template>
+    </iron-list>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'harvest-list',
+      behaviors: [HivelifeBehaviors.TimeBehavior],
+
+      properties: {
+        hiveId: Number,
+        scrollTarget: Object
+      },
+
+      _harvestUrl: function (item) {
+        return 'hives/' + this.hiveId + '/harvests/' + item.id;
+      },
+
+      _notesField: function (notes) {
+        if (notes === '' || typeof notes === undefined) {
+          return 'No notes for this harvest';
+        }
+        return notes;
+      }
+    });
+  })();
+</script>

@@ -1,0 +1,25 @@
+<dom-module id="form-styles">
+  <template>
+    <style>
+      paper-input {
+        padding: var(--component-padding);
+      }
+
+      paper-dropdown-menu {
+        padding: var(--component-padding);
+      }
+
+      paper-checkbox {
+        padding: var(--component-padding);
+      }
+
+      /* Tablet+ */
+      @media (min-width: 601px) {
+        .form-content {
+          @apply(--layout-vertical);
+          @apply(--layout-center);
+        }
+      }
+    </style>
+  </template>
+</dom-module>

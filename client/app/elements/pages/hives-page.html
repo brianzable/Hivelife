@@ -1,0 +1,65 @@
+<dom-module id="hives-page">
+  <template>
+    <style include="shared-styles"></style>
+    <iron-pages attr-for-selected="state" selected="{{state}}">
+      <section state="loading">
+        <loading-page id="hivesSpinner"></loading-page>
+      </section>
+
+      <section state="loaded">
+        <paper-material id="hivesPage" elevation="1">
+          <hive-list id="hiveList" hives="{{hives}}" apiary-id="{{apiaryId}}"></hive-list>
+        </paper-material>
+      </section>
+
+      <section state="empty">
+        <no-records-page message="Add a hive!"></no-records-page>
+      </section>
+    </iron-pages>
+
+    <template is="dom-if" if="{{showAddButton}}">
+      <paper-fab id="addHiveButton" icon="add" on-click="_createNewHive"></paper-fab>
+    </template>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'hives-page',
+
+      properties: {
+        state: {
+          type: String,
+          value: 'loading'
+        },
+        hives: {
+          type: Array,
+          value: [],
+          observer: '_hivesChanged'
+        },
+        apiaryId: {
+          type: Number,
+          value: null
+        }
+      },
+
+      _hivesChanged: function (newValue, oldValue) {
+        var hives = newValue;
+        if (typeof hives === undefined || hives === null) {
+          this.state = 'loading';
+        }
+        else if (hives.length === 0) {
+          this.state = 'empty';
+        }
+        else {
+          this.state = 'loaded';
+        }
+      },
+
+      _createNewHive: function () {
+        this.fire('page-redirect', { path: '/apiaries/' + this.apiaryId + '/hives/new' });
+      }
+    });
+  })();
+</script>
