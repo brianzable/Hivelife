@@ -1,6 +1,7 @@
 <dom-module id="hive-list">
   <template>
     <style include="list-styles"></style>
+
     <iron-list id="list" items="[[hives]]" as="hive">
       <template>
         <a href="{{_hiveUrl(hive)}}" style="text-decoration: none; color: inherit;">

@@ -1,13 +1,14 @@
 <dom-module id="hives-page">
   <template>
     <style include="shared-styles"></style>
+
     <iron-pages attr-for-selected="state" selected="{{state}}">
       <section state="loading">
         <loading-page id="hivesSpinner"></loading-page>
       </section>
 
       <section state="loaded">
-        <paper-material id="hivesPage" elevation="1">
+        <paper-material elevation="1">
           <hive-list id="hiveList" hives="{{hives}}" apiary-id="{{apiaryId}}"></hive-list>
         </paper-material>
       </section>
