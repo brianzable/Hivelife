@@ -1,10 +1,13 @@
 <dom-module id="hive-layout-manager">
   <template>
     <style include="shared-styles"></style>
+
     <paper-header-panel class="fit">
-      <paper-toolbar class="tall">
+      <paper-toolbar id="mainToolbar" class="tall">
         <paper-icon-button id="backButton" icon="arrow-back"></paper-icon-button>
+
         <div class="flex"></div>
+
         <paper-menu-button ignoreSelect="true" vertical-align="top" horizontal-align="right" style="padding-right: 0; margin-right: 0;">
           <paper-icon-button icon="menu" class="dropdown-trigger" style="padding-right: 0; margin-right: 0;"></paper-icon-button>
           <paper-menu class="dropdown-content">
