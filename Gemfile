@@ -22,8 +22,6 @@ gem 'jquery-rails'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
 
-gem 'unicorn', '~> 5.0'
-
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
@@ -38,9 +36,3 @@ gem 'rspec-rails', group: [:development, :test]
 gem 'factory_girl_rails', group: [:development, :test]
 gem 'byebug', group: [:development, :test]
 gem 'db-query-matchers', group: [:development, :test]
-
-gem 'capistrano', group: [:development], require: false
-gem 'capistrano-rails', group: [:development], require: false
-gem 'capistrano-bundler', group: [:development], require: false
-gem 'capistrano-unicorn-nginx', group: [:development], require: false
-gem 'rvm1-capistrano3', group: [:development], require: false
