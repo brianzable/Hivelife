@@ -68,6 +68,7 @@
 server 'hivelife.pem ubuntu@ec2-54-187-36-122.us-west-2.compute.amazonaws.com', port: 22, roles: [:web, :app, :db], primary: true
 
 set :repo_url,        'git@github.com:brianzable/Hivelife.git'
+set :branch,          'deploy_tools'
 set :application,     'hivelife'
 set :user,            'ubuntu'
 set :puma_threads,    [4, 16]
