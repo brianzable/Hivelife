@@ -1,48 +1,25 @@
 source 'https://rubygems.org'
 
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 4.2'
+gem 'rails',                        '~> 4.2'
+gem 'pg',                           '~> 0.18'
+gem 'activerecord-postgis-adapter', '~> 3.1'
+gem 'puma',                         '~> 3.4'
+gem 'jbuilder',                     '~> 1.2'
+gem 'pundit',                       '~> 1.1'
+gem 'sorcery',                      '~> 0.9'
+gem 'responders',                   '~> 2.0'
 
-# Use Postgres as the database for Active Record
-gem 'pg'
-gem 'activerecord-postgis-adapter'
-
-# Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.0'
-
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
-
-# Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.0.0'
-
-# Use jquery as the JavaScript library
-gem 'jquery-rails'
-
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 1.2'
-
-group :doc do
-  # bundle exec rake doc:rails generates the API under doc/api.
-  gem 'sdoc', require: false
+group :development, :test do
+  gem 'rspec-rails',                '~> 3.4'
+  gem 'factory_girl_rails',         '~> 4.7'
+  gem 'byebug',                     '~> 8.2'
+  gem 'db-query-matchers',          '~> 0.4'
 end
-
-gem 'pundit'
-gem 'sorcery'
-gem 'responders', '~> 2.0'
-
-# Use RSpec for testing
-gem 'rspec-rails', group: [:development, :test]
-gem 'factory_girl_rails', group: [:development, :test]
-gem 'byebug', group: [:development, :test]
-gem 'db-query-matchers', group: [:development, :test]
 
 group :development do
-  gem 'capistrano',         require: false
-  gem 'capistrano-rvm',     require: false
-  gem 'capistrano-rails',   require: false
-  gem 'capistrano-bundler', require: false
-  gem 'capistrano3-puma',   require: false
+  gem 'capistrano',                 '~> 3.4', require: false
+  gem 'capistrano-rvm',             '~> 0.1', require: false
+  gem 'capistrano-rails',           '~> 1.1', require: false
+  gem 'capistrano-bundler',         '~> 1.1', require: false
+  gem 'capistrano3-puma',           '~> 1.2', require: false
 end
-
-gem 'puma'
