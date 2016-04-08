@@ -217,7 +217,7 @@ gulp.task('clean', function() {
 
 // Watch files for changes & reload
 gulp.task('serve', ['styles', 'elements'], function() {
-  var proxy = proxyMiddleware('/v1/api', {target: 'http://0.0.0.0:3000'});
+  var proxy = proxyMiddleware('/v1/api', {target: 'tcp://localhost:3000'});
   browserSync({
     port: 5000,
     notify: false,
@@ -248,7 +248,7 @@ gulp.task('serve', ['styles', 'elements'], function() {
 
 // Build and serve the output from the dist build
 gulp.task('serve:dist', ['default'], function() {
-  var proxy = proxyMiddleware('/v1/api', {target: 'http://0.0.0.0:3000'});
+  var proxy = proxyMiddleware('/v1/api', {target: 'http://localhost:3000'});
   browserSync({
     port: 5001,
     notify: false,
