@@ -14,7 +14,7 @@
     <h2>Add Beekeeper</h2>
     <div class="layout vertical center">
       <paper-input id="email" class="flex" label="email address"></paper-input>
-      <paper-dropdown-menu id="permission" class="flex" label="role">
+      <paper-dropdown-menu id="role" class="flex" label="role">
         <paper-menu id="permissionMenu" class="dropdown-content">
           <paper-item>Viewer</paper-item>
           <paper-item>Inspector</paper-item>
@@ -59,7 +59,7 @@
         client.payload = {
           beekeeper: {
             email: this.$.email.value,
-            permission: this.$.permission.selectedItemLabel
+            role: this.$.role.selectedItemLabel
           }
         };
 
