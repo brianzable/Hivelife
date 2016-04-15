@@ -1,0 +1,37 @@
+<dom-module id="user-activation-request">
+  <template>
+    <iron-ajax
+      id="client"
+      method="GET"
+      on-response="_handleSuccess"
+      on-error="_handleError">
+    </iron-ajax>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'user-activation-request',
+
+      behaviors: [HivelifeBehaviors.RequestBehavior],
+
+      properties: {
+        activationToken: String,
+      },
+
+      send: function () {
+        this.$.client.url = '/v1/api/users/' + this.activationToken + '/activate';
+        this.$.client.generateRequest();
+      },
+
+      _handleSuccess: function (event) {
+        this.fire('user-activate');
+      },
+
+      _handleError: function (event) {
+        this.fire('user-activate-error');
+      }
+    });
+  })();
+</script>

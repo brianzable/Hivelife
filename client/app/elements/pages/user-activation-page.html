@@ -1,0 +1,35 @@
+<dom-module id="user-activation-page">
+  <template>
+    <no-records-page message="Activating your account..."></no-records-page>
+    <user-activation-request id="activationRequest" activation-token="{{activationToken}}"></user-activation-request>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'user-activation-page',
+
+      behaviors: [HivelifeBehaviors.PageBehavior],
+
+      listeners: {
+        'activationRequest.user-activate': '_handleCreateSuccess',
+        'activationRequest.user-activate-error': '_handleCreateError'
+      },
+
+      activateUser: function () {
+        this.$.activationRequest.send();
+      },
+
+      _handleCreateSuccess: function (event) {
+        this.fire('app-message', { message: 'Your account has been activated. You can now login.' });
+        this.fire('page-redirect', { path: '/login' });
+      },
+
+      _handleCreateError: function (event) {
+        this.fire('app-message', { message: 'Failed to activate your account. Please try again later.' });
+        this.fire('page-redirect', { path: '/' });
+      },
+    });
+  })();
+</script>

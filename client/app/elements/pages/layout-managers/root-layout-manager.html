@@ -89,6 +89,10 @@
             <section data-route="apiaries">
               <apiaries-page apiaries={{apiaries}}></apiaries-page>
             </section>
+
+            <section data-route="activation">
+              <user-activation-page id="activationPage" activation-token="{{activationToken}}"></user-activation-page>
+            </section>
           </iron-pages>
         </div>
       </paper-header-panel>
@@ -116,6 +120,9 @@
           type: String
         },
         passwordResetToken: {
+          type: String
+        },
+        activationToken: {
           type: String
         },
         session: {
@@ -163,6 +170,10 @@
 
       loadUserDefaults: function () {
         this.$.settingsForm.setup();
+      },
+
+      activateUser: function () {
+        this.$.activationPage.activateUser();
       },
 
       closeDrawer: function () {
