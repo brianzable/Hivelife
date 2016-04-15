@@ -71,11 +71,15 @@
             </section>
 
             <section data-route="reset-password">
-              <request-password-reset-page></request-password-reset-page>
+              <paper-material elevation="1">
+                <request-password-reset-page></request-password-reset-page>
+              </paper-material>
             </section>
 
             <section data-route="change-password">
-              <change-password-page password-reset-token="{{passwordResetToken}}"></change-password-page>
+              <paper-material elevation="1">
+                <change-password-page password-reset-token="{{passwordResetToken}}"></change-password-page>
+              </paper-material>
             </section>
 
             <section data-route="error">
@@ -199,6 +203,12 @@
             break;
           case 'login':
             this.title = 'Login';
+            break;
+          case 'change-password':
+            this.title = 'New Password';
+            break;
+          case 'reset-password':
+            this.title = 'Reset Password';
             break;
           default:
             this.title = '';

@@ -10,7 +10,7 @@ class PasswordResetsController < ApplicationController
   def update
     requested_user = User.load_from_reset_password_token(params[:id])
 
-    if requested_user.blank?
+    if requested_user.blank? || requested_user.email != params[:user][:email]
       raise Pundit::NotAuthorizedError
     end
 
