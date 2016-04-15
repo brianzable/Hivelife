@@ -6,8 +6,12 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        word-break: break-all;
-        word-wrap: break-word;
+      }
+
+      @media (max-width: 400px) {
+        ::content .notes {
+          width: 250px;
+        }
       }
 
       @media (min-width: 400px) {
