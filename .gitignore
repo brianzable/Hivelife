@@ -19,7 +19,7 @@
 # Ignore .DS_Store files
 *.DS_Store
 
-# Ignore files with secret information
+# Ignore files with sensitive information
 /config/database.yml
 /config/secrets.yml
 
@@ -30,5 +30,3 @@
 /client/node_modules/*
 /client/bower_components/*
 /client/app/bower_components/*
-/client/dist/*
-
