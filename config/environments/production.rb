@@ -84,13 +84,11 @@ Bees::Application.configure do
   config.log_formatter = ::Logger::Formatter.new
   config.action_mailer.default_url_options = { :host => 'hivelife.co' }
   config.action_mailer.smtp_settings = {
-    :address   => Rails.application.secrets.mandrill_address,
-    :port      => Rails.application.secrets.mandrill_port,
-    :enable_starttls_auto => true,
-    :user_name => Rails.application.secrets.mandrill_user_name,
-    :password  => Rails.application.secrets.mandrill_password,
-    :authentication => Rails.application.secrets.mandrill_authentication,
-    :domain => Rails.application.secrets.mandrill_domain, # your domain to identify your server when connecting
+    :authentication => :plain,
+    :address => Rails.application.secrets.smtp_server_address,
+    :port => Rails.application.secrets.smtp_server_port,
+    :domain => Rails.application.secrets.smtp_domain,
+    :user_name => Rails.application.secrets.smtp_user_name,
+    :password => Rails.application.secrets.smtp_password
   }
-  # config.serve_static_assets = true
 end
