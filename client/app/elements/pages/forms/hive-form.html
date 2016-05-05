@@ -42,23 +42,17 @@
 
             <paper-dropdown-menu id="type" label="hive type" class="flex">
               <paper-menu id="typeMenu" class="dropdown-content">
-                <paper-item>Langstroth</paper-item>
-                <paper-item>Top Bar</paper-item>
-                <paper-item>Warre</paper-item>
-                <paper-item>Other</paper-item>
+                <template is="dom-repeat" items="[[types]]">
+                  <paper-item>{{item}}</paper-item>
+                </template>
               </paper-menu>
             </paper-dropdown-menu>
 
             <paper-dropdown-menu id="orientation" label="orientation" class="flex">
               <paper-menu id="orientationMenu" class="dropdown-content">
-                <paper-item>North</paper-item>
-                <paper-item>North East</paper-item>
-                <paper-item>East</paper-item>
-                <paper-item>South East</paper-item>
-                <paper-item>South</paper-item>
-                <paper-item>South West</paper-item>
-                <paper-item>West</paper-item>
-                <paper-item>North West</paper-item>
+                <template is="dom-repeat" items="[[orientations]]">
+                  <paper-item>{{item}}</paper-item>
+                </template>
               </paper-menu>
             </paper-dropdown-menu>
           </div>
@@ -66,20 +60,17 @@
           <div class="row">
             <paper-dropdown-menu id="breed" label="bee breed" class="flex">
               <paper-menu id="breedMenu" class="dropdown-content">
-                <paper-item>Italian</paper-item>
-                <paper-item>Carniolan</paper-item>
-                <paper-item>Russian</paper-item>
-                <paper-item>Other</paper-item>
+                <template is="dom-repeat" items="[[breeds]]">
+                  <paper-item>{{item}}</paper-item>
+                </template>
               </paper-menu>
             </paper-dropdown-menu>
 
             <paper-dropdown-menu id="source" label="bee source" class="flex">
               <paper-menu id="sourceMenu" class="dropdown-content">
-                <paper-item>Package</paper-item>
-                <paper-item>Nuc</paper-item>
-                <paper-item>Swarm</paper-item>
-                <paper-item>Split</paper-item>
-                <paper-item>Other</paper-item>
+                <template is="dom-repeat" items="[[sources]]">
+                  <paper-item>{{item}}</paper-item>
+                </template>
               </paper-menu>
             </paper-dropdown-menu>
 
@@ -150,6 +141,10 @@
         'updateHiveRequest.hive-update-error': '_handleUpdateError',
         'createHiveRequest.hive-create': '_handleCreateSuccess',
         'createHiveRequest.hive-create-error': '_handleCreateError'
+      },
+
+      ready: function () {
+        this._setDropdownValues();
       },
 
       setup: function (mode) {
@@ -282,23 +277,19 @@
       },
 
       _typeSelection: function (selection) {
-        var TYPES = ['Langstroth', 'Top Bar', 'Warre', 'Other'];
-        return TYPES.indexOf(selection);
+        return this.types.indexOf(selection);
       },
 
       _orientationSelection: function (selection) {
-        var ORIENTATIONS = [ 'North', 'North East', 'East', 'South East', 'South', 'South West', 'West', 'North West'];
-        return ORIENTATIONS.indexOf(selection);
+        return this.orientations.indexOf(selection);
       },
 
       _breedSelection: function (selection) {
-        var BREEDS = ['Italian', 'Carniolan', 'Russian', 'Other'];
-        return BREEDS.indexOf(selection);
+        return this.breeds.indexOf(selection);
       },
 
       _sourceSelection: function (selection) {
-        var SOURCES = ['Package', 'Nuc', 'Swarm', 'Split', 'Other'];
-        return SOURCES.indexOf(selection);
+        return sources.indexOf(selection);
       },
 
       _dataSharingSelection: function (dataSharingEnabled) {
@@ -307,6 +298,13 @@
 
       _locationSharingSelection: function (exactSharingEnabled) {
         return exactSharingEnabled ? 'exact': 'imprecise';
+      },
+
+      _setDropdownValues: function () {
+        this.orientations = [ 'North', 'North East', 'East', 'South East', 'South', 'South West', 'West', 'North West'];
+        this.types = ['Langstroth', 'Top-Bar', 'Warre', 'British National', 'Slovenian AZ', 'Other'];
+        this.breeds = ['Italian', 'Russian', 'German', 'Carniolan', 'Caucasian', 'Buckfast', 'Other'];
+        this.sources = ['Package', 'Nuc', 'Swarm', 'Split', 'Removal', 'Other'];
       }
     });
   })();

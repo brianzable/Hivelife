@@ -1,13 +1,24 @@
 class Hive < ActiveRecord::Base
+  attr_writer :latitude, :longitude
+
 	belongs_to :apiary, counter_cache: true
 
 	has_many :inspections, -> { order 'inspected_at DESC' }, dependent: :destroy
 	has_many :harvests, -> { order 'harvested_at'}, dependent: :destroy
 
-  attr_writer :latitude, :longitude
   before_save :set_coordinates
 
+  VALID_HIVE_TYPES = ['Langstroth', 'Top-Bar', 'Warre', 'British National', 'Slovenian AZ', 'Other']
+  VALID_BREEDS = ['Italian', 'Russian', 'German', 'Carniolan', 'Caucasian', 'Buckfast', 'Other']
+  VALID_SOURCES = ['Package', 'Nuc', 'Swarm', 'Split', 'Removal', 'Other']
+  VALID_ORIENTATIONS = ['North', 'North East', 'East', 'South East', 'South', 'South West', 'West', 'North West']
+
   validates_presence_of :name
+
+  validates :hive_type, inclusion: VALID_HIVE_TYPES, allow_blank: true
+  validates :breed, inclusion: VALID_BREEDS, allow_blank: true
+  validates :source, inclusion: VALID_SOURCES, allow_blank: true
+  validates :orientation, inclusion: VALID_ORIENTATIONS, allow_blank: true
 
   validates :latitude,
     presence: true,
