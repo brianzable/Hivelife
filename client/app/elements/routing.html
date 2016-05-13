@@ -32,8 +32,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/', function () {
-      app.layoutManager = 'root';
-      app.route = 'home';
+      if (app.authenticationToken !== null) {
+        page.redirect('/apiaries');
+      }
+      else {
+        app.layoutManager = 'root';
+        app.route = 'home';
+      }
     });
 
     page(app.baseUrl, function() {
