@@ -1,0 +1,151 @@
+<dom-module id="landing-page">
+  <style include="shared-styles"></style>
+  <style>
+    #title-text {
+      @apply(--paper-font-title);
+    }
+
+    paper-button#loginButton {
+      background: #f50057;
+      color: white;
+    }
+
+    paper-button#registerButton {
+      background: white;
+    }
+
+    .screenshot {
+      height: 300px;
+      width: 300px;
+    }
+
+    .paper-font-display2 {
+      font-weight: 200;
+      color: white;
+      margin-bottom: 15px;
+    }
+
+    .main-subtitle {
+      color: white;
+      font-weight: 150;
+      margin-bottom: 40px;
+    }
+
+    .feature {
+      margin-left: 25px;
+      margin-right: 25px;
+      @apply(--layout-vertical);
+      @apply(--layout-center);
+      @apply(--layout-flex);
+    }
+
+    .feature-icon {
+      height: 100px;
+      width: 100%;
+    }
+
+    .feature-header {
+      font-size: 18px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .feature-description {
+      font-weight: 200;
+      text-align: center;
+    }
+  </style>
+
+  <template>
+    <div class="layout vertical center fit">
+      <div style="background: #ffc107; width: 100%;" class="layout vertical center flex-2">
+        <div class="flex"></div>
+
+        <div class="paper-font-display2">Hivelife</div>
+
+        <div class="main-subtitle">
+          A free tool for apiary and hive managment
+        </div>
+
+        <div class="layout horizontal center">
+          <paper-button id="loginButton">Login</paper-button>
+          <paper-button id="registerButton">Register</paper-button>
+        </div>
+
+        <div class="flex"></div>
+
+        <div id="screenshots" class="flex">
+          <iron-image
+            class="screenshot"
+            fade
+            src="http://dl.dropboxusercontent.com/u/47340/temp_screenshot.png"
+            sizing="cover">
+          </iron-image>
+        </div>
+      </div>
+
+      <div class="layout vertical center flex">
+        <div class="layout horizontal center flex">
+          <div class="feature">
+            <iron-image
+            class="feature-icon"
+            src="https://dl.dropboxusercontent.com/u/47340/hivelife/noun_25187_cc.png"
+            fade
+            sizing="contain">
+            </iron-image>
+
+            <div class="feature-header">
+              Inspect
+            </div>
+
+            <div class="feature-description">
+              Inspect hives by yourself or with others
+            </div>
+          </div>
+
+          <div class="feature layout vertical center flex">
+            <iron-image
+            class="feature-icon"
+            src="https://dl.dropboxusercontent.com/u/47340/hivelife/noun_82232_cc.png"
+            fade
+            sizing="contain">
+            </iron-image>
+
+            <div class="feature-header">
+              Track
+            </div>
+
+            <div class="feature-description">
+              Keep track of hive health and status throughout the season
+            </div>
+          </div>
+
+          <div class="feature layout vertical center flex">
+            <iron-image
+            class="feature-icon"
+            src="https://dl.dropboxusercontent.com/u/47340/hivelife/noun_138399_cc.png"
+            fade
+            sizing="contain">
+            </iron-image>
+
+            <div class="feature-header">
+              Learn
+            </div>
+
+            <div class="feature-description">
+              Share hive and inspection data with other beekeepers
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'landing-page',
+    });
+  })();
+</script>
