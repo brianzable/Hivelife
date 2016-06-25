@@ -1,10 +1,10 @@
 Bees::Application.routes.draw do
   scope :v1 do
     scope :api do
-      get '/data', to: 'static_pages#data'
       post '/sign_in', to: 'sessions#sign_in'
 
       resources :password_resets, only: [:create, :update]
+      resources :contact_requests, only: [:create]
 
       resources :apiaries do
         resources :hives, except: [:new, :edit]

@@ -157,7 +157,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/register', function() {
-      page.redirect('/home');
+      if (app.authenticationToken !== null) {
+        page.redirect('/');
+      }
+      else {
+        app.layoutManager = 'root';
+        app.route = 'register';
+      }
     });
 
     page('/account', function () {
@@ -214,6 +220,5 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     page({
       hashbang: true
     });
-
   });
 </script>

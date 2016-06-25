@@ -63,9 +63,13 @@
       </paper-dropdown-menu>
     </div>
 
+    <p id="disclaimer">By signing up for Hivelife, you agree to our <a id="tosLink" href="#">terms of service</a></p>
+
     <div class="row">
       <paper-button id="formSubmit" raised>Register</paper-button>
     </div>
+
+    <tos-dialog id="tosDialog"></tos-dialog>
 
     <user-create-request id="userCreateRequest"></user-create-request>
   </template>
@@ -80,6 +84,7 @@
 
       listeners: {
         'formSubmit.click': '_submitForm',
+        'tosLink.click': '_showTOS',
         'userCreateRequest.user-create': '_handleCreateSuccess',
         'userCreateRequest.user-create-error': '_handleCreateError'
       },
@@ -117,6 +122,13 @@
         };
 
         return firstNameValid && lastNameValid && emailValid;
+      },
+
+      _showTOS: function (event) {
+        event.preventDefault();
+
+        this.$.tosDialog.toggle();
+        /* this.$.tosDialog.notifyResize(); */
       },
 
       _handleCreateSuccess: function (event) {

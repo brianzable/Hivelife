@@ -1,0 +1,115 @@
+<dom-module id="contact-form">
+  <template>
+    <style include="shared-styles"></style>
+    <h4 class="header-4">Please leave any feedback you have about the project below</h4>
+    <div class="row">
+      <paper-input
+        id="name"
+        label="name"
+        class="flex"
+        auto-validate
+        required
+        error-message="name is required">
+      </paper-input>
+    </div>
+
+    <div class="row">
+      <paper-input
+        id="emailAddress"
+        label="email address"
+        class="flex"
+        auto-validate
+        required
+        error-message="email address is required">
+      </paper-input>
+    </div>
+
+    <div class="row">
+      <paper-input
+        id="subject"
+        label="subject"
+        class="flex"
+        auto-validate
+        required
+        error-message="subject is required">
+      </paper-input>
+    </div>
+
+    <div class="row">
+      <paper-textarea
+        id="message"
+        label="message"
+        style="width: 100%;"
+        auto-validate
+        required
+        error-message="message is required">
+      </paper-textarea>
+    </div>
+
+    <div class="row">
+      <div class="flex"></div>
+      <paper-button id="formSubmit" raised>send</paper-button>
+    </div>
+
+    <contact-request id="contactRequest"></contact-request>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'contact-form',
+
+      listeners: {
+        'formSubmit.click': '_submitForm',
+        'contactRequest.contact-request': '_handleSuccess',
+        'contactRequest.contact-request-error': '_handleError',
+      },
+
+      _submitForm: function () {
+        if (!this._formValid()) {
+          return;
+        }
+
+        var payload = {
+          contact_request: {
+            name: this.$.name.value,
+            email_address: this.$.emailAddress.value,
+            subject: this.$.subject.value,
+            message: this.$.message.value,
+          }
+        };
+
+        var request = this.$.contactRequest;
+        request.payload = payload;
+        request.send();
+      },
+
+      _formValid: function () {
+        var nameValid = this.$.name.validate();
+        var emailAddressValid = this.$.emailAddress.validate();
+        var subjectValid = this.$.subject.validate();
+        var messageValid = this.$.message.validate();
+
+        return nameValid && emailAddressValid && subjectValid && messageValid;
+      },
+
+      _handleSuccess: function () {
+        var message = "Your message has been sent. We'll get back to you as soon as possible."
+
+        this.$.subject.value = '';
+        this.$.message.value = '';
+
+        this.fire('app-message', { message: message });
+        this.fire('page-redirect', { path: '/' });
+      },
+
+      _handleError: function (event) {
+        var errors = event.detail.errors;
+        var errorMessage = errors.join(', ');
+
+        this.fire('app-message', { message: errorMessage });
+      }
+    });
+  })();
+</script>

@@ -1,0 +1,49 @@
+<dom-module id="contact-request">
+  <template>
+    <iron-ajax
+      id="client"
+      method="POST"
+      on-response="_handleSuccess"
+      on-error="_handleError">
+    </iron-ajax>
+  </template>
+</dom-module>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'contact-request',
+
+      behaviors: [HivelifeBehaviors.RequestBehavior],
+
+      properties: {
+        payload: Object
+      },
+
+      send: function () {
+        this.$.client.url = '/v1/api/contact_requests';
+        this.$.client.body = this.payload;
+        this.$.client.generateRequest();
+      },
+
+      _handleSuccess: function (event) {
+        var detail = {
+          user: event.detail.response
+        };
+
+        this.fire('contact-request', detail);
+      },
+
+      _handleError: function (event) {
+        var status = event.target.lastRequest.xhr.status;
+        if (status === 500 || status === 401) {
+          this._handleServerError();
+          return;
+        }
+
+        var errors = event.target.lastRequest.xhr.response;
+        this.fire('contact-request-error', { errors: errors });
+      }
+    });
+  })();
+</script>

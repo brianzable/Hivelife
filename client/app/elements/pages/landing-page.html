@@ -2,7 +2,7 @@
   <style include="shared-styles"></style>
   <style>
     #title-text {
-      @apply(--paper-font-title);
+      margin-top: 30px;
     }
 
     paper-button#loginButton {
@@ -15,8 +15,11 @@
     }
 
     .screenshot {
-      height: 300px;
-      width: 300px;
+      height: 350px;
+      width: 295px;
+      -webkit-box-shadow: -4px -7px 68px -23px rgba(0,0,0,0.75);
+      -moz-box-shadow: -4px -7px 68px -23px rgba(0,0,0,0.75);
+      box-shadow: -4px -7px 68px -23px rgba(0,0,0,0.75);
     }
 
     .paper-font-display2 {
@@ -44,6 +47,12 @@
       width: 100%;
     }
 
+    @media (max-width: 600px) {
+      .screenshot {
+        height: 200px;
+      }
+    }
+
     .feature-header {
       font-size: 18px;
       margin-top: 10px;
@@ -54,14 +63,18 @@
       font-weight: 200;
       text-align: center;
     }
+
+    :host {
+      @apply(--layout-fit);
+    }
   </style>
 
   <template>
-    <div class="layout vertical center fit">
+    <div class="layout vertical center">
       <div style="background: #ffc107; width: 100%;" class="layout vertical center flex-2">
         <div class="flex"></div>
 
-        <div class="paper-font-display2">Hivelife</div>
+        <div id="title-text" class="paper-font-display2">Hivelife</div>
 
         <div class="main-subtitle">
           A free tool for apiary and hive managment
@@ -74,17 +87,33 @@
 
         <div class="flex"></div>
 
-        <div id="screenshots" class="flex">
+        <div style="margin-top: 30px;" class="layout horizontal center">
+          <iron-image
+            class="screenshot"
+            style="margin-right: -100px;"
+            fade
+            src="https://dl.dropboxusercontent.com/u/47340/hivelife/hive.png"
+            sizing="contain">
+          </iron-image>
+
           <iron-image
             class="screenshot"
             fade
-            src="http://dl.dropboxusercontent.com/u/47340/temp_screenshot.png"
+            src="https://dl.dropboxusercontent.com/u/47340/hivelife/distance.png"
+            sizing="cover">
+          </iron-image>
+
+          <iron-image
+            class="screenshot"
+            style="margin-left: -100px;"
+            fade
+            src="https://dl.dropboxusercontent.com/u/47340/hivelife/inspection.png"
             sizing="cover">
           </iron-image>
         </div>
       </div>
 
-      <div class="layout vertical center flex">
+      <div style="margin-top: 30px;" class="layout vertical center flex">
         <div class="layout horizontal center flex">
           <div class="feature">
             <iron-image
@@ -99,7 +128,7 @@
             </div>
 
             <div class="feature-description">
-              Inspect hives by yourself or with others
+              Log hive inspections by yourself or with friends and family
             </div>
           </div>
 
@@ -146,6 +175,19 @@
   (function () {
     Polymer({
       is: 'landing-page',
+
+      listeners: {
+        'loginButton.click': '_handleLoginClick',
+        'registerButton.click': '_handleRegisterClick',
+      },
+
+      _handleLoginClick: function () {
+        this.fire('page-redirect', { path: '/login'});
+      },
+
+      _handleRegisterClick: function () {
+        this.fire('page-redirect', { path: '/register'});
+      }
     });
   })();
 </script>
