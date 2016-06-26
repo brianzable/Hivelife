@@ -22,6 +22,7 @@
 # Ignore files with sensitive information
 /config/database.yml
 /config/secrets.yml
+/config/deploy.rb
 
 # Ignore compiled assets
 /public/assets/*
