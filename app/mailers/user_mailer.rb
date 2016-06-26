@@ -7,12 +7,20 @@ class UserMailer < ApplicationMailer
   #
   def activation_needed_email(user)
     @user = user
-    mail to: user.email
+    mail(
+      to: user.email,
+      from: 'no-reply@hivelife.co'
+      subject: 'Activate your Hivelife Account',
+    )
   end
 
   def reset_password_email(user)
     @user = user
-    mail to: user.email, subject: 'Hivelife Password Reset'
+    mail(
+      to: user.email,
+      subject: 'Hivelife Password Reset',
+      from: 'no-reply@hivelife.co'
+    )
   end
 
   # Subject can be set in your I18n file at config/locales/en.yml
