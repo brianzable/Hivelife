@@ -9,7 +9,7 @@ class UserMailer < ApplicationMailer
     @user = user
     mail(
       to: user.email,
-      from: 'no-reply@hivelife.co'
+      from: 'no-reply@hivelife.co',
       subject: 'Activate your Hivelife Account',
     )
   end
