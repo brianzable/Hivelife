@@ -78,7 +78,14 @@
           </div>
 
           <h4 class="header-4">Location</h4>
-          <google-map id="hiveLocation" latitude="[[latitude]]" longitude="[[longitude]]" zoom="1" click-events="true" class="flex">
+          <google-map
+            id="hiveLocation"
+            latitude="[[latitude]]"
+            longitude="[[longitude]]"
+            api-key="AIzaSyBtQnBVU0mqn-sddA2zAr3VBSCD725jWs4"
+            zoom="1"
+            click-events="true"
+            class="flex">
             <google-map-marker latitude="[[latitude]]" longitude="[[longitude]]"></google-map-marker>
           </google-map>
           <span id="mapError" class="error-message" style="display: none;">please choose a location on the map</span>
